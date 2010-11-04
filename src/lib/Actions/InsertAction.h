@@ -1,0 +1,48 @@
+/* Copyright (c) 2010, Piet Hein Schouten. All rights reserved.
+ * This code is licensed under a BSD-style license that can be
+ * found in the LICENSE file. The license can also be found at:
+ * http://www.boi-project.org/license
+ */
+
+#ifndef __BOI_INSERTACTION_H
+#define __BOI_INSERTACTION_H
+
+
+#include "Action.h"
+
+
+/*
+ * Arguments:
+ * ----------
+ *  UUID = The UUID of the component to insert.
+ */
+
+
+namespace BOI {
+
+
+class InsertAction
+    : public Action
+{
+    public:
+        InsertAction();
+
+        ActionCommand Start(ASI* pSI, const ActionArgs* pArgs);
+
+        void Stop(ASI* pSI);
+
+        bool AcceptTouchStream();
+
+        ActionCommand HandleTouchEvent(ASI* pSI, TouchEvent* pEvent);
+
+    private:
+        int m_typeId;
+        int m_numTouchStreams;
+};
+
+
+} // namespace BOI
+
+
+#endif //__BOI_INSERTACTION_H
+

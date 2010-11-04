@@ -1,0 +1,35 @@
+Supported Platforms
+-------------------
+
+Windows 7 (with Qt 4.7.0)
+Ubuntu Linux 10.04 (with Qt 4.7.0)
+
+
+Build Instructions
+------------------
+
+1. Have a working Qt 4.7.0 development environment.
+2. Change to build directory:
+
+    $ cd build
+
+3. Generate the Makefile:
+
+    $ qmake BOI.pro
+
+4. Run make:
+
+    For Ubuntu Linux:
+
+        $ make
+
+    For Windows 7:
+
+        > nmake
+
+The executable will be placed in the bin directory.
+
+NOTE: On Ubuntu Linux it may be necessary to update the 
+LD_LIBRARY_PATH environmental variable to point to the
+{BOI Root}/lib directory.
+

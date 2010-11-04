@@ -1,0 +1,10 @@
+#####################################################
+# The .info file for the BasicShapes plugin
+#####################################################
+
+Uuid        = {5d786852-5e0d-4468-8d7e-7c1c913270dc}
+Version     = 1
+FileName    = BasicShapes
+Title       = Basic Shapes Plugin
+Description = Provides components for the basic drawable shapes (ie. Rectangle, Ellipse, etc...)
+

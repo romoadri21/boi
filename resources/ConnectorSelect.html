@@ -1,0 +1,169 @@
+<html>
+<head>
+
+<style type="text/css">
+body
+{
+    padding: 0px;
+    margin: 0px;
+}
+
+#MainTable
+{
+    background-color: #efeff4;
+    width: 500px;
+}
+
+.Header
+{
+    color: white;
+    background-color: #333;
+    border: 1px solid #555;
+    padding: 9px;
+}
+
+.ItemContainer
+{
+    padding: 9px;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+.Title
+{
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.Description
+{
+    font-size: 14px;
+}
+
+.NavButton
+{
+    width: 250px;
+    border: 1px solid black;
+    background-color: #dfdfe4;
+    padding: 11px;
+    font-weight: bold;
+}
+
+.Previous
+{
+    text-align: left;
+}
+
+.Next
+{
+    text-align: right;
+}
+</style>
+
+<script type="text/javascript">
+var mainContainer;
+var currentPage = 0;
+var itemsPerPage = 5;
+var header = "";
+
+// items is an array of arrays where the
+// inner arrays are of length 2 and contain
+// the title and description:
+//     ['title', 'description']
+var items = [];
+
+
+function SetHeader(newHeader)
+{
+    header = newHeader;
+
+    var element = document.getElementById("Header");
+    element.innerHTML = header;
+}
+
+
+function SetItems(newItems)
+{
+    items = newItems;
+
+    ShowPage(0);
+}
+
+
+function HandleOnLoad()
+{
+    mainContainer = document.getElementById("MainContainer");
+
+    ShowPage(0);
+
+    BOI.UpdateAction("PageLoaded", "true");
+}
+
+
+function ShowPage(pageNumber)
+{
+    var index = itemsPerPage * pageNumber;
+
+    var html = '<table id="MainTable" cols="2" cellpadding="0" cellspacing="0">';
+    html += '<tr><td colspan="2" class="Header" id="Header">' + header + '</td></tr>';
+    html += '<tr><td class="Previous NavButton" onclick="HandlePrevious();">&lt;&lt;&nbsp;Previous</td>';
+    html += '<td class="Next NavButton" onclick="HandleNext();">Next&nbsp;&gt;&gt;</td></tr>';
+
+    for (var i=0; i < itemsPerPage; i++)
+    {
+        if (index < items.length)
+        {
+            html += '<tr><td class="ItemContainer" colspan="2" onclick="HandleItemClicked(' + index + ')">';
+            html += '<div class="Title">' + items[index][0] + '</div>';
+            html += '<div class="Description">' + items[index][1] + '</div>';
+            html += '</td></tr>';
+
+            index++;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    html += '</table>';
+    mainContainer.innerHTML = html;
+
+    currentPage = pageNumber;
+}
+
+
+function HandleItemClicked(index)
+{
+    BOI.UpdateAction("Index", index);
+}
+
+
+function HandlePrevious()
+{
+    if (currentPage > 0)
+    {
+        ShowPage(currentPage - 1);
+    }
+}
+
+
+function HandleNext()
+{
+    var newPage = currentPage + 1;
+
+    if ((newPage * itemsPerPage) < items.length)
+    {
+        ShowPage(newPage);
+    }
+}
+</script>
+</head>
+
+<body onload="HandleOnLoad()">
+    <div class="Container" id="MainContainer">
+    </div>
+</body>
+</html>
+
