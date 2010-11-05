@@ -61,6 +61,8 @@ class View
         void CenterOn(const QPointF& pos);
         void CenterOn(qreal x, qreal y);
 
+        void FitAllInView();
+
         void AlignViewToScene(const QPoint& viewPoint,
                               const QPointF& scenePoint);
 

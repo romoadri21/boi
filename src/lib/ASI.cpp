@@ -630,6 +630,12 @@ void ASI::CenterViewOn(const QPointF& pos)
 }
 
 
+void ASI::FitAllInView()
+{
+    m_pView->FitAllInView();
+}
+
+
 void ASI::AlignViewToScene(const QPoint& viewPoint,
                            const QPointF& scenePoint)
 {

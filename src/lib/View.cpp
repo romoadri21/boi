@@ -430,6 +430,18 @@ void View::CenterOn(qreal x, qreal y)
 }
 
 
+void View::FitAllInView()
+{
+    QGraphicsScene* pScene = m_pScene->Layer(SceneLayerId_Main);
+    QRectF bounds = pScene->itemsBoundingRect();
+
+    if (!bounds.isEmpty())
+    {
+        m_pMainView->fitInView(bounds, Qt::KeepAspectRatio);
+    }
+}
+
+
 void View::AlignViewToScene(const QPoint& viewPoint,
                             const QPointF& scenePoint)
 {

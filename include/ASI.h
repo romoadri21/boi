@@ -142,6 +142,8 @@ class BOI_LIB_EXPORT ASI
 
         void CenterViewOn(const QPointF& pos);
 
+        void FitAllInView();
+
         void AlignViewToScene(const QPoint& viewPoint,
                               const QPointF& scenePoint);
 
