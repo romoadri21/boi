@@ -128,7 +128,7 @@ void MenuManager::InitStandardMenus()
         -> SetNext("Set (Rect)", BOI_UUID_A(RectSelect))
         -> SetNext("Remove From")
         -> SetNext("Add To")
-        -> SetNext("Clear")
+        -> SetNext("Clear", BOI_UUID_A(ClearSelection))
         -> SetNext("Invert") -> Parent()
     -> SetNext("System")
         -> SetChild("Shutdown", BOI_UUID_A(Shutdown));

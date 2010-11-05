@@ -30,6 +30,7 @@
 #include "Actions/SetRotationAction.h"
 #include "Actions/AddToLayoutAction.h"
 #include "Actions/ResetViewScaleAction.h"
+#include "Actions/ClearSelectionAction.h"
 #include "Actions/InsertCollectionAction.h"
 #include "Actions/RemoveFromLayoutAction.h"
 #include "Actions/ToggleFullScreenAction.h"
@@ -177,6 +178,11 @@ void CoreActionsFactory::RegisterTypes(TypeRegistrar* pRegistrar)
                              BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
                              NULL,
                              StandardActions::Uuid(BOI_STD_A(PutText)));
+
+    pRegistrar->RegisterType(this,
+                             BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
+                             NULL,
+                             StandardActions::Uuid(BOI_STD_A(ClearSelection)));
 }
 
 
@@ -288,6 +294,10 @@ Object* CoreActionsFactory::GetAction(int type)
 
         case BOI_STD_A(PutText):
             pAction = new PutTextAction();
+            break;
+
+        case BOI_STD_A(ClearSelection):
+            pAction = new ClearSelectionAction();
             break;
 
         default:

@@ -38,6 +38,7 @@ const char* StandardActions::s_uuids[] =
     "{a8be4b35-1275-4183-862f-7a22a84545f5}", // Action_LoadUrl
     "{72f198dc-9148-47b1-b5fa-863c84293f15}", // Action_AppendText
     "{855206cd-4b7c-4ed0-995c-cb70c083742d}", // Action_PutText
+    "{3831d0cf-345b-4f68-a59a-f74ee1d2ae4d}", // Action_ClearSelection
 };
 
 

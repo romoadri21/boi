@@ -53,6 +53,7 @@ class BOI_LIB_EXPORT StandardActions
             Action_LoadUrl,
             Action_AppendText,
             Action_PutText,
+            Action_ClearSelection,
 
             NumActions
         };

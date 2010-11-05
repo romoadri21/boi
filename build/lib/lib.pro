@@ -142,6 +142,7 @@ HEADERS += \
     $${BOI_LIB_SRC_DIR}/Actions/SetRotationAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/AddToLayoutAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/ResetViewScaleAction.h \
+    $${BOI_LIB_SRC_DIR}/Actions/ClearSelectionAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/InsertCollectionAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/RemoveFromLayoutAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/ToggleFullScreenAction.h \
@@ -255,6 +256,7 @@ SOURCES += \
     $${BOI_LIB_SRC_DIR}/Actions/SetRotationAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/AddToLayoutAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/ResetViewScaleAction.cpp \
+    $${BOI_LIB_SRC_DIR}/Actions/ClearSelectionAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/InsertCollectionAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/RemoveFromLayoutAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/ToggleFullScreenAction.cpp \
