@@ -21,6 +21,13 @@ class ResetViewScaleAction
         ResetViewScaleAction();
 
         ActionCommand Start(ASI* pSI, const ActionArgs* pArgs);
+
+        bool AcceptTouchStream();
+
+        ActionCommand HandleTouchEvent(ASI* pSI, TouchEvent* pEvent);
+
+    private:
+        int m_numTouchStreams;
 };
 
 

@@ -4,11 +4,9 @@
  * http://www.boi-project.org/license
  */
 
-#include <QVariant>
-#include <QSizeF>
 #include "ASI.h"
-#include "StateId.h"
 #include "StandardActions.h"
+#include "Events/TouchEvent.h"
 #include "Actions/ResetViewScaleAction.h"
 
 
@@ -23,18 +21,40 @@ ResetViewScaleAction::ResetViewScaleAction()
 
 ActionCommand ResetViewScaleAction::Start(ASI* pSI, const ActionArgs* pArgs)
 {
+    Q_UNUSED(pSI);
     Q_UNUSED(pArgs);
 
-    QVariant value;
-    pSI->GetState(StateId_WindowSize, value);
-    QSizeF size = value.toSizeF();
-    size *= 0.5;
+    m_numTouchStreams = 0;
 
-    QPoint viewCenter = QPoint(size.width(), size.height());
-    QPointF centerPoint = pSI->MapFromViewToScene(viewCenter);
+    return BOI_AC_CONTINUE;
+}
 
-    pSI->ResetViewTransform();
-    pSI->CenterViewOn(centerPoint);
+
+bool ResetViewScaleAction::AcceptTouchStream()
+{
+    return (m_numTouchStreams == 0);
+}
+
+
+ActionCommand ResetViewScaleAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
+{
+    int eventType = pEvent->type;
+
+    if (eventType == TouchEvent::Type_Press)
+    {
+        QPoint point(pEvent->x, pEvent->y);
+
+        QPointF centerPoint = pSI->MapFromViewToScene(point);
+
+        pSI->ResetViewTransform();
+        pSI->CenterViewOn(centerPoint);
+
+        m_numTouchStreams++;
+    }
+    else if (eventType == TouchEvent::Type_Release)
+    {
+        m_numTouchStreams--;
+    }
 
     return BOI_AC_STOP;
 }
