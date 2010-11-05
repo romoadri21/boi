@@ -141,6 +141,7 @@ HEADERS += \
     $${BOI_LIB_SRC_DIR}/Actions/FreeRotateAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/SetRotationAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/AddToLayoutAction.h \
+    $${BOI_LIB_SRC_DIR}/Actions/FitAllInViewAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/ResetViewScaleAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/ClearSelectionAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/InsertCollectionAction.h \
@@ -255,6 +256,7 @@ SOURCES += \
     $${BOI_LIB_SRC_DIR}/Actions/FreeRotateAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/SetRotationAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/AddToLayoutAction.cpp \
+    $${BOI_LIB_SRC_DIR}/Actions/FitAllInViewAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/ResetViewScaleAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/ClearSelectionAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/InsertCollectionAction.cpp \
