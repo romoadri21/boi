@@ -21,6 +21,7 @@ const char* StandardComponents::s_uuids[] =
     "{6ef865a1-563e-4281-9f3c-076b311794af}", // Component_TextInput
     "{628b0c5a-11b4-443b-8391-3c7b935e7dcc}", // Component_Timer
     "{1c2a1bf2-05ae-4198-9847-6ba2053de8e8}", // Component_Browser
+    "{e895b361-2015-4301-8328-f5e3780a479e}", // Component_Javascript
 };
 
 

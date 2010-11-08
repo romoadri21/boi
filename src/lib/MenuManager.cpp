@@ -92,6 +92,9 @@ void MenuManager::InitStandardMenus()
     ActionArgs windowSizeArgs;
     windowSizeArgs.Set("UUID", BOI_UUID_C(WindowSize));
 
+    ActionArgs javascriptArgs;
+    javascriptArgs.Set("UUID", BOI_UUID_C(Javascript));
+
     ActionArgs verticalLayoutArgs;
     verticalLayoutArgs.Set("UUID", BOI_UUID_C(VerticalLayout));
 
@@ -117,7 +120,8 @@ void MenuManager::InitStandardMenus()
         -> SetNext("Collection", BOI_UUID_A(InsertCollection))
         -> SetNext("Text", BOI_UUID_A(InsertText))
         -> SetNext("Timer", BOI_UUID_A(Insert), timerArgs)
-        -> SetNext("Browser", BOI_UUID_A(Insert), browserArgs) -> Parent()
+        -> SetNext("Browser", BOI_UUID_A(Insert), browserArgs)
+        -> SetNext("Javascript", BOI_UUID_A(Insert), javascriptArgs) -> Parent()
     -> SetNext("Show")
         -> SetChild("All")
         -> SetNext("Area") -> Parent()

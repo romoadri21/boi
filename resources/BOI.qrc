@@ -4,6 +4,7 @@
     <file>WindowSize.svg</file>
     <file>VerticalLayout.svg</file>
     <file>HorizontalLayout.svg</file>
+    <file>JavascriptEngine.svg</file>
     <file>ConnectorSelect.html</file>
     <file>BrowserDefaultPage.html</file>
 </qresource>

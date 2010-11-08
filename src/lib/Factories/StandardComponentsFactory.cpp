@@ -14,6 +14,7 @@
 #include "Components/XGestureComponent.h"
 #include "Components/TextInputComponent.h"
 #include "Components/WindowSizeComponent.h"
+#include "Components/JavascriptComponent.h"
 #include "Components/BasicComponentDrawData.h"
 #include "Components/VerticalLayoutComponent.h"
 #include "Components/HorizontalLayoutComponent.h"
@@ -33,6 +34,9 @@ StandardComponentsFactory::StandardComponentsFactory()
     m_pWindowSizeDrawData = new BasicComponentDrawData();
     m_pWindowSizeDrawData->SetSvg(":/BOI/WindowSize.svg", QSizeF(105, 105));
 
+    m_pJavascriptDrawData = new BasicComponentDrawData();
+    m_pJavascriptDrawData->SetSvg(":/BOI/JavascriptEngine.svg", QSizeF(105, 105));
+
     m_pVerticalLayoutDrawData = new BasicComponentDrawData();
     m_pVerticalLayoutDrawData->SetSvg(":/BOI/VerticalLayout.svg", QSizeF(105, 105));
 
@@ -44,6 +48,7 @@ StandardComponentsFactory::StandardComponentsFactory()
 StandardComponentsFactory::~StandardComponentsFactory()
 {
     delete m_pWindowSizeDrawData;
+    delete m_pJavascriptDrawData;
     delete m_pVerticalLayoutDrawData;
     delete m_pHorizontalLayoutDrawData;
 }
@@ -90,6 +95,11 @@ void StandardComponentsFactory::RegisterTypes(TypeRegistrar* pRegistrar)
                              BOI_GET_INSTANCE_FUNC(StandardComponentsFactory, GetComponent),
                              NULL,
                              StandardComponents::Uuid(BOI_STD_C(Browser)));
+
+    pRegistrar->RegisterType(this,
+                             BOI_GET_INSTANCE_FUNC(StandardComponentsFactory, GetComponent),
+                             NULL,
+                             StandardComponents::Uuid(BOI_STD_C(Javascript)));
 }
 
 
@@ -129,6 +139,10 @@ Object* StandardComponentsFactory::GetComponent(int type)
 
         case BOI_STD_C(Browser):
             pComponent = new BrowserComponent();
+            break;
+
+        case BOI_STD_C(Javascript):
+            pComponent = new JavascriptComponent(m_pJavascriptDrawData);
             break;
 
         default:

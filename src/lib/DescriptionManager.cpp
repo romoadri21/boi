@@ -211,6 +211,62 @@ void DescriptionManager::InitStandardDescriptions()
     pDescription->SetBody("Emits the height of the window after it has changed.");
 
     RegisterDescription(pDescription);
+
+    pDescription = new Description();
+    pDescription->SetUuidMajor("{24532bc9-ee2c-490c-b519-ea25844f32a0}");
+    pDescription->SetTitle("Javascript Emitter 1 [Emitter]");
+    pDescription->SetBody("The first javascript emitter.");
+
+    RegisterDescription(pDescription);
+
+    pDescription = new Description();
+    pDescription->SetUuidMajor("{1123ddac-cf4b-4c3b-a0b2-0d1de01ed917}");
+    pDescription->SetTitle("Javascript Emitter 2 [Emitter]");
+    pDescription->SetBody("The second javascript emitter.");
+
+    RegisterDescription(pDescription);
+
+    pDescription = new Description();
+    pDescription->SetUuidMajor("{a803a200-109e-4511-a9cf-f13d2a62da70}");
+    pDescription->SetTitle("Javascript Emitter 3 [Emitter]");
+    pDescription->SetBody("The third javascript emitter.");
+
+    RegisterDescription(pDescription);
+
+    pDescription = new Description();
+    pDescription->SetUuidMajor("{0f2b6164-bef3-4e2e-b2a1-754cf2e17dd4}");
+    pDescription->SetTitle("Javascript Emitter 4 [Emitter]");
+    pDescription->SetBody("The fourth javascript emitter.");
+
+    RegisterDescription(pDescription);
+
+    pDescription = new Description();
+    pDescription->SetUuidMajor("{7f26d820-effc-4fe3-8553-1a57cd88244d}");
+    pDescription->SetTitle("Javascript Receiver Func 1 [Receiver]");
+    pDescription->SetBody("The first javascript receiver.");
+
+    RegisterDescription(pDescription);
+
+    pDescription = new Description();
+    pDescription->SetUuidMajor("{eff42c37-57dd-4f1f-95b2-16549eff87a8}");
+    pDescription->SetTitle("Javascript Receiver Func 2 [Receiver]");
+    pDescription->SetBody("The second javascript receiver.");
+
+    RegisterDescription(pDescription);
+
+    pDescription = new Description();
+    pDescription->SetUuidMajor("{4bf972ee-26d3-4afe-b38b-71d93c1bb514}");
+    pDescription->SetTitle("Javascript Receiver Func 3 [Receiver]");
+    pDescription->SetBody("The third javascript receiver.");
+
+    RegisterDescription(pDescription);
+
+    pDescription = new Description();
+    pDescription->SetUuidMajor("{c00548bc-8792-48b9-a21f-4393b790da17}");
+    pDescription->SetTitle("Javascript Receiver Func 4 [Receiver]");
+    pDescription->SetBody("The fourth javascript receiver.");
+
+    RegisterDescription(pDescription);
 }
 
 

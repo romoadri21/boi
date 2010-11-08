@@ -30,6 +30,7 @@ class StandardComponentsFactory
 
     private:
         BasicComponentDrawData* m_pWindowSizeDrawData;
+        BasicComponentDrawData* m_pJavascriptDrawData;
         BasicComponentDrawData* m_pVerticalLayoutDrawData;
         BasicComponentDrawData* m_pHorizontalLayoutDrawData;
 };

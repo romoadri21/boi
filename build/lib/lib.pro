@@ -14,7 +14,7 @@ BOI_LIB_SRC_DIR = $${BOI_BASE_DIR}/src/lib
 include($${BOI_BASE_DIR}/build/version.pri)
 unix:VERSION = $${BOI_LIB_VERSION}
 
-QT += svg sql webkit
+QT += svg sql webkit script
 
 TEMPLATE    = lib
 TARGET      = BOI
@@ -180,6 +180,7 @@ HEADERS += \
     $${BOI_LIB_SRC_DIR}/Components/XGestureComponent.h \
     $${BOI_LIB_SRC_DIR}/Components/TextInputComponent.h \
     $${BOI_LIB_SRC_DIR}/Components/WindowSizeComponent.h \
+    $${BOI_LIB_SRC_DIR}/Components/JavascriptComponent.h \
     $${BOI_LIB_SRC_DIR}/Components/BasicComponentDrawData.h \
     $${BOI_LIB_SRC_DIR}/Components/VerticalLayoutComponent.h \
     $${BOI_LIB_SRC_DIR}/Components/HorizontalLayoutComponent.h \
@@ -280,6 +281,7 @@ SOURCES += \
     $${BOI_LIB_SRC_DIR}/Components/XGestureComponent.cpp \
     $${BOI_LIB_SRC_DIR}/Components/TextInputComponent.cpp \
     $${BOI_LIB_SRC_DIR}/Components/WindowSizeComponent.cpp \
+    $${BOI_LIB_SRC_DIR}/Components/JavascriptComponent.cpp \
     $${BOI_LIB_SRC_DIR}/Components/BasicComponentDrawData.cpp \
     $${BOI_LIB_SRC_DIR}/Components/VerticalLayoutComponent.cpp \
     $${BOI_LIB_SRC_DIR}/Components/HorizontalLayoutComponent.cpp \

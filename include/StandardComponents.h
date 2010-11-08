@@ -37,6 +37,7 @@ class BOI_LIB_EXPORT StandardComponents
             Component_TextInput,
             Component_Timer,
             Component_Browser,
+            Component_Javascript,
 
             NumComponents
         };
