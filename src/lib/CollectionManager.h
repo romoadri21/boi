@@ -40,6 +40,8 @@ class CollectionManager
         CRefList OpenCollection(const QString& uuid,
                                 const QPointF& point);
 
+        bool DeleteCollection(const QString& uuid);
+
     private:
         typedef struct
         {

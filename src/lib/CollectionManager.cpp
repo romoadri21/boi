@@ -331,5 +331,18 @@ void CollectionManager::ExportComponent(Component* pComponent, QDataStream& out)
 }
 
 
+bool CollectionManager::DeleteCollection(const QString& uuid)
+{
+    if (uuid.length() < 4) return false;
+
+    QString path = m_basePath + '/' + uuid.at(1) +
+                                '/' + uuid.at(2) +
+                                '/' + uuid.at(3);
+    QString filePath = path + '/' + uuid;
+
+    return QFile::remove(filePath);
+}
+
+
 } // namespace BOI
 
