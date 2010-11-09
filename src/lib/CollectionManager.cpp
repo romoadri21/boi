@@ -63,7 +63,8 @@ bool CollectionManager::Initialize(const QString& basePath)
 }
 
 
-QString CollectionManager::CreateCollection(CRefList crefs)
+QString CollectionManager::CreateCollection(CRefList crefs,
+                                            const QString& uuidIn)
 {
     int numCRefs = crefs.Count();
     if (numCRefs == 0) return QString();
@@ -72,14 +73,33 @@ QString CollectionManager::CreateCollection(CRefList crefs)
     QString path;
     QString filePath;
 
-    do
+    QUuid tempUuid(uuidIn);
+
+    if (!tempUuid.isNull())
+    {
+        uuid = tempUuid.toString();
+    }
+    else
     {
         uuid = QUuid::createUuid().toString();
+    }
+
+    while (true)
+    {
         path = m_basePath + '/' + uuid.at(1) +
                             '/' + uuid.at(2) +
                             '/' + uuid.at(3);
         filePath = path + '/' + uuid;
-    } while (QFile::exists(filePath));
+
+        if (QFile::exists(filePath))
+        {
+            uuid = QUuid::createUuid().toString();
+        }
+        else
+        {
+            break;
+        }
+    }
 
     QDir dir(path);
     if (!dir.exists())

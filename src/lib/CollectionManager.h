@@ -35,7 +35,8 @@ class CollectionManager
 
         bool Initialize(const QString& basePath);
 
-        QString CreateCollection(CRefList crefs);
+        QString CreateCollection(CRefList crefs,
+                                 const QString& uuid=QString());
 
         CRefList OpenCollection(const QString& uuid,
                                 const QPointF& point);

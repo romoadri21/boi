@@ -914,9 +914,10 @@ bool ASI::IsSelected(Component* pComponent)
 }
 
 
-QString ASI::CreateCollection(CRefList crefs)
+QString ASI::CreateCollection(CRefList crefs,
+                              const QString& uuid)
 {
-    return m_pCollectionManager->CreateCollection(crefs);
+    return m_pCollectionManager->CreateCollection(crefs, uuid);
 }
 
 
