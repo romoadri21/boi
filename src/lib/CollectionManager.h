@@ -40,6 +40,7 @@ class CollectionManager
         CRefList OpenCollection(const QString& uuid,
                                 const QPointF& point);
 
+        bool CollectionExists(const QString& uuid);
         bool DeleteCollection(const QString& uuid);
 
     private:
