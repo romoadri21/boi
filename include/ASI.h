@@ -182,6 +182,9 @@ class BOI_LIB_EXPORT ASI
         CRefList OpenCollection(const QString& uuid,
                                 const QPointF& point);
 
+        bool CollectionExists(const QString& uuid);
+        bool DeleteCollection(const QString& uuid);
+
         bool AddTag(const QString& tag,
                     const QString& uuid,
                     UuidType type);

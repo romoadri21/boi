@@ -927,6 +927,18 @@ CRefList ASI::OpenCollection(const QString& uuid,
 }
 
 
+bool ASI::CollectionExists(const QString& uuid)
+{
+    return m_pCollectionManager->CollectionExists(uuid);
+}
+
+
+bool ASI::DeleteCollection(const QString& uuid)
+{
+    return m_pCollectionManager->DeleteCollection(uuid);
+}
+
+
 bool ASI::AddTag(const QString& tag,
                  const QString& uuid,
                  UuidType type)
