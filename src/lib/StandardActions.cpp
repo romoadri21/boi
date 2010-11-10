@@ -41,6 +41,7 @@ const char* StandardActions::s_uuids[] =
     "{3831d0cf-345b-4f68-a59a-f74ee1d2ae4d}", // Action_ClearSelection
     "{acad916e-1a54-4409-ac04-d611aa67d971}", // Action_FitAllInView
     "{cc5ae59e-b61e-42db-9b90-cd03ccd59a00}", // Action_Copy
+    "{29d681a6-8c1c-4d35-92fd-5fa6928dc56c}", // Action_Paste
 };
 
 

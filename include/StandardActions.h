@@ -56,6 +56,7 @@ class BOI_LIB_EXPORT StandardActions
             Action_ClearSelection,
             Action_FitAllInView,
             Action_Copy,
+            Action_Paste,
 
             NumActions
         };

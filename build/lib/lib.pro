@@ -126,6 +126,7 @@ HEADERS += \
     $${BOI_LIB_SRC_DIR}/Actions/NullAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/MoveAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/CopyAction.h \
+    $${BOI_LIB_SRC_DIR}/Actions/PasteAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/InsertAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/DeleteAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/ResizeAction.h \
@@ -243,6 +244,7 @@ SOURCES += \
     $${BOI_LIB_SRC_DIR}/Actions/NullAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/MoveAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/CopyAction.cpp \
+    $${BOI_LIB_SRC_DIR}/Actions/PasteAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/InsertAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/DeleteAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/ResizeAction.cpp \

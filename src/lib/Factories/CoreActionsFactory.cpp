@@ -14,6 +14,7 @@
 #include "Actions/ZoomAction.h"
 #include "Actions/MoveAction.h"
 #include "Actions/CopyAction.h"
+#include "Actions/PasteAction.h"
 #include "Actions/InsertAction.h"
 #include "Actions/DeleteAction.h"
 #include "Actions/ResizeAction.h"
@@ -195,6 +196,11 @@ void CoreActionsFactory::RegisterTypes(TypeRegistrar* pRegistrar)
                              BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
                              NULL,
                              StandardActions::Uuid(BOI_STD_A(Copy)));
+
+    pRegistrar->RegisterType(this,
+                             BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
+                             NULL,
+                             StandardActions::Uuid(BOI_STD_A(Paste)));
 }
 
 
@@ -318,6 +324,10 @@ Object* CoreActionsFactory::GetAction(int type)
 
         case BOI_STD_A(Copy):
             pAction = new CopyAction();
+            break;
+
+        case BOI_STD_A(Paste):
+            pAction = new PasteAction();
             break;
 
         default:
