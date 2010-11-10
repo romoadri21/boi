@@ -183,7 +183,7 @@ void MenuManager::InitStandardMenus()
     -> SetNext("Parent")
         -> SetChild("Set Child", BOI_UUID_A(SetChild))
         -> SetNext("UnSet") -> Parent()
-    -> SetNext("Copy");
+    -> SetNext("Copy", BOI_UUID_A(Copy));
 
     RegisterMenu(BOI_UUID_M(Component), pRootItem);
 

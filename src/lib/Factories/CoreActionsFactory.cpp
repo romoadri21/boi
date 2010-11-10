@@ -13,6 +13,7 @@
 #include "Actions/PanAction.h"
 #include "Actions/ZoomAction.h"
 #include "Actions/MoveAction.h"
+#include "Actions/CopyAction.h"
 #include "Actions/InsertAction.h"
 #include "Actions/DeleteAction.h"
 #include "Actions/ResizeAction.h"
@@ -189,6 +190,11 @@ void CoreActionsFactory::RegisterTypes(TypeRegistrar* pRegistrar)
                              BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
                              NULL,
                              StandardActions::Uuid(BOI_STD_A(FitAllInView)));
+
+    pRegistrar->RegisterType(this,
+                             BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
+                             NULL,
+                             StandardActions::Uuid(BOI_STD_A(Copy)));
 }
 
 
@@ -308,6 +314,10 @@ Object* CoreActionsFactory::GetAction(int type)
 
         case BOI_STD_A(FitAllInView):
             pAction = new FitAllInViewAction();
+            break;
+
+        case BOI_STD_A(Copy):
+            pAction = new CopyAction();
             break;
 
         default:
