@@ -45,7 +45,7 @@ RootMenu::RootMenu()
 RootMenu::~RootMenu()
 {
     delete m_pImage;
-    delete m_pColWidths;
+    delete[] m_pColWidths;
 }
 
 
@@ -123,7 +123,7 @@ void RootMenu::Update()
     m_numRows = ceil(m_numItems / (double)m_numCols);
     int numFullRows = floor(m_numItems / (double)m_numCols);
 
-    if (m_pColWidths != NULL) delete m_pColWidths;
+    if (m_pColWidths != NULL) delete[] m_pColWidths;
     m_pColWidths = new int[m_numCols];
 
     for (int i=0; i < m_numCols; i++) m_pColWidths[i] = 0;

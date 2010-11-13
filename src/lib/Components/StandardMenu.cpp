@@ -43,7 +43,7 @@ StandardMenu::StandardMenu()
 StandardMenu::~StandardMenu()
 {
     delete m_pImage;
-    delete m_pColWidths;
+    delete[] m_pColWidths;
 }
 
 
@@ -128,7 +128,7 @@ void StandardMenu::Update()
      * for all the columns.
      */
 
-    if (m_pColWidths != NULL) delete m_pColWidths;
+    if (m_pColWidths != NULL) delete[] m_pColWidths;
     m_pColWidths = new int[m_numCols];
 
     m_singleCellHeight = m_fontMetrics.height() + (m_yPadding * 2);

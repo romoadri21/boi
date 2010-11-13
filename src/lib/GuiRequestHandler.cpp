@@ -231,7 +231,11 @@ void GuiRequestHandler::DestroyComponent(GuiRequest* pRequest)
     /*
      * Release the internal reference to the Component so that the
      * Component gets deleted when the last reference is released.
+     * Note: The cref is first copied locally to avoid an invalid
+     * write in CRef::Reset() since CRef::Reset() can delete the
+     * Component and thus delete itself (the this pointer).
      */
+    CRef cref = pComponentData->cref;
     pComponentData->cref.Reset();
 }
 
