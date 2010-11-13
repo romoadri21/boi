@@ -121,6 +121,8 @@ class BOI_LIB_EXPORT ASI
         void ToggleFullScreen();
         void SetFullScreen(bool fullScreen);
 
+        void ToggleHotSpot();
+
         void SetCursor(const QCursor& cursor);
         void UnsetCursor();
 

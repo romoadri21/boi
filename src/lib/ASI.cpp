@@ -561,6 +561,12 @@ void ASI::SetFullScreen(bool fullScreen)
 }
 
 
+void ASI::ToggleHotSpot()
+{
+    m_pView->ToggleHotSpot();
+}
+
+
 void ASI::SetCursor(const QCursor& cursor)
 {
     m_pView->SetCursor(cursor);

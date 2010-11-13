@@ -32,6 +32,7 @@
 #include "Actions/SetRotationAction.h"
 #include "Actions/AddToLayoutAction.h"
 #include "Actions/FitAllInViewAction.h"
+#include "Actions/ToggleHotSpotAction.h"
 #include "Actions/ResetViewScaleAction.h"
 #include "Actions/ClearSelectionAction.h"
 #include "Actions/InsertCollectionAction.h"
@@ -201,6 +202,11 @@ void CoreActionsFactory::RegisterTypes(TypeRegistrar* pRegistrar)
                              BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
                              NULL,
                              StandardActions::Uuid(BOI_STD_A(Paste)));
+
+    pRegistrar->RegisterType(this,
+                             BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
+                             NULL,
+                             StandardActions::Uuid(BOI_STD_A(ToggleHotSpot)));
 }
 
 
@@ -328,6 +334,10 @@ Object* CoreActionsFactory::GetAction(int type)
 
         case BOI_STD_A(Paste):
             pAction = new PasteAction();
+            break;
+
+        case BOI_STD_A(ToggleHotSpot):
+            pAction = new ToggleHotSpotAction();
             break;
 
         default:

@@ -111,7 +111,7 @@ void MenuManager::InitStandardMenus()
             -> SetNext("1:1", BOI_UUID_A(ResetViewScale)) -> Parent()
         -> SetNext("Reset", BOI_UUID_A(ResetView))
         -> SetNext("Toggle Fullscreen", BOI_UUID_A(ToggleFullScreen))
-        -> SetNext("Add SubView") -> Parent()
+        -> SetNext("Toggle Hot Spot", BOI_UUID_A(ToggleHotSpot)) -> Parent()
     -> SetNext("Insert")
         -> SetChild("Window Size", BOI_UUID_A(Insert), windowSizeArgs) // TODO: maybe put this in the "view" sub category
         -> SetNext("Layout")

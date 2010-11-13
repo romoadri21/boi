@@ -45,6 +45,7 @@ class View
         void ToggleFullScreen();
         void SetFullScreen(bool fullScreen);
 
+        void ToggleHotSpot();
         void EnableHotSpot(bool enable);
 
         void SetCursor(const QCursor& cursor);

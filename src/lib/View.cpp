@@ -111,6 +111,12 @@ void View::SetFullScreen(bool fullScreen)
 }
 
 
+void View::ToggleHotSpot()
+{
+    m_hotSpotEnabled = !m_hotSpotEnabled;
+}
+
+
 void View::EnableHotSpot(bool enable)
 {
     m_hotSpotEnabled = enable;
