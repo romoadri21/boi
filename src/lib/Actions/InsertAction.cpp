@@ -63,7 +63,7 @@ ActionCommand InsertAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
         CRef cref = pSI->NewComponent(m_typeId);
 
         QPointF point = pSI->MapFromViewToScene(QPoint(pEvent->x, pEvent->y));
-        pSI->SetPosition(cref, point);
+        pSI->CenterComponentOn(cref, point);
         pSI->SetVisible(cref, true);
 
         m_numTouchStreams++;

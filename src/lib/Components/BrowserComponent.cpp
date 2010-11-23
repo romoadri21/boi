@@ -363,6 +363,12 @@ bool BrowserComponent::Initialize()
 
     m_controller.LoadUrl("qrc:///BOI/BrowserDefaultPage.html");
 
+    /*
+     * Set the bounding rect to the size
+     * of the browser default page.
+     */
+    SetBoundingRect(QRectF(0, 0, 800, 40));
+
     return true;
 }
 
