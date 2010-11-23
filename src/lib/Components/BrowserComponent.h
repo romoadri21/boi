@@ -58,6 +58,8 @@ class BrowserObject
         void SetHtml(QString html);
         void EvaluateJavascript(QString script);
 
+        void SetWidth(int width);
+
         void HandleLoadFinished(bool ok);
         void HandleSizeChanged(const QSize& size);
         void HandleJavascriptWindowObjectCleared();
@@ -93,6 +95,8 @@ class BrowserObjectController
         void SetHtml(const QString& html);
         void EvaluateJavascript(const QString& script);
 
+        void SetPreferredWidth(int width);
+
         void DeleteBrowserObject();
 
         void PostMouseMoveEvent(QPoint point);
@@ -106,6 +110,8 @@ class BrowserObjectController
         void Load(QString url);
         void Set(QString html);
         void Evaluate(QString script);
+
+        void SetWidth(int width);
 
         void Delete();
 
@@ -126,6 +132,8 @@ class BrowserComponent
     BOI_DEFINE_RECEIVER_FUNC(BrowserComponent, LoadUrl);
     BOI_DEFINE_RECEIVER_FUNC(BrowserComponent, SetHtml);
     BOI_DEFINE_RECEIVER_FUNC(BrowserComponent, EvaluateJavascript);
+
+    BOI_DEFINE_RECEIVER_FUNC(BrowserComponent, SetPreferredWidth);
 
     BOI_DEFINE_FUNCSET_FUNC(BrowserComponent, SetAction);
     BOI_DEFINE_FUNCSET_FUNC(BrowserComponent, SetActionArgs);

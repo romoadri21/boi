@@ -4,24 +4,33 @@
 body
 {
     margin: 0px;
-    padding: 0px;
 }
 
-.Container
+#Container
 {
-    border: 1px solid black;
-    background-color: #bfbfff;
-    width: 120px;
-    font-weight: bold;
-    font-size: 16px;
-    padding: 11px;
-    text-align: center;
+    width: 800px;
+    height: 40px;
+    background-image:url('qrc:///BOI/BrowserBackground.png');
+}
+
+#UrlTextBox
+{
+    position: absolute;
+    left: 250px;
+    top: 9px;
+    width: 525px;
+    font-size: 14px;
+    text-align: left;
+    border: 0px;
+    background-color:#fff;
 }
 </style>
 </head>
 
 <body>
-    <div class="Container">Web Browser</div>
+    <div id="Container">
+        <input type="text" name="UrlTextBox" maxlength="128" id="UrlTextBox" />
+    </div>
 </body>
 </html>
 

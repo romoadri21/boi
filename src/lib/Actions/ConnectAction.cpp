@@ -183,11 +183,24 @@ void ConnectAction::ShowList(ASI* pSI)
         pSI->CallFunc(m_browserComponent, funcSet, 0, dref);
 
         /*
-         * Load the connector select page into the browser.
+         *  Set the preferred width of the browser page
+         *  to a value smaller than the actual width of
+         *  the html page to ensure that there is no
+         *  extra 'body' space on the sides of the page.
          */
 
         int receiver = pSI->GetReceiver(m_browserComponent,
-                                        "{7473aebc-56e3-4dc4-994e-da426f45866c}");
+                                        "{f0c430fa-ade2-41c8-bba8-f9c6eb03b183}");
+        dref = pSI->NewData(BOI_STD_D(Int));
+        *dref.GetWriteInstance<int>() = 10;
+        pSI->EmitTo(m_browserComponent, receiver, dref);
+
+        /*
+         * Load the connector select page into the browser.
+         */
+
+        receiver = pSI->GetReceiver(m_browserComponent,
+                                    "{7473aebc-56e3-4dc4-994e-da426f45866c}");
 
         dref = pSI->NewData(BOI_STD_D(String));
         *dref.GetWriteInstance<QString>() = "qrc:///BOI/ConnectorSelect.html";

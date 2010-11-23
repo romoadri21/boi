@@ -64,6 +64,8 @@ BrowserObject::BrowserObject(BrowserComponent* pComponent)
      */
     m_webPage.settings()->setAttribute(QWebSettings::PluginsEnabled, true);
 
+    m_webPage.setPreferredContentsSize(QSize(800, 10));
+
     connect(m_webPage.mainFrame(), SIGNAL(contentsSizeChanged(const QSize&)),
             this, SLOT(HandleSizeChanged(const QSize&)));
 
@@ -93,6 +95,12 @@ void BrowserObject::SetHtml(QString html)
 void BrowserObject::EvaluateJavascript(QString script)
 {
     m_webPage.mainFrame()->evaluateJavaScript(script);
+}
+
+
+void BrowserObject::SetWidth(int width)
+{
+    m_webPage.setPreferredContentsSize(QSize(width, 10));
 }
 
 
@@ -228,6 +236,12 @@ void BrowserObjectController::EvaluateJavascript(const QString& script)
 }
 
 
+void BrowserObjectController::SetPreferredWidth(int width)
+{
+    emit SetWidth(width);
+}
+
+
 void BrowserObjectController::DeleteBrowserObject()
 {
     emit Delete();
@@ -271,6 +285,8 @@ BOI_BEGIN_RECEIVERS(BrowserComponent)
                          BOI_RECEIVER_FUNC(BrowserComponent, SetHtml))
     BOI_DECLARE_RECEIVER("{84235b00-1b96-43bf-907b-240dfc74e6b0}",
                          BOI_RECEIVER_FUNC(BrowserComponent, EvaluateJavascript))
+    BOI_DECLARE_RECEIVER("{f0c430fa-ade2-41c8-bba8-f9c6eb03b183}",
+                         BOI_RECEIVER_FUNC(BrowserComponent, SetPreferredWidth))
 BOI_END_RECEIVERS(BrowserComponent)
 
 
@@ -315,6 +331,10 @@ bool BrowserComponent::Initialize()
 
     QObject::connect(&m_controller,  SIGNAL(Evaluate(QString)),
                      m_pBrowserObject, SLOT(EvaluateJavascript(QString)),
+                     Qt::QueuedConnection);
+
+    QObject::connect(&m_controller,  SIGNAL(SetWidth(int)),
+                     m_pBrowserObject, SLOT(SetWidth(int)),
                      Qt::QueuedConnection);
 
     QObject::connect(&m_controller,  SIGNAL(Delete()),
@@ -465,6 +485,28 @@ void BrowserComponent::EvaluateJavascript(DRef& dref, int source)
     {
         QString script = *dref.GetReadInstance<QString>();
         m_controller.EvaluateJavascript(script);
+    }
+}
+
+
+void BrowserComponent::SetPreferredWidth(DRef& dref, int source)
+{
+    Q_UNUSED(source);
+
+    if (dref.Type() == BOI_STD_D(Int))
+    {
+        int width = *dref.GetReadInstance<int>();
+        m_controller.SetPreferredWidth(width);
+    }
+    else if (dref.Type() == BOI_STD_D(Float))
+    {
+        int width = *dref.GetReadInstance<float>();
+        m_controller.SetPreferredWidth(width);
+    }
+    else if (dref.Type() == BOI_STD_D(Double))
+    {
+        int width = *dref.GetReadInstance<double>();
+        m_controller.SetPreferredWidth(width);
     }
 }
 

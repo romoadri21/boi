@@ -6,6 +6,7 @@
     <file>HorizontalLayout.svg</file>
     <file>JavascriptEngine.svg</file>
     <file>ConnectorSelect.html</file>
+    <file>BrowserBackground.png</file>
     <file>BrowserDefaultPage.html</file>
 </qresource>
 </RCC>
