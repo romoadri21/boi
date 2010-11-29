@@ -45,7 +45,6 @@ class TagManager;
 class MutexBase;
 class Factories;
 class State;
-class Scene;
 class View;
 class ASI;
 class CSI;
@@ -76,9 +75,7 @@ class Base
         void HandleQuit();
 
     private:
-        View*  m_pView;
-        Scene* m_pScene;
-
+        View*                m_pView;
         State*               m_pState;
         Factories*           m_pFactories;
         MutexBase*           m_pMutexBase;

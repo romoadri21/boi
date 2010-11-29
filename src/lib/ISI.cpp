@@ -32,7 +32,7 @@ ISI::ISI(GuiRequestHandler* pGuiRequestHandler,
 }
 
 
-CRef ISI::NewComponent(int type, SceneLayerId layer)
+CRef ISI::NewComponent(int type, ViewLayerId layer)
 {
     return m_pComponentManager->NewComponent(type, layer);
 }

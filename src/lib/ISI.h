@@ -14,7 +14,7 @@
 #include "StateId.h"
 #include "CRefList.h"
 #include "Interface.h"
-#include "SceneLayerId.h"
+#include "ViewLayerId.h"
 
 
 class QDataStream;
@@ -51,7 +51,7 @@ class ISI
             DataManager*       pDataManager,
             MutexBase*         pMutexBase);
 
-        CRef NewComponent(int type, SceneLayerId layer=SceneLayerId_Main);
+        CRef NewComponent(int type, ViewLayerId layer=ViewLayerId_Main);
         DRef NewData(int type);
 
         QString GetUuid_C(int type);

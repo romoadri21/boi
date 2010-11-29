@@ -52,7 +52,7 @@ ActionCommand InsertTextAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
     {
         CRef cref = pSI->NewComponent(BOI_STD_C(Text));
 
-        QPointF point = pSI->MapFromViewToScene(QPoint(pEvent->x, pEvent->y));
+        QPointF point = pSI->MapFromViewToLayer(QPoint(pEvent->x, pEvent->y));
         pSI->SetPosition(cref, point);
 
         pSI->SetKeyEventHandler(cref);

@@ -111,10 +111,10 @@ ActionCommand RectSelectAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
 
         m_scaleFactor = pSI->ViewScaleFactor();
 
-        QPointF startPoint = pSI->MapFromViewToScene(QPoint(pEvent->x, pEvent->y));
+        QPointF startPoint = pSI->MapFromViewToLayer(QPoint(pEvent->x, pEvent->y));
         m_selectionRect.SetStartPoint(startPoint);
 
-        QPointF endPoint = pSI->MapFromViewToScene(QPoint(pEvent->x + 1, pEvent->y + 1));
+        QPointF endPoint = pSI->MapFromViewToLayer(QPoint(pEvent->x + 1, pEvent->y + 1));
         m_selectionRect.SetEndPoint(endPoint);
 
         UpdateRectComponent(pSI);
@@ -132,7 +132,7 @@ ActionCommand RectSelectAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
         {
             if (m_innerViewRect.contains(m_x, m_y))
             {
-                QPointF endPoint = pSI->MapFromViewToScene(QPoint(pEvent->x, pEvent->y));
+                QPointF endPoint = pSI->MapFromViewToLayer(QPoint(pEvent->x, pEvent->y));
                 m_selectionRect.SetEndPoint(endPoint);
 
                 UpdateRectComponent(pSI);
@@ -162,7 +162,7 @@ ActionCommand RectSelectAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
                 m_scrollerActive = false;
                 pSI->StopViewTransformer(m_scrollerId);
 
-                QPointF endPoint = pSI->MapFromViewToScene(QPoint(pEvent->x, pEvent->y));
+                QPointF endPoint = pSI->MapFromViewToLayer(QPoint(pEvent->x, pEvent->y));
                 m_selectionRect.SetEndPoint(endPoint);
 
                 UpdateRectComponent(pSI);
@@ -195,7 +195,7 @@ ActionCommand RectSelectAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
         pSI->SetVisible(m_rectComponent, false);
 
         CRefList crefs = pSI->ComponentsInLayerRect(m_selectionRect.Rect(),
-                                                    SceneLayerId_Main);
+                                                    ViewLayerId_Main);
         pSI->SetSelection(crefs);
 
         m_numTouchStreams--;
@@ -207,7 +207,7 @@ ActionCommand RectSelectAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
 
 void RectSelectAction::HandleViewTransformed(ASI* pSI)
 {
-    QPointF endPoint = pSI->MapFromViewToScene(QPoint(m_x, m_y));
+    QPointF endPoint = pSI->MapFromViewToLayer(QPoint(m_x, m_y));
     m_selectionRect.SetEndPoint(endPoint);
 
     UpdateRectComponent(pSI);

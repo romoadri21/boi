@@ -59,7 +59,7 @@ ActionCommand ZoomAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
             else if (y > m_startY) scaleFactor -= m_sensitivity;
 
             pSI->ScaleView(scaleFactor);
-            pSI->AlignViewToScene(m_viewPoint, m_scenePoint);
+            pSI->AlignLayerToView(m_layerPoint, m_viewPoint);
 
             m_startY = y;
         }
@@ -77,7 +77,7 @@ ActionCommand ZoomAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
             m_viewPoint.setX(pEvent->x);
             m_viewPoint.setY(pEvent->y);
 
-            m_scenePoint = pSI->MapFromViewToScene(m_viewPoint);
+            m_layerPoint = pSI->MapFromViewToLayer(m_viewPoint);
 
             m_numTouchStreams++;
         }

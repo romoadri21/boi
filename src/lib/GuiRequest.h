@@ -9,7 +9,7 @@
 
 
 #include <QtGlobal>
-#include "SceneLayerId.h"
+#include "ViewLayerId.h"
 #include "CRef.h"
 
 
@@ -51,7 +51,7 @@ class GuiRequest
 
         union
         {
-            SceneLayerId sceneLayerId;
+            ViewLayerId viewLayerId;
 
             ComponentData* pComponentData;
 

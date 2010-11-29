@@ -10,7 +10,7 @@
 #include "CRefList.h"
 #include "Component.h"
 #include "InputMode.h"
-#include "SceneLayerId.h"
+#include "ViewLayerId.h"
 #include "ActionEngine.h"
 #include "StandardActions.h"
 #include "Events/InputModeChangeEvent.h"
@@ -152,8 +152,8 @@ void InputEventHandler::HandleTouchEvent(TouchEvent* pEvent)
 
                 QPoint point(pEvent->x, pEvent->y);
 
-                int sceneLayerIds = (SceneLayerId_System | SceneLayerId_Overlay);
-                CRefList crefList = m_pASI->ComponentsAtViewPoint(point, sceneLayerIds);
+                int viewLayerIds = (ViewLayerId_System | ViewLayerId_Overlay);
+                CRefList crefList = m_pASI->ComponentsAtViewPoint(point, viewLayerIds);
 
                 if (crefList.Count() > 0)
                 {
@@ -224,10 +224,10 @@ void InputEventHandler::HandleTouchEvent(TouchEvent* pEvent)
 
                 QPoint point(pEvent->x, pEvent->y);
 
-                int sceneLayerIds = (m_immediateMode) ? 0 : SceneLayerId_System |
-                                                            SceneLayerId_Overlay;
-                sceneLayerIds |= SceneLayerId_Main | SceneLayerId_Underlay;
-                CRefList crefList = m_pASI->ComponentsAtViewPoint(point, sceneLayerIds);
+                int viewLayerIds = (m_immediateMode) ? 0 : ViewLayerId_System |
+                                                           ViewLayerId_Overlay;
+                viewLayerIds |= ViewLayerId_Main | ViewLayerId_Underlay;
+                CRefList crefList = m_pASI->ComponentsAtViewPoint(point, viewLayerIds);
 
                 if (crefList.Count() > 0)
                 {

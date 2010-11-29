@@ -5,11 +5,12 @@
  */
 
 #include <QApplication>
+#include <QGraphicsScene>
 #include <QPointF>
 #include <QLineF>
 #include <QList>
 #include "ISI.h"
-#include "Scene.h"
+#include "View.h"
 #include "Component.h"
 #include "ComponentData.h"
 #include "Utilities/Tuple.h"
@@ -32,7 +33,7 @@ GuiRequestHandler::GuiRequestHandler()
       MaxRequestsPerEvent(10),
       m_pCustomEventsFactory(NULL),
       m_pEventReceiver(NULL),
-      m_pScene(NULL)
+      m_pView(NULL)
 {
     m_funcs[GuiRequest::RequestType_AddToLayer]         = BOI_GUIREQUESTHANDLER_FUNC(AddToLayer);
     m_funcs[GuiRequest::RequestType_DestroyComponent]   = BOI_GUIREQUESTHANDLER_FUNC(DestroyComponent);
@@ -64,9 +65,9 @@ void GuiRequestHandler::SetEventReceiver(QObject* pReceiver)
 }
 
 
-void GuiRequestHandler::SetScene(Scene* pScene)
+void GuiRequestHandler::SetView(View* pView)
 {
-    m_pScene = pScene;
+    m_pView = pView;
 }
 
 
@@ -173,12 +174,11 @@ void GuiRequestHandler::AddToLayer(GuiRequest* pRequest)
     if (pComponent != NULL)
     {
         ComponentData* pComponentData = pComponent->m_pData;
-        SceneLayerId layer = pRequest->data.sceneLayerId;
+        ViewLayerId layer = pRequest->data.viewLayerId;
 
-        if (layer != SceneLayerId_None)
+        if (layer != ViewLayerId_None)
         {
-            QGraphicsScene* pGraphicsScene = m_pScene->Layer(layer);
-            pGraphicsScene->addItem(&pComponentData->graphicsItem);
+            m_pView->MoveToLayer(&pComponentData->graphicsItem, layer);
 
             pComponentData->layer = layer;
         }
@@ -343,8 +343,6 @@ void GuiRequestHandler::StackOnTop(GuiRequest* pRequest)
     if (pComponent != NULL)
     {
         GraphicsItem* pItem = &pComponent->m_pData->graphicsItem;
-
-        QGraphicsScene* pScene = pItem->scene();
         QGraphicsItem* pParent = pItem->parentItem();
 
         /*
@@ -356,19 +354,8 @@ void GuiRequestHandler::StackOnTop(GuiRequest* pRequest)
          * to the scene, or added to the same parent).
          */
 
-        if (pParent == NULL)
-        {
-            if (pScene != NULL)
-            {
-                pScene->removeItem(pItem);
-                pScene->addItem(pItem);
-            }
-        }
-        else
-        {
-            pItem->setParentItem(NULL);
-            pItem->setParentItem(pParent);
-        }
+        pItem->setParentItem(NULL);
+        pItem->setParentItem(pParent);
 
         pRequest->cref.ReleaseInstance();
     }
@@ -440,7 +427,7 @@ void GuiRequestHandler::SetParent(GuiRequest* pRequest)
                     (pChildItem != pParentItem))
                 {
                     // TODO: handle the case where the parent item
-                    // is in a different scene than the child item.
+                    // is in a different layer than the child item.
 
                     /*
                      * Maintain the current position of

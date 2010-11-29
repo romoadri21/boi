@@ -54,10 +54,10 @@ class CollectionManager
             qint32 dataSize;
             qint32 parentId;
 
-            QPointF scenePos;
+            QPointF layerPos;
             QPointF transformOrigin;
 
-            QRectF boundingRect;
+            QRectF layerBoundingRect;
 
             qreal rotation;
             qreal opacity;

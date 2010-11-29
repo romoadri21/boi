@@ -4,8 +4,9 @@
  * http://www.boi-project.org/license
  */
 
-#include <QGraphicsItem>
+#include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QGraphicsItem>
 #include <QMouseEvent>
 #include <QTouchEvent>
 #include "Events/ResizeEvent.h"
@@ -13,69 +14,76 @@
 #include "Events/KeyEvent.h"
 #include "Events/EventDispatcher.h"
 #include "Events/InputModeChangeEvent.h"
-#include "Scene.h"
 #include "View.h"
 
 
 namespace BOI {
 
 
-View::View(Scene* pScene, QWidget* pParent)
-    : QWidget(pParent, 0),
-      m_pScene(pScene),
-      m_pMainView(NULL),
-      m_pSystemView(NULL),
-      m_pOverlayView(NULL),
-      m_pUnderlayView(NULL),
+View::View(QWidget* pParent)
+    : m_pView(NULL),
+      m_pScene(NULL),
+      m_pMainLayer(NULL),
+      m_pSystemLayer(NULL),
+      m_pOverlayLayer(NULL),
+      m_pUnderlayLayer(NULL),
       m_pEventDispatcher(NULL),
       m_numButtonsPressed(0),
       m_hotSpotTouchId(-1),
       m_hotSpotEnabled(false),
       m_hotSpotBounds()
 {
-    /*
-     * The order in which the views are parented determines
-     * their stacking order.
-     */
-    m_pUnderlayView = new QGraphicsView(this);
-    m_pMainView     = new QGraphicsView(this);
-    m_pOverlayView  = new QGraphicsView(this);
-    m_pSystemView   = new QGraphicsView(this);
+    m_pScene = new QGraphicsScene();
+    m_pScene->setSceneRect(-30000000, -30000000, 60000000, 60000000);
+    m_pScene->setItemIndexMethod(QGraphicsScene::NoIndex);
 
-    InitializeView(m_pMainView,     m_pScene->Layer(SceneLayerId_Main));
-    InitializeView(m_pSystemView,   m_pScene->Layer(SceneLayerId_System));
-    InitializeView(m_pOverlayView,  m_pScene->Layer(SceneLayerId_Overlay));
-    InitializeView(m_pUnderlayView, m_pScene->Layer(SceneLayerId_Underlay));
+    /*
+     * For now, use a QGraphicsRectItem as the parent item
+     * for the layers. This can be anything since the item
+     * will never be drawn. Note: The order in which the
+     * items are inserted into the scene determines their
+     * stacking order.
+     */
+    m_pUnderlayLayer = m_pScene->addRect(QRectF(0,0,1,1));
+    m_pMainLayer     = m_pScene->addRect(QRectF(0,0,1,1));
+    m_pOverlayLayer  = m_pScene->addRect(QRectF(0,0,1,1));
+    m_pSystemLayer   = m_pScene->addRect(QRectF(0,0,1,1));
+
+    m_pMainLayer->setFlag(QGraphicsItem::ItemHasNoContents);
+    m_pSystemLayer->setFlag(QGraphicsItem::ItemHasNoContents);
+    m_pOverlayLayer->setFlag(QGraphicsItem::ItemHasNoContents);
+    m_pUnderlayLayer->setFlag(QGraphicsItem::ItemHasNoContents);
+
+    m_rootItemType = m_pMainLayer->type();
+
+    m_pView = new QGraphicsView(m_pScene, pParent);
+    m_pView->setFrameShape(QFrame::NoFrame);
+    m_pView->setTransformationAnchor(QGraphicsView::NoAnchor);
+    m_pView->setRenderHint(QPainter::Antialiasing);
+    m_pView->setRenderHint(QPainter::SmoothPixmapTransform);
+    m_pView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_pView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    m_pView->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    m_pView->setMouseTracking(false);
+    m_pView->setInteractive(false);
 
     /*
      * It is important that the event filters are installed after
      * everything else is done since the last filter installed is
      * the first one called (see QObject::installEventFilter).
      */
-    m_pSystemView->installEventFilter(this);
-    m_pSystemView->viewport()->installEventFilter(this);
+    m_pView->installEventFilter(this);
+    m_pView->viewport()->installEventFilter(this);
 
-    /*
-     * Combined with eating the 'tab' key events in eventFilter,
-     * this will stop the focus from going to the other QGraphicViews
-     * and thus prevent removing the keyboard focus from the system
-     * view where the eventFilter is installed.
-     */
-    m_pMainView->setFocusPolicy(Qt::NoFocus);
-    m_pOverlayView->setFocusPolicy(Qt::NoFocus);
-    m_pUnderlayView->setFocusPolicy(Qt::NoFocus);
-
-    m_pSystemView->viewport()->setAttribute(Qt::WA_AcceptTouchEvents, true);
-    m_pSystemView->setFocus();
+    m_pView->viewport()->setAttribute(Qt::WA_AcceptTouchEvents, true);
+    m_pView->setFocus();
 }
 
 
 View::~View()
 {
-    delete m_pMainView;
-    delete m_pSystemView;
-    delete m_pOverlayView;
-    delete m_pUnderlayView;
+    delete m_pView;
+    delete m_pScene;
 }
 
 
@@ -85,28 +93,52 @@ void View::SetEventDispatcher(EventDispatcher* pEventDispatcher)
 }
 
 
+void View::SetWindowTitle(const QString& title)
+{
+    m_pView->setWindowTitle(title);
+}
+
+
+void View::Resize(int width, int height)
+{
+    m_pView->resize(width, height);
+}
+
+
+void View::Show()
+{
+    m_pView->show();
+}
+
+
+void View::Close()
+{
+    m_pView->close();
+}
+
+
 void View::ToggleFullScreen()
 {
-    if (isFullScreen())
+    if (m_pView->isFullScreen())
     {
-        showNormal();
+        m_pView->showNormal();
     }
     else
     {
-        showFullScreen();
+        m_pView->showFullScreen();
     }
 }
 
 
 void View::SetFullScreen(bool fullScreen)
 {
-    if (fullScreen && !isFullScreen())
+    if (fullScreen && !m_pView->isFullScreen())
     {
-        showFullScreen();
+        m_pView->showFullScreen();
     }
-    else if (!fullScreen && isFullScreen())
+    else if (!fullScreen && m_pView->isFullScreen())
     {
-        showNormal();
+        m_pView->showNormal();
     }
 }
 
@@ -123,36 +155,7 @@ void View::EnableHotSpot(bool enable)
 }
 
 
-void View::InitializeView(QGraphicsView* pView, QGraphicsScene* pScene)
-{
-    pView->setFrameShape(QFrame::NoFrame);
-
-    /*
-     * The underlay view should retain its default background color
-     * and have a completely opaque background. This will stop
-     * paintEvents from being sent to the main QWidget (aka. this).
-     */
-    if (pView != m_pUnderlayView)
-    {
-        QPalette p = pView->viewport()->palette();
-        p.setColor(QPalette::Base, Qt::transparent);
-        pView->viewport()->setPalette(p);
-    }
-
-    pView->setTransformationAnchor(QGraphicsView::NoAnchor);
-    pView->setRenderHint(QPainter::Antialiasing);
-    pView->setRenderHint(QPainter::SmoothPixmapTransform);
-    pView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    pView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    pView->setInteractive(false);
-    pView->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-
-    pView->setScene(pScene);
-    pView->setMouseTracking(false);
-}
-
-
-bool View::eventFilter(QObject *pTarget, QEvent *pEvent)
+bool View::eventFilter(QObject* pTarget, QEvent* pEvent)
 {
     QEvent::Type eventType = pEvent->type();
 
@@ -265,8 +268,18 @@ bool View::eventFilter(QObject *pTarget, QEvent *pEvent)
         m_pEventDispatcher->DispatchKeyEvent(&keyEvent);
         return true;
     }
+    else if (eventType == QEvent::Resize)
+    {
+        HandleResizeEvent((QResizeEvent*)pEvent);
+        return false;
+    }
+    else if (eventType == QEvent::Close)
+    {
+        HandleCloseEvent((QCloseEvent*)pEvent);
+        return true;
+    }
 
-    return QWidget::eventFilter(pTarget, pEvent);
+    return QObject::eventFilter(pTarget, pEvent);
 }
 
 
@@ -355,22 +368,17 @@ void View::HandleTouch(TouchEvent* pEvent)
 }
 
 
-void View::closeEvent(QCloseEvent *pEvent)
+void View::HandleCloseEvent(QCloseEvent* pEvent)
 {
     Q_UNUSED(pEvent);
     m_pEventDispatcher->DispatchCloseEvent();
 }
 
 
-void View::resizeEvent(QResizeEvent* pEvent)
+void View::HandleResizeEvent(QResizeEvent* pEvent)
 {
     int newWidth = pEvent->size().width();
     int newHeight = pEvent->size().height();
-
-    m_pMainView->setGeometry(0, 0, newWidth, newHeight);
-    m_pSystemView->setGeometry(0, 0, newWidth, newHeight);
-    m_pOverlayView->setGeometry(0, 0, newWidth, newHeight);
-    m_pUnderlayView->setGeometry(0, 0, newWidth, newHeight);
 
     m_hotSpotBounds = QRectF(0, newHeight-50, 50, 50);
 
@@ -384,168 +392,239 @@ void View::resizeEvent(QResizeEvent* pEvent)
 
 void View::SetCursor(const QCursor& cursor)
 {
-    m_pSystemView->setCursor(cursor);
+    m_pView->setCursor(cursor);
 }
 
 
 void View::UnsetCursor()
 {
-    m_pSystemView->unsetCursor();
+    m_pView->unsetCursor();
 }
 
 
+/*
+ * Translates the items in the main
+ * layer by (x, y). Note: the input
+ * parameters are in the main layers
+ * coordinate system.
+ */
 void View::Translate(qreal x, qreal y)
 {
-    m_pMainView->translate(x, y);
+    QPointF pos = m_pMainLayer->pos();
+
+    pos.rx() += (x * m_pMainLayer->scale());
+    pos.ry() += (y * m_pMainLayer->scale());
+
+    m_pMainLayer->setPos(pos);
 }
 
 
 void View::Scale(qreal scaleFactor)
 {
-    m_pMainView->scale(scaleFactor, scaleFactor);
+    qreal scale = m_pMainLayer->scale();
+    scale *= scaleFactor;
+    m_pMainLayer->setScale(scale);
 }
 
 
 QRect View::FrameRect()
 {
-    return m_pSystemView->frameRect();
+    return m_pView->frameRect();
 }
 
 
 QTransform View::Transform()
 {
-    return m_pMainView->transform();
+    return m_pMainLayer->sceneTransform();
 }
 
 
 void View::ResetTransform()
 {
-    m_pMainView->setTransform(QTransform());
+    m_pMainLayer->setPos(QPointF(0, 0));
+    m_pMainLayer->setScale(1.0);
 }
 
 
 void View::CenterOn(const QPointF& pos)
 {
-    m_pMainView->centerOn(pos);
+    QPointF point = m_pView->frameRect().center();
+
+    AlignLayerToView(pos, point);
 }
 
 
 void View::CenterOn(qreal x, qreal y)
 {
-    m_pMainView->centerOn(QPointF(x, y));
+    CenterOn(QPointF(x, y));
 }
 
 
 void View::FitAllInView()
 {
-    QGraphicsScene* pScene = m_pScene->Layer(SceneLayerId_Main);
-    QRectF bounds = pScene->itemsBoundingRect();
+    QRectF bounds = m_pMainLayer->childrenBoundingRect();
 
     if (!bounds.isEmpty())
     {
-        m_pMainView->fitInView(bounds, Qt::KeepAspectRatio);
+        QRectF viewBounds = m_pView->frameRect();
+
+        qreal xScale = viewBounds.width() / bounds.width();
+        qreal yScale = viewBounds.height() / bounds.height();
+        qreal scale = (xScale < yScale) ? xScale : yScale;
+
+        m_pMainLayer->setScale(scale);
+
+        AlignLayerToView(bounds.topLeft(), QPoint(0, 0));
     }
 }
 
 
-void View::AlignViewToScene(const QPoint& viewPoint,
-                            const QPointF& scenePoint)
+void View::AlignLayerToView(const QPointF& layerPoint,
+                            const QPointF& viewPoint)
 {
-    QPoint point = m_pMainView->mapFromScene(scenePoint);
+    QPointF point = viewPoint - (layerPoint * m_pMainLayer->scale());
 
-    qreal width  = m_pMainView->viewport()->width();
-    qreal height = m_pMainView->viewport()->height();
-
-    qreal centerX = width / 2;
-    qreal centerY = height / 2;
-
-    qreal xDelta = centerX - viewPoint.x();
-    qreal yDelta = centerY - viewPoint.y();
-
-    point.rx() += xDelta;
-    point.ry() += yDelta;
-
-    QPointF newSceneCenter = m_pMainView->mapToScene(point);
-
-    m_pMainView->centerOn(newSceneCenter);
+    m_pMainLayer->setPos(point);
 }
 
 
-QPointF View::MapToScene(const QPoint& point)
+void View::MoveToLayer(QGraphicsItem* pItem, ViewLayerId viewLayerId)
 {
-    return m_pMainView->mapToScene(point);
+    if (viewLayerId == ViewLayerId_Main)
+    {
+        pItem->setParentItem(m_pMainLayer);
+    }
+    else if (viewLayerId == ViewLayerId_System)
+    {
+        pItem->setParentItem(m_pSystemLayer);
+    }
+    else if (viewLayerId == ViewLayerId_Overlay)
+    {
+        pItem->setParentItem(m_pOverlayLayer);
+    }
+    else if (viewLayerId == ViewLayerId_Underlay)
+    {
+        pItem->setParentItem(m_pUnderlayLayer);
+    }
+}
+
+
+QPointF View::MapToLayer(const QPoint& point, ViewLayerId viewLayerId)
+{
+    if (viewLayerId == ViewLayerId_Main)
+    {
+        return m_pMainLayer->mapFromScene(point);
+    }
+    else
+    {
+        return point;
+    }
 }
 
 
 QPointF View::MapToItem(QGraphicsItem* pItem, const QPoint& point)
 {
-    QPointF mappedPoint;
-    QGraphicsScene* pScene = pItem->scene();
-
-    if (pScene == m_pScene->Layer(SceneLayerId_Main))
-    {
-        mappedPoint = m_pMainView->mapToScene(point);
-        mappedPoint = pItem->mapFromScene(mappedPoint);
-    }
-    else
-    {
-        mappedPoint = pItem->mapFromScene(point);
-    }
-
-    return mappedPoint;
+    return pItem->mapFromScene(point);
 }
 
 
 QPointF View::MapToParent(QGraphicsItem* pItem, const QPoint& point)
 {
-    QPointF mappedPoint;
-    QGraphicsScene* pScene = pItem->scene();
-
-    if (pScene == m_pScene->Layer(SceneLayerId_Main))
-    {
-        mappedPoint = m_pMainView->mapToScene(point);
-        mappedPoint = pItem->mapFromScene(mappedPoint);
-    }
-    else
-    {
-        mappedPoint = pItem->mapFromScene(point);
-    }
-
-    mappedPoint = pItem->mapToParent(mappedPoint);
-
-    return mappedPoint;
+    /*
+     * Note, it is guaranteed that there will
+     * be a parent item since all components
+     * are children of a root layer item.
+     */
+    return pItem->parentItem()->mapFromScene(point);
 }
 
 
-QList<QGraphicsItem*> View::ItemsAt(const QPoint& point, int sceneLayerIds)
+ViewLayerId View::LayerId(QGraphicsItem* pItem)
 {
-    QGraphicsScene* pScene;
-    QList<QGraphicsItem*> list;
+    QGraphicsItem* pTopLevelItem = pItem->topLevelItem();
 
-    if (sceneLayerIds & SceneLayerId_System)
+    if (pTopLevelItem != pItem)
     {
-        pScene = m_pScene->Layer(SceneLayerId_System);
-        list.append(pScene->items(point));
+        if (pTopLevelItem == m_pMainLayer)
+        {
+            return ViewLayerId_Main;
+        }
+        else if (pTopLevelItem == m_pSystemLayer)
+        {
+            return ViewLayerId_System;
+        }
+        else if (pTopLevelItem == m_pOverlayLayer)
+        {
+            return ViewLayerId_Overlay;
+        }
+        else if (pTopLevelItem == m_pUnderlayLayer)
+        {
+            return ViewLayerId_Underlay;
+        }
     }
 
-    if (sceneLayerIds & SceneLayerId_Overlay)
+    return ViewLayerId_None;
+}
+
+
+QList<QGraphicsItem*> View::ItemsAt(const QPoint& point, int viewLayerIds)
+{
+    QList<QGraphicsItem*> items = m_pScene->items(point);
+    QList<QGraphicsItem*> filteredItems;
+
+    for (int i=0; i < items.size(); i++)
     {
-        pScene = m_pScene->Layer(SceneLayerId_Overlay);
-        list.append(pScene->items(point));
+        QGraphicsItem* pItem = items.at(i);
+
+        if (pItem->type() != m_rootItemType)
+        {
+            if (LayerId(pItem) & viewLayerIds)
+            {
+                filteredItems.append(pItem);
+            }
+        }
     }
 
-    if (sceneLayerIds & SceneLayerId_Main)
+    return filteredItems;
+}
+
+
+QList<QGraphicsItem*> View::ItemsIn(const QRectF& rect,
+                                    ViewLayerId viewLayerId,
+                                    bool intersect)
+{
+    Qt::ItemSelectionMode mode = (intersect) ?
+                                 (Qt::IntersectsItemShape) :
+                                 (Qt::ContainsItemShape);
+
+    QList<QGraphicsItem*> items;
+    QList<QGraphicsItem*> filteredItems;
+
+    if (viewLayerId == ViewLayerId_Main)
     {
-        list.append(m_pMainView->items(point));
+        QRectF mappedRect = m_pMainLayer->mapRectToScene(rect);
+        items = m_pScene->items(mappedRect, mode);
+    }
+    else
+    {
+        items = m_pScene->items(rect, mode);
     }
 
-    if (sceneLayerIds & SceneLayerId_Underlay)
+
+    for (int i=0; i < items.size(); i++)
     {
-        pScene = m_pScene->Layer(SceneLayerId_Underlay);
-        list.append(pScene->items(point));
+        QGraphicsItem* pItem = items.at(i);
+
+        if (pItem->type() != m_rootItemType)
+        {
+            if (LayerId(pItem) == viewLayerId)
+            {
+                filteredItems.append(pItem);
+            }
+        }
     }
 
-    return list;
+    return filteredItems;
 }
 
 

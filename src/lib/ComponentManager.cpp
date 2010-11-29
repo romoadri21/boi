@@ -74,7 +74,7 @@ void ComponentManager::RegisterFactory(Factory* pFactory)
 }
 
 
-CRef ComponentManager::NewComponent(int type, SceneLayerId layer)
+CRef ComponentManager::NewComponent(int type, ViewLayerId layer)
 {
     CRef cref;
 
@@ -132,7 +132,7 @@ CRef ComponentManager::NewComponent(int type, SceneLayerId layer)
         GuiRequest request;
         request.type = GuiRequest::RequestType_AddToLayer;
         request.cref = cref;
-        request.data.sceneLayerId = layer;
+        request.data.viewLayerId = layer;
         m_pISI->PostRequest(&request);
     }
 

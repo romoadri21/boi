@@ -6,7 +6,6 @@
 
 #include <QCoreApplication>
 #include "View.h"
-#include "Scene.h"
 #include "State.h"
 #include "Factories.h"
 #include "MutexBase.h"
@@ -37,7 +36,6 @@ namespace BOI {
 Base::Base()
     : QObject(),
       m_pView(NULL),
-      m_pScene(NULL),
       m_pState(NULL),
       m_pFactories(NULL),
       m_pMutexBase(NULL),
@@ -87,7 +85,6 @@ Base::~Base()
     delete m_pASI;
     delete m_pCSI;
     delete m_pISI;
-    delete m_pScene;
     delete m_pView;
 
     delete m_pMutexBase;
@@ -155,17 +152,15 @@ bool Base::Initialize(QCoreApplication* pApp,
 
         m_pEventDispatcher = new EventDispatcher();
 
-        m_pScene = new Scene();
-
-        m_pView = new View(m_pScene, pParent);
+        m_pView = new View(pParent);
         m_pView->SetEventDispatcher(m_pEventDispatcher);
-        m_pView->setWindowTitle(BOI_WINDOW_TITLE);
-        m_pView->resize(1000, 700);
+        m_pView->SetWindowTitle(BOI_WINDOW_TITLE);
+        m_pView->Resize(1000, 700);
 
         m_pTransformManager = new TransformManager(m_pView, m_pActionEngine);
 
         m_pGuiRequestHandler = new GuiRequestHandler();
-        m_pGuiRequestHandler->SetScene(m_pScene);
+        m_pGuiRequestHandler->SetView(m_pView);
         m_pGuiRequestHandler->SetEventReceiver(m_pEventDispatcher);
         m_pGuiRequestHandler->SetCustomEventsFactory(m_pCustomEventsFactory);
 
@@ -210,7 +205,6 @@ bool Base::Initialize(QCoreApplication* pApp,
                          m_pTagManager,
                          m_pMutexBase,
                          m_pState,
-                         m_pScene,
                          m_pView);
 
         m_pState->SetISI(m_pISI);
@@ -248,7 +242,7 @@ void Base::Start()
 {
     m_pTaskProcessor->Start();
 
-    m_pView->show();
+    m_pView->Show();
     m_pView->CenterOn(0,0);
 }
 

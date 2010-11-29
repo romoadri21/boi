@@ -75,7 +75,7 @@ ActionCommand InsertCollectionAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEv
         if (!m_uuid.isEmpty())
         {
             QPoint point(pEvent->x, pEvent->y);
-            QPointF mappedPoint = pSI->MapFromViewToScene(point);
+            QPointF mappedPoint = pSI->MapFromViewToLayer(point);
 
             CRefList crefs = pSI->OpenCollection(m_uuid, mappedPoint);
             pSI->SetSelection(crefs);
@@ -98,7 +98,7 @@ void InsertCollectionAction::ShowTextInputComponent(ASI* pSI)
          m_textInputComponent.IsDestroyed())
     {
         m_textInputComponent = pSI->NewComponent(BOI_STD_C(TextInput),
-                                                 SceneLayerId_System);
+                                                 ViewLayerId_System);
 
         int funcSet = pSI->GetFuncSet(m_textInputComponent,
                                       "{790e6f3f-4433-4490-a141-a4cb4433b0e7}");

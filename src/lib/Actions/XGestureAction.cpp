@@ -10,7 +10,7 @@
 #include "ASI.h"
 #include "MenuSet.h"
 #include "ActionArgs.h"
-#include "SceneLayerId.h"
+#include "ViewLayerId.h"
 #include "StandardMenus.h"
 #include "StandardActions.h"
 #include "Events/KeyEvent.h"
@@ -40,7 +40,7 @@ ActionCommand XGestureAction::Start(ASI* pSI, const ActionArgs* pArgs)
     if (!m_menuComponent.IsValid())
     {
         m_menuComponent = pSI->NewComponent(BOI_STD_C(Menu),
-                                            SceneLayerId_System);
+                                            ViewLayerId_System);
 
         m_menuFuncSet = pSI->GetFuncSet(m_menuComponent,
                                         "{1c412c24-6f31-4138-b1f6-b3f4d662fb67}");
@@ -59,7 +59,7 @@ ActionCommand XGestureAction::Start(ASI* pSI, const ActionArgs* pArgs)
     if (!m_xgestureComponent.IsValid())
     {
         m_xgestureComponent = pSI->NewComponent(BOI_STD_C(XGesture),
-                                                SceneLayerId_System);
+                                                ViewLayerId_System);
 
         pSI->SetSelectable(m_xgestureComponent, false);
     }
@@ -200,8 +200,8 @@ bool XGestureAction::ShowMenu(ASI* pSI, const QPointF& centerPoint)
     MenuSet menuSet;
     CRef activeComponent;
 
-    int sceneLayerIds = (SceneLayerId_All ^ SceneLayerId_System);
-    CRefList crefList = pSI->ComponentsAtViewPoint(centerPoint.toPoint(), sceneLayerIds);
+    int viewLayerIds = (ViewLayerId_All ^ ViewLayerId_System);
+    CRefList crefList = pSI->ComponentsAtViewPoint(centerPoint.toPoint(), viewLayerIds);
     if (crefList.Count() > 0)
     {
         activeComponent = crefList.Value(0);

@@ -114,11 +114,11 @@ ActionCommand ConnectAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
     {
         QPoint point(pEvent->x, pEvent->y);
 
-        int sceneLayers = SceneLayerId_Main |
-                          SceneLayerId_Overlay |
-                          SceneLayerId_Underlay;
+        int viewLayers = ViewLayerId_Main |
+                         ViewLayerId_Overlay |
+                         ViewLayerId_Underlay;
 
-        CRefList crefs = pSI->ComponentsAtViewPoint(point, sceneLayers);
+        CRefList crefs = pSI->ComponentsAtViewPoint(point, viewLayers);
 
         if (crefs.Count() > 0)
         {
@@ -169,7 +169,7 @@ void ConnectAction::ShowList(ASI* pSI)
          m_browserComponent.IsDestroyed())
     {
         m_browserComponent = pSI->NewComponent(BOI_STD_C(Browser),
-                                               SceneLayerId_System);
+                                               ViewLayerId_System);
 
         /*
          * Set the Action type id so that

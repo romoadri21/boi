@@ -19,7 +19,7 @@
 #include "UuidType.h"
 #include "CRefList.h"
 #include "ProfileType.h"
-#include "SceneLayerId.h"
+#include "ViewLayerId.h"
 #include "ViewTransformerId.h"
 #include "CSI.h"
 
@@ -28,7 +28,6 @@ namespace BOI {
 
 
 class View;
-class Scene;
 class MenuSet;
 class MenuItem;
 class TagManager;
@@ -64,10 +63,9 @@ class BOI_LIB_EXPORT ASI
             TagManager*          pTagManager,
             MutexBase*           pMutexBase,
             State*               pState,
-            Scene*               pScene,
             View*                pView);
 
-        CRef NewComponent(int type, SceneLayerId layer=SceneLayerId_Main);
+        CRef NewComponent(int type, ViewLayerId layer=ViewLayerId_Main);
 
         const QStringList GetProfile(CRef& cref, ProfileType type=ProfileType_Full);
 
@@ -146,10 +144,10 @@ class BOI_LIB_EXPORT ASI
 
         void FitAllInView();
 
-        void AlignViewToScene(const QPoint& viewPoint,
-                              const QPointF& scenePoint);
+        void AlignLayerToView(const QPointF& layerPoint,
+                              const QPointF& viewPoint);
 
-        QPointF MapFromViewToScene(const QPoint& point);
+        QPointF MapFromViewToLayer(const QPoint& point, ViewLayerId viewLayerId=ViewLayerId_Main);
         QPointF MapFromViewToComponent(Component* pComponent, const QPoint& point);
         QPointF MapFromViewToParent(Component* pComponent, const QPoint& point);
         QPointF MapFromViewToParent(CRef& cref, const QPoint& point);
@@ -157,11 +155,11 @@ class BOI_LIB_EXPORT ASI
         QPointF MapToParent(CRef& cref, const QPointF& point);
 
         CRefList ComponentsAtViewPoint(const QPoint& point,
-                                       int  sceneLayerIds,
+                                       int  viewLayerIds,
                                        bool visibleOnly=true);
 
         CRefList ComponentsInLayerRect(const QRectF& rect,
-                                       int  sceneLayerIds,
+                                       ViewLayerId viewLayerId,
                                        bool visibleOnly=true,
                                        bool intersect=true);
 
@@ -200,7 +198,6 @@ class BOI_LIB_EXPORT ASI
 
     protected:
         View*               m_pView;
-        Scene*              m_pScene;
         TagManager*         m_pTagManager;
         MenuManager*        m_pMenuManager;
         CRefListPool*       m_pCRefListPool;

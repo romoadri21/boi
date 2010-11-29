@@ -73,7 +73,7 @@ ActionCommand PasteAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
         if (!m_uuid.isEmpty())
         {
             QPoint point(pEvent->x, pEvent->y);
-            QPointF mappedPoint = pSI->MapFromViewToScene(point);
+            QPointF mappedPoint = pSI->MapFromViewToLayer(point);
 
             CRefList crefs = pSI->OpenCollection(m_uuid, mappedPoint);
             pSI->SetSelection(crefs);

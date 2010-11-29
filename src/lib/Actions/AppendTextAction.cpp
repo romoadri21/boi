@@ -69,11 +69,11 @@ ActionCommand AppendTextAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
     {
         QPoint point(pEvent->x, pEvent->y);
 
-        int sceneLayers = SceneLayerId_Main |
-                          SceneLayerId_Overlay |
-                          SceneLayerId_Underlay;
+        int viewLayers = ViewLayerId_Main |
+                         ViewLayerId_Overlay |
+                         ViewLayerId_Underlay;
 
-        CRefList crefs = pSI->ComponentsAtViewPoint(point, sceneLayers);
+        CRefList crefs = pSI->ComponentsAtViewPoint(point, viewLayers);
 
         if (crefs.Count() > 0)
         {

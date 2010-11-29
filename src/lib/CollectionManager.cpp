@@ -15,7 +15,7 @@
 #include "DRef.h"
 #include "Component.h"
 #include "GraphicsItem.h"
-#include "SceneLayerId.h"
+#include "ViewLayerId.h"
 #include "ComponentData.h"
 #include "CollectionManager.h"
 
@@ -190,10 +190,10 @@ CRefList CollectionManager::OpenCollection(const QString& uuid,
                     ImportComponent(&pImportData[i], in);
 
                     if ((pImportData[i].cref.IsValid()) &&
-                        (pImportData[i].layer == SceneLayerId_Main) &&
+                        (pImportData[i].layer == ViewLayerId_Main) &&
                         (pImportData[i].visible))
                     {
-                        boundingRect |= pImportData[i].boundingRect;
+                        boundingRect |= pImportData[i].layerBoundingRect;
                     }
                 }
             }
@@ -208,10 +208,10 @@ CRefList CollectionManager::OpenCollection(const QString& uuid,
                     Component* pComponent = pImportData[i].cref.GetInstance();
                     if (pComponent != NULL)
                     {
-                        if (pImportData[i].layer == SceneLayerId_Main)
+                        if (pImportData[i].layer == ViewLayerId_Main)
                         {
                             QPointF oldCenter = boundingRect.center();
-                            QPointF delta = oldCenter - pImportData[i].scenePos;
+                            QPointF delta = oldCenter - pImportData[i].layerPos;
                             QPointF newPos = point - delta;
 
                             pComponent->SetPosition(newPos);
@@ -220,7 +220,7 @@ CRefList CollectionManager::OpenCollection(const QString& uuid,
                         {
                             // TODO: what if the new window size is smaller or
                             // different than the previous window size?
-                            pComponent->SetPosition(pImportData[i].scenePos);
+                            pComponent->SetPosition(pImportData[i].layerPos);
                         }
 
                         if (pImportData[i].visible)
@@ -260,9 +260,9 @@ void CollectionManager::ImportComponent(ImportData* pImportData, QDataStream& in
        >> pImportData->visible
        >> pImportData->parentId
        >> pImportData->opacity
-       >> pImportData->scenePos
+       >> pImportData->layerPos
+       >> pImportData->layerBoundingRect
        >> pImportData->transformOrigin
-       >> pImportData->boundingRect
        >> pImportData->rotation
        >> pImportData->dataSize;
 
@@ -283,7 +283,7 @@ void CollectionManager::ImportComponent(ImportData* pImportData, QDataStream& in
     int type = m_pISI->ConvertUuid_C(pImportData->uuid);
     if (type != -1)
     {
-        CRef cref = m_pISI->NewComponent(type, (SceneLayerId)pImportData->layer);
+        CRef cref = m_pISI->NewComponent(type, (ViewLayerId)pImportData->layer);
 
         Component* pComponent = cref.GetInstance();
         if (pComponent != NULL)
@@ -313,16 +313,16 @@ void CollectionManager::ExportComponent(Component* pComponent, QDataStream& out)
     GraphicsItem* pItem = &pComponent->m_pData->graphicsItem;
     GraphicsItem* pParent = (GraphicsItem*)pItem->parentItem();
 
-    int parentId = (pParent != NULL) ?
+    int parentId = ((pParent != NULL) && (pParent->parentItem() != NULL)) ?
                    (pParent->GetComponent()->m_pData->id) :
                    (-1);
 
     out << (qint32)parentId;
 
     out << pItem->opacity();
-    out << pItem->scenePos();
+    out << pItem->LayerPos();
+    out << pItem->LayerBoundingRect();
     out << pItem->transformOriginPoint();
-    out << pItem->mapRectToScene(pItem->boundingRect());
 
     /*
      * Export the rotation relative to the scene.

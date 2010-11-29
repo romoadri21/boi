@@ -21,7 +21,6 @@
 #include "StandardReceivers.h"
 #include "CollectionManager.h"
 #include "DescriptionManager.h"
-#include "Scene.h"
 #include "View.h"
 #include "ASI.h"
 
@@ -43,7 +42,6 @@ ASI::ASI(CustomEventsFactory* pCustomEventsFactory,
          TagManager*          pTagManager,
          MutexBase*           pMutexBase,
          State*               pState,
-         Scene*               pScene,
          View*                pView)
     : CSI(pCustomEventsFactory,
           pComponentManager,
@@ -53,7 +51,6 @@ ASI::ASI(CustomEventsFactory* pCustomEventsFactory,
           pMutexBase,
           pState),
       m_pView(pView),
-      m_pScene(pScene),
       m_pTagManager(pTagManager),
       m_pMenuManager(pMenuManager),
       m_pCRefListPool(pCRefListPool),
@@ -65,7 +62,7 @@ ASI::ASI(CustomEventsFactory* pCustomEventsFactory,
 }
 
 
-CRef ASI::NewComponent(int type, SceneLayerId layer)
+CRef ASI::NewComponent(int type, ViewLayerId layer)
 {
     return m_pComponentManager->NewComponent(type, layer);
 }
@@ -642,16 +639,16 @@ void ASI::FitAllInView()
 }
 
 
-void ASI::AlignViewToScene(const QPoint& viewPoint,
-                           const QPointF& scenePoint)
+void ASI::AlignLayerToView(const QPointF& layerPoint,
+                           const QPointF& viewPoint)
 {
-    m_pView->AlignViewToScene(viewPoint, scenePoint);
+    m_pView->AlignLayerToView(layerPoint, viewPoint);
 }
 
 
-QPointF ASI::MapFromViewToScene(const QPoint& point)
+QPointF ASI::MapFromViewToLayer(const QPoint& point, ViewLayerId viewLayerId)
 {
-    return m_pView->MapToScene(point);
+    return m_pView->MapToLayer(point, viewLayerId);
 }
 
 
@@ -701,10 +698,10 @@ QPointF ASI::MapToParent(CRef& cref, const QPointF& point)
 
 
 CRefList ASI::ComponentsAtViewPoint(const QPoint& point,
-                                    int sceneLayerIds,
+                                    int viewLayerIds,
                                     bool visibleOnly)
 {
-    QList<QGraphicsItem*> items = m_pView->ItemsAt(point, sceneLayerIds);
+    QList<QGraphicsItem*> items = m_pView->ItemsAt(point, viewLayerIds);
     CRefList list = m_pCRefListPool->GetList();
     GraphicsItem* pGraphicsItem;
 
@@ -738,45 +735,11 @@ CRefList ASI::ComponentsAtViewPoint(const QPoint& point,
 
 
 CRefList ASI::ComponentsInLayerRect(const QRectF& rect,
-                                    int sceneLayerIds,
+                                    ViewLayerId viewLayerId,
                                     bool visibleOnly,
                                     bool intersect)
 {
-    Qt::ItemSelectionMode mode = Qt::IntersectsItemShape;
-
-    if (!intersect)
-    {
-        mode = Qt::ContainsItemShape;
-    }
-
-    QGraphicsScene* pScene;
-    QList<QGraphicsItem*> items;
-
-    if (sceneLayerIds & SceneLayerId_System)
-    {
-        pScene = m_pScene->Layer(SceneLayerId_System);
-        items.append(pScene->items(rect, mode));
-    }
-
-    if (sceneLayerIds & SceneLayerId_Overlay)
-    {
-        pScene = m_pScene->Layer(SceneLayerId_Overlay);
-        items.append(pScene->items(rect, mode));
-    }
-
-    if (sceneLayerIds & SceneLayerId_Main)
-    {
-        pScene = m_pScene->Layer(SceneLayerId_Main);
-        items.append(pScene->items(rect, mode));
-    }
-
-    if (sceneLayerIds & SceneLayerId_Underlay)
-    {
-        pScene = m_pScene->Layer(SceneLayerId_Underlay);
-        items.append(pScene->items(rect, mode));
-    }
-
-
+    QList<QGraphicsItem*> items = m_pView->ItemsIn(rect, viewLayerId, intersect);
     CRefList list = m_pCRefListPool->GetList();
     GraphicsItem* pGraphicsItem;
 
@@ -962,7 +925,7 @@ QList<TypedUuid> ASI::GetTaggedUuids(const QString& tag, UuidType types)
 
 void ASI::Shutdown()
 {
-    m_pView->close();
+    m_pView->Close();
 }
 
 

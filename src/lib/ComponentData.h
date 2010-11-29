@@ -13,7 +13,7 @@
 #include "Mutex.h"
 #include "Connections.h"
 #include "GraphicsItem.h"
-#include "SceneLayerId.h"
+#include "ViewLayerId.h"
 
 
 namespace BOI {
@@ -67,7 +67,7 @@ class ComponentData
 
         GraphicsItem graphicsItem;
 
-        SceneLayerId layer;
+        ViewLayerId layer;
 
         Mutex drawLock;
 

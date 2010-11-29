@@ -59,7 +59,7 @@ BOI::ActionCommand InsertShapeAction::HandleTouchEvent(BOI::ASI* pSI, BOI::Touch
     {
         BOI::CRef cref = pSI->NewComponent(m_typeId);
 
-        QPointF point = pSI->MapFromViewToScene(QPoint(pEvent->x, pEvent->y));
+        QPointF point = pSI->MapFromViewToLayer(QPoint(pEvent->x, pEvent->y));
         pSI->SetPosition(cref, point);
 
         pSI->SetActiveComponent(cref);

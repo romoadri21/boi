@@ -32,6 +32,9 @@ class GraphicsItem
                    const QStyleOptionGraphicsItem* pOption,
                    QWidget* pWidget = 0);
 
+        QPointF LayerPos() const;
+        QRectF LayerBoundingRect() const;
+
     private:
         Component* m_pComponent;
         QRectF     m_boundingRect;

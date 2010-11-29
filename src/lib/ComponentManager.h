@@ -12,7 +12,7 @@
 #include <QString>
 #include "FactoryRegistrar.h"
 #include "TypeManager.h"
-#include "SceneLayerId.h"
+#include "ViewLayerId.h"
 #include "CRef.h"
 
 
@@ -41,7 +41,7 @@ class ComponentManager
         int ConvertUuid(const QString& uuid);
         QString GetUuid(int type);
 
-        CRef NewComponent(int type, SceneLayerId layer=SceneLayerId_Main);
+        CRef NewComponent(int type, ViewLayerId layer=ViewLayerId_Main);
 
         void DestroyAll(bool stopNew=false);
 

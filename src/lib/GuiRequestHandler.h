@@ -32,7 +32,7 @@ class QObject;
 namespace BOI {
 
 
-class Scene;
+class View;
 class Component;
 class CustomEventsFactory;
 
@@ -45,7 +45,7 @@ class GuiRequestHandler
 
         void SetCustomEventsFactory(CustomEventsFactory* pFactory);
         void SetEventReceiver(QObject* pReceiver);
-        void SetScene(Scene* pScene);
+        void SetView(View* pView);
 
         bool PostRequest(GuiRequest* pRequest);
 
@@ -98,7 +98,7 @@ class GuiRequestHandler
         CustomEventsFactory* m_pCustomEventsFactory;
         QObject* m_pEventReceiver;
 
-        Scene* m_pScene;
+        View* m_pView;
 };
 
 

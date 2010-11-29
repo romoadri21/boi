@@ -9,7 +9,7 @@
 #include <QSizeF>
 #include "ASI.h"
 #include "ActionArgs.h"
-#include "SceneLayerId.h"
+#include "ViewLayerId.h"
 #include "StandardActions.h"
 #include "StandardDataTypes.h"
 #include "StandardComponents.h"
@@ -155,7 +155,7 @@ ActionCommand ResizeAction::HandleKeyEvent(ASI* pSI, KeyEvent* pEvent)
         if (!m_textInputComponent.IsValid())
         {
             m_textInputComponent = pSI->NewComponent(BOI_STD_C(TextInput),
-                                                     SceneLayerId_System);
+                                                     ViewLayerId_System);
 
             int funcSet = pSI->GetFuncSet(m_textInputComponent,
                                           "{790e6f3f-4433-4490-a141-a4cb4433b0e7}");

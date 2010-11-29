@@ -35,7 +35,7 @@ class ZoomAction
         int m_numTouchStreams;
 
         QPoint  m_viewPoint;
-        QPointF m_scenePoint;
+        QPointF m_layerPoint;
 
         float m_sensitivity;
 };

@@ -59,7 +59,7 @@ HEADERS += \
     $${BOI_INCLUDE_DIR}/Mutex.h \
     $${BOI_INCLUDE_DIR}/Object.h \
     $${BOI_INCLUDE_DIR}/Plugin.h \
-    $${BOI_INCLUDE_DIR}/SceneLayerId.h \
+    $${BOI_INCLUDE_DIR}/ViewLayerId.h \
     $${BOI_INCLUDE_DIR}/StandardMenus.h \
     $${BOI_INCLUDE_DIR}/StandardActions.h \
     $${BOI_INCLUDE_DIR}/StandardDataTypes.h \
@@ -74,7 +74,6 @@ HEADERS += \
     $${BOI_INCLUDE_DIR}/Utilities/Tuple.h \
     $${BOI_LIB_SRC_DIR}/Base.h \
     $${BOI_LIB_SRC_DIR}/View.h \
-    $${BOI_LIB_SRC_DIR}/Scene.h \
     $${BOI_LIB_SRC_DIR}/State.h \
     $${BOI_LIB_SRC_DIR}/Factories.h \
     $${BOI_LIB_SRC_DIR}/TypeManager.h \
@@ -194,7 +193,6 @@ SOURCES += \
     $${BOI_LIB_SRC_DIR}/Instance.cpp \
     $${BOI_LIB_SRC_DIR}/Base.cpp \
     $${BOI_LIB_SRC_DIR}/View.cpp \
-    $${BOI_LIB_SRC_DIR}/Scene.cpp \
     $${BOI_LIB_SRC_DIR}/State.cpp \
     $${BOI_LIB_SRC_DIR}/Factories.cpp \
     $${BOI_LIB_SRC_DIR}/TypeManager.cpp \

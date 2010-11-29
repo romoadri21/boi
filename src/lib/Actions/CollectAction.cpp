@@ -72,7 +72,7 @@ void CollectAction::ShowTextInputComponent(ASI* pSI)
          m_textInputComponent.IsDestroyed())
     {
         m_textInputComponent = pSI->NewComponent(BOI_STD_C(TextInput),
-                                                 SceneLayerId_System);
+                                                 ViewLayerId_System);
 
         int funcSet = pSI->GetFuncSet(m_textInputComponent,
                                       "{790e6f3f-4433-4490-a141-a4cb4433b0e7}");

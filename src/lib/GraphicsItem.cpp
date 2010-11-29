@@ -76,5 +76,27 @@ void GraphicsItem::paint(QPainter *pPainter,
 }
 
 
+QPointF GraphicsItem::LayerPos() const
+{
+    QGraphicsItem* pParent = parentItem();
+    QGraphicsItem* pTopLevelItem = topLevelItem();
+
+    if (pParent == pTopLevelItem)
+    {
+        return pos();
+    }
+    else
+    {
+        return pParent->mapToItem(pTopLevelItem, pos());
+    }
+}
+
+
+QRectF GraphicsItem::LayerBoundingRect() const
+{
+    return mapRectToItem(topLevelItem(), m_boundingRect);
+}
+
+
 } // namespace BOI
 

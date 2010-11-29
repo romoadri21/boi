@@ -44,7 +44,7 @@ ActionCommand ResetViewScaleAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEven
     {
         QPoint point(pEvent->x, pEvent->y);
 
-        QPointF centerPoint = pSI->MapFromViewToScene(point);
+        QPointF centerPoint = pSI->MapFromViewToLayer(point);
 
         pSI->ResetViewTransform();
         pSI->CenterViewOn(centerPoint);

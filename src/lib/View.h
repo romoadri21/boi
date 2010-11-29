@@ -13,13 +13,17 @@
 #include <QRectF>
 #include <QPoint>
 #include <QPointF>
-#include <QWidget>
+#include <QObject>
 #include <QtGlobal>
 #include <QTransform>
+#include "ViewLayerId.h"
 
 
 class QCursor;
+class QWidget;
 class QTouchEvent;
+class QCloseEvent;
+class QResizeEvent;
 class QGraphicsItem;
 class QGraphicsView;
 class QGraphicsScene;
@@ -28,19 +32,24 @@ class QGraphicsScene;
 namespace BOI {
 
 
-class Scene;
 class TouchEvent;
 class EventDispatcher;
 
 
 class View
-    : public QWidget
+    : public QObject
 {
     public:
-        View(Scene* pScene, QWidget* pParent=NULL);
+        View(QWidget* pParent=NULL);
         ~View();
 
         void SetEventDispatcher(EventDispatcher* pEventDispatcher);
+
+        void SetWindowTitle(const QString& title);
+        void Resize(int width, int height);
+
+        void Show();
+        void Close();
 
         void ToggleFullScreen();
         void SetFullScreen(bool fullScreen);
@@ -64,34 +73,42 @@ class View
 
         void FitAllInView();
 
-        void AlignViewToScene(const QPoint& viewPoint,
-                              const QPointF& scenePoint);
+        void AlignLayerToView(const QPointF& layerPoint,
+                              const QPointF& viewPoint);
 
-        QPointF MapToScene(const QPoint& point);
+        void MoveToLayer(QGraphicsItem* pItem, ViewLayerId viewLayerId);
+
         QPointF MapToItem(QGraphicsItem* pItem, const QPoint& point);
         QPointF MapToParent(QGraphicsItem* pItem, const QPoint& point);
+        QPointF MapToLayer(const QPoint& point, ViewLayerId viewLayerId);
 
-        QList<QGraphicsItem*> ItemsAt(const QPoint& point, int sceneLayerIds);
+        QList<QGraphicsItem*> ItemsAt(const QPoint& point, int viewLayerIds);
+
+        QList<QGraphicsItem*> ItemsIn(const QRectF& rect,
+                                      ViewLayerId viewLayerId,
+                                      bool intersect);
 
     protected:
-        void InitializeView(QGraphicsView* pView,
-                            QGraphicsScene* pScene);
+        bool eventFilter(QObject* pTarget, QEvent* pEvent);
 
-        bool eventFilter(QObject *pTarget, QEvent *pEvent);
-
-        void closeEvent(QCloseEvent* pEvent);
-        void resizeEvent(QResizeEvent* pEvent);
+        void HandleCloseEvent(QCloseEvent* pEvent);
+        void HandleResizeEvent(QResizeEvent* pEvent);
 
         void ProcessQTouchEvent(QTouchEvent* pEvent);
         void HandleTouch(TouchEvent* pEvent);
 
-    private:
-        Scene* m_pScene;
+        ViewLayerId LayerId(QGraphicsItem* pItem);
 
-        QGraphicsView* m_pMainView;
-        QGraphicsView* m_pSystemView;
-        QGraphicsView* m_pOverlayView;
-        QGraphicsView* m_pUnderlayView;
+    private:
+        QGraphicsView*  m_pView;
+        QGraphicsScene* m_pScene;
+
+        int m_rootItemType;
+
+        QGraphicsItem* m_pMainLayer;
+        QGraphicsItem* m_pSystemLayer;
+        QGraphicsItem* m_pOverlayLayer;
+        QGraphicsItem* m_pUnderlayLayer;
 
         EventDispatcher* m_pEventDispatcher;
 
