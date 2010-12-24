@@ -75,6 +75,8 @@ class BOI_LIB_EXPORT ASI
         CRef KeyEventHandler();
         void SetKeyEventHandler(CRef cref);
 
+        void MoveToLayer(CRef& cref, ViewLayerId layer);
+
         void CenterComponentOn(CRef& cref, const QPointF& point, bool relativeToScene=false);
 
         void SetSelectable(CRef& cref, bool selectable);

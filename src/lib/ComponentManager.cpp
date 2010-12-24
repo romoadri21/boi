@@ -130,7 +130,7 @@ CRef ComponentManager::NewComponent(int type, ViewLayerId layer)
         cref.ReleaseInstance();
 
         GuiRequest request;
-        request.type = GuiRequest::RequestType_AddToLayer;
+        request.type = GuiRequest::RequestType_MoveToLayer;
         request.cref = cref;
         request.data.viewLayerId = layer;
         m_pISI->PostRequest(&request);

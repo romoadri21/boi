@@ -22,7 +22,7 @@ ComponentData::ComponentData(Component* pComponentIn)
       needsDestroy(false),
       pComponent(pComponentIn),
       graphicsItem(pComponentIn),
-      layer(ViewLayerId_None),
+      layer(ViewLayerId_Null),
       drawLock(),
       connections(),
       tasksLock(),

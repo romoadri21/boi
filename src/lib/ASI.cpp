@@ -107,6 +107,18 @@ void ASI::SetKeyEventHandler(CRef cref)
 }
 
 
+void ASI::MoveToLayer(CRef& cref, ViewLayerId layer)
+{
+    GuiRequest request;
+
+    request.cref = cref;
+    request.data.viewLayerId = layer;
+    request.type = GuiRequest::RequestType_MoveToLayer;
+
+    m_pGuiRequestHandler->PostRequest(&request);
+}
+
+
 void ASI::CenterComponentOn(CRef& cref, const QPointF& point, bool relativeToScene)
 {
     GuiRequest request;

@@ -105,6 +105,7 @@ class View
 
         int m_rootItemType;
 
+        QGraphicsItem* m_pNullLayer;
         QGraphicsItem* m_pMainLayer;
         QGraphicsItem* m_pSystemLayer;
         QGraphicsItem* m_pOverlayLayer;

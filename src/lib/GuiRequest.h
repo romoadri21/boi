@@ -24,7 +24,7 @@ class GuiRequest
     public:
         enum
         {
-            RequestType_AddToLayer = 0,
+            RequestType_MoveToLayer = 0,
             RequestType_DestroyComponent,
             RequestType_SetBoundingRect,
             RequestType_CenterComponentOn,

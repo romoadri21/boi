@@ -28,7 +28,7 @@ class BOI_LIB_EXPORT StandardComponents
         enum
         {
             Component_Invalid = -1,
-            Component_Menu =  0,
+            Component_Menu = 0,
             Component_XGesture,
             Component_WindowSize,
             Component_VerticalLayout,

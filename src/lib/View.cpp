@@ -4,6 +4,7 @@
  * http://www.boi-project.org/license
  */
 
+#include <QGraphicsRectItem>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QGraphicsItem>
@@ -23,6 +24,7 @@ namespace BOI {
 View::View(QWidget* pParent)
     : m_pView(NULL),
       m_pScene(NULL),
+      m_pNullLayer(NULL),
       m_pMainLayer(NULL),
       m_pSystemLayer(NULL),
       m_pOverlayLayer(NULL),
@@ -36,6 +38,8 @@ View::View(QWidget* pParent)
     m_pScene = new QGraphicsScene();
     m_pScene->setSceneRect(-30000000, -30000000, 60000000, 60000000);
     m_pScene->setItemIndexMethod(QGraphicsScene::NoIndex);
+
+    m_pNullLayer = new QGraphicsRectItem(0, 0, 1, 1);
 
     /*
      * For now, use a QGraphicsRectItem as the parent item
@@ -84,6 +88,7 @@ View::~View()
 {
     delete m_pView;
     delete m_pScene;
+    delete m_pNullLayer;
 }
 
 
@@ -490,22 +495,26 @@ void View::AlignLayerToView(const QPointF& layerPoint,
 
 void View::MoveToLayer(QGraphicsItem* pItem, ViewLayerId viewLayerId)
 {
-    if (viewLayerId == ViewLayerId_Main)
+    QGraphicsItem* newParent = m_pNullLayer;
+
+    if (viewLayerId == ViewLayerId_Null) newParent = m_pNullLayer;
+    else if (viewLayerId == ViewLayerId_Main) newParent = m_pMainLayer;
+    else if (viewLayerId == ViewLayerId_System) newParent = m_pSystemLayer;
+    else if (viewLayerId == ViewLayerId_Overlay) newParent = m_pOverlayLayer;
+    else if (viewLayerId == ViewLayerId_Underlay) newParent = m_pUnderlayLayer;
+
+    if (pItem->scene() != NULL)
     {
-        pItem->setParentItem(m_pMainLayer);
+        /*
+         * Maintain the current position of
+         * the item relative to the scene.
+         */
+        QPointF pos = pItem->scenePos();
+        pos = newParent->mapFromScene(pos);
+        pItem->setPos(pos);
     }
-    else if (viewLayerId == ViewLayerId_System)
-    {
-        pItem->setParentItem(m_pSystemLayer);
-    }
-    else if (viewLayerId == ViewLayerId_Overlay)
-    {
-        pItem->setParentItem(m_pOverlayLayer);
-    }
-    else if (viewLayerId == ViewLayerId_Underlay)
-    {
-        pItem->setParentItem(m_pUnderlayLayer);
-    }
+
+    pItem->setParentItem(newParent);
 }
 
 
@@ -543,27 +552,12 @@ ViewLayerId View::LayerId(QGraphicsItem* pItem)
 {
     QGraphicsItem* pTopLevelItem = pItem->topLevelItem();
 
-    if (pTopLevelItem != pItem)
-    {
-        if (pTopLevelItem == m_pMainLayer)
-        {
-            return ViewLayerId_Main;
-        }
-        else if (pTopLevelItem == m_pSystemLayer)
-        {
-            return ViewLayerId_System;
-        }
-        else if (pTopLevelItem == m_pOverlayLayer)
-        {
-            return ViewLayerId_Overlay;
-        }
-        else if (pTopLevelItem == m_pUnderlayLayer)
-        {
-            return ViewLayerId_Underlay;
-        }
-    }
+    if (pTopLevelItem == m_pMainLayer) return ViewLayerId_Main;
+    else if (pTopLevelItem == m_pSystemLayer) return ViewLayerId_System;
+    else if (pTopLevelItem == m_pOverlayLayer) return ViewLayerId_Overlay;
+    else if (pTopLevelItem == m_pUnderlayLayer) return ViewLayerId_Underlay;
 
-    return ViewLayerId_None;
+    return ViewLayerId_Null;
 }
 
 

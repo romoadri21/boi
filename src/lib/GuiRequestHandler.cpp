@@ -35,7 +35,7 @@ GuiRequestHandler::GuiRequestHandler()
       m_pEventReceiver(NULL),
       m_pView(NULL)
 {
-    m_funcs[GuiRequest::RequestType_AddToLayer]         = BOI_GUIREQUESTHANDLER_FUNC(AddToLayer);
+    m_funcs[GuiRequest::RequestType_MoveToLayer]        = BOI_GUIREQUESTHANDLER_FUNC(MoveToLayer);
     m_funcs[GuiRequest::RequestType_DestroyComponent]   = BOI_GUIREQUESTHANDLER_FUNC(DestroyComponent);
     m_funcs[GuiRequest::RequestType_SetBoundingRect]    = BOI_GUIREQUESTHANDLER_FUNC(SetBoundingRect);
     m_funcs[GuiRequest::RequestType_CenterComponentOn]  = BOI_GUIREQUESTHANDLER_FUNC(CenterComponentOn);
@@ -168,7 +168,7 @@ void GuiRequestHandler::ProcessRequests()
 }
 
 
-void GuiRequestHandler::AddToLayer(GuiRequest* pRequest)
+void GuiRequestHandler::MoveToLayer(GuiRequest* pRequest)
 {
     Component* pComponent = pRequest->cref.GetInstance();
     if (pComponent != NULL)
@@ -176,12 +176,12 @@ void GuiRequestHandler::AddToLayer(GuiRequest* pRequest)
         ComponentData* pComponentData = pComponent->m_pData;
         ViewLayerId layer = pRequest->data.viewLayerId;
 
-        if (layer != ViewLayerId_None)
-        {
-            m_pView->MoveToLayer(&pComponentData->graphicsItem, layer);
+        GraphicsItem* pItem = &pComponentData->graphicsItem;
+ 
+        m_pView->MoveToLayer(pItem, layer);
+        pComponentData->layer = layer;
 
-            pComponentData->layer = layer;
-        }
+        UpdateChildLayers(pItem, layer);
 
         pRequest->cref.ReleaseInstance();
     }
@@ -565,6 +565,20 @@ void GuiRequestHandler::Rotate(GuiRequest* pRequest)
     }
 
     pRequest->cref.Reset();
+}
+
+
+void GuiRequestHandler::UpdateChildLayers(GraphicsItem* pParent, ViewLayerId layer)
+{
+    QList<QGraphicsItem*> pChildren = pParent->childItems();
+
+    for (int i=0; i < pChildren.size(); i++)
+    {
+        GraphicsItem* pChild = (GraphicsItem*)pChildren.at(i);
+        pChild->GetComponent()->m_pData->layer = layer;
+
+        UpdateChildLayers(pChild, layer);
+    }
 }
 
 

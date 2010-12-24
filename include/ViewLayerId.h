@@ -13,7 +13,7 @@ namespace BOI {
 
 enum ViewLayerId
 {
-    ViewLayerId_None     = 0x0,
+    ViewLayerId_Null     = 0x0,
     ViewLayerId_Main     = 0x1,
     ViewLayerId_System   = 0x2,
     ViewLayerId_Overlay  = 0x4,

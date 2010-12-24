@@ -34,6 +34,7 @@ namespace BOI {
 
 class View;
 class Component;
+class GraphicsItem;
 class CustomEventsFactory;
 
 
@@ -65,7 +66,7 @@ class GuiRequestHandler
     private:
         void ProcessRequests();
 
-        DEFINE_BOI_GUIREQUESTHANDLER_FUNC(AddToLayer);
+        DEFINE_BOI_GUIREQUESTHANDLER_FUNC(MoveToLayer);
         DEFINE_BOI_GUIREQUESTHANDLER_FUNC(DestroyComponent);
         DEFINE_BOI_GUIREQUESTHANDLER_FUNC(SetBoundingRect);
         DEFINE_BOI_GUIREQUESTHANDLER_FUNC(CenterComponentOn);
@@ -82,6 +83,8 @@ class GuiRequestHandler
         DEFINE_BOI_GUIREQUESTHANDLER_FUNC(Rotate);
 
         void EmitParentBoundingBox(Component* pComponent, bool newOnly);
+
+        void UpdateChildLayers(GraphicsItem* pParent, ViewLayerId layer);
 
     private:
         GuiRequestFunc m_funcs[GuiRequest::NumRequests];
