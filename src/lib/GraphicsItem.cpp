@@ -19,6 +19,7 @@ GraphicsItem::GraphicsItem(Component* pComponent)
       m_pComponent(pComponent),
       m_boundingRect(0, 0, 1, 1)
 {
+    setFlag(QGraphicsItem::ItemUsesExtendedStyleOption, true);
 }
 
 
