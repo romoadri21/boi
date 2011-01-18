@@ -38,8 +38,9 @@ ActionCommand RectSelectAction::Start(ASI* pSI, const ActionArgs* pArgs)
 
         if (typeId != -1)
         {
-            m_rectComponent = pSI->NewComponent(typeId);
+            m_rectComponent = pSI->NewComponent(typeId, ViewLayerId_Null);
 
+            pSI->SetVisible(m_rectComponent, true);
             pSI->SetSelectable(m_rectComponent, false);
 
             m_setSizeReceiver = pSI->GetReceiver(m_rectComponent,
@@ -119,7 +120,7 @@ ActionCommand RectSelectAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
 
         UpdateRectComponent(pSI);
 
-        pSI->SetVisible(m_rectComponent, true);
+        pSI->MoveToLayer(m_rectComponent, ViewLayerId_Main);
 
         m_numTouchStreams++;
     }
@@ -192,7 +193,7 @@ ActionCommand RectSelectAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
             pSI->StopViewTransformer(m_scrollerId);
         }
 
-        pSI->SetVisible(m_rectComponent, false);
+        pSI->MoveToLayer(m_rectComponent, ViewLayerId_Null);
 
         CRefList crefs = pSI->ComponentsInLayerRect(m_selectionRect.Rect(),
                                                     ViewLayerId_Main);
