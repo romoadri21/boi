@@ -416,8 +416,8 @@ void GuiRequestHandler::SetParent(GuiRequest* pRequest)
             Component* pParentComponent = pRequest->cref2.GetInstance();
             if (pParentComponent != NULL)
             {
-                GraphicsItem* pChildItem = &pComponent->m_pData->graphicsItem;
-                GraphicsItem* pParentItem = &pParentComponent->m_pData->graphicsItem;
+                QGraphicsItem* pChildItem = &pComponent->m_pData->graphicsItem;
+                QGraphicsItem* pParentItem = &pParentComponent->m_pData->graphicsItem;
 
                 /*
                  * Don't do parent if pChildItem is an ancestor of
@@ -429,26 +429,7 @@ void GuiRequestHandler::SetParent(GuiRequest* pRequest)
                     // TODO: handle the case where the parent item
                     // is in a different layer than the child item.
 
-                    /*
-                     * Maintain the current position of
-                     * the item relative to the scene.
-                     */
-                    QPointF pos = pChildItem->scenePos();
-                    pos = pParentItem->mapFromScene(pos);
-                    pChildItem->setPos(pos);
-
-                    /*
-                     * Maintain the current rotation
-                     * relative to the scene.
-                     */
-                    QLineF childLine(pChildItem->mapToScene(0, 0),
-                                     pChildItem->mapToScene(1, 0));
-                    QLineF parentLine(pParentItem->mapToScene(0, 0),
-                                      pParentItem->mapToScene(1, 0));
-                    qreal rotation = parentLine.angleTo(childLine);
-                    pChildItem->setRotation(rotation * -1);
-
-                    pChildItem->setParentItem(pParentItem);
+                    SetParent(pChildItem, pParentItem);
                 }
 
                 pRequest->cref2.ReleaseInstance();
@@ -456,7 +437,10 @@ void GuiRequestHandler::SetParent(GuiRequest* pRequest)
         }
         else
         {
-            pComponent->m_pData->graphicsItem.setParentItem(NULL);
+            QGraphicsItem* pChildItem = &pComponent->m_pData->graphicsItem;
+            QGraphicsItem* pTopLevelItem = pChildItem->topLevelItem();
+
+            SetParent(pChildItem, pTopLevelItem);
         }
 
         pRequest->cref.ReleaseInstance();
@@ -579,6 +563,35 @@ void GuiRequestHandler::UpdateChildLayers(GraphicsItem* pParent, ViewLayerId lay
 
         UpdateChildLayers(pChild, layer);
     }
+}
+
+
+void GuiRequestHandler::SetParent(QGraphicsItem* pChild, QGraphicsItem* pParent)
+{
+    if ((pChild->scene()  != NULL) &&
+        (pParent->scene() != NULL))
+    {
+        /*
+         * Maintain the current position of
+         * the item relative to the scene.
+         */
+        QPointF pos = pChild->scenePos();
+        pos = pParent->mapFromScene(pos);
+        pChild->setPos(pos);
+
+        /*
+         * Maintain the current rotation
+         * relative to the scene.
+         */
+        QLineF childLine(pChild->mapToScene(0, 0),
+                         pChild->mapToScene(1, 0));
+        QLineF parentLine(pParent->mapToScene(0, 0),
+                          pParent->mapToScene(1, 0));
+        qreal rotation = parentLine.angleTo(childLine);
+        pChild->setRotation(rotation * -1);
+    }
+
+    pChild->setParentItem(pParent);
 }
 
 

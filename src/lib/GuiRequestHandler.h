@@ -27,6 +27,7 @@
 
 
 class QObject;
+class QGraphicsItem;
 
 
 namespace BOI {
@@ -85,6 +86,8 @@ class GuiRequestHandler
         void EmitParentBoundingBox(Component* pComponent, bool newOnly);
 
         void UpdateChildLayers(GraphicsItem* pParent, ViewLayerId layer);
+
+        void SetParent(QGraphicsItem* pChild, QGraphicsItem* pParent);
 
     private:
         GuiRequestFunc m_funcs[GuiRequest::NumRequests];
