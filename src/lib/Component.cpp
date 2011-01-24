@@ -63,8 +63,10 @@ bool Component::ConnectToReceiver(int emitter, CRef cref, int receiver)
         ReceiverFunc func = pComponent->IFace()->GetReceiverFunc(receiver);
         if (func != NULL)
         {
-            m_pData->connections.AddEmitterRecipient(emitter, cref, func);
-            m_pData->pISI->PostEmitterConnectedTask(m_pData->cref, emitter, cref.Id());
+            if (m_pData->connections.AddEmitterRecipient(emitter, cref, func))
+            {
+                m_pData->pISI->PostEmitterConnectedTask(m_pData->cref, emitter, cref.Id());
+            }
 
             connected = true;
         }

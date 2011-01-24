@@ -29,7 +29,7 @@ class Connections
         void Initialize(ISI* pISI, Interface* pInterface, int componentId);
         void Destroy();
 
-        void AddEmitterRecipient(int emitter, CRef cref, ReceiverFunc func);
+        bool AddEmitterRecipient(int emitter, CRef cref, ReceiverFunc func);
         void RemoveEmitterRecipient(int emitter, CRef cref);
 
         bool EmitterHasNew(int emitter);

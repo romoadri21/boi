@@ -103,7 +103,7 @@ void Connections::Destroy()
 }
 
 
-void Connections::AddEmitterRecipient(int emitter, CRef cref, ReceiverFunc func)
+bool Connections::AddEmitterRecipient(int emitter, CRef cref, ReceiverFunc func)
 {
     bool alreadyConnected = false;
 
@@ -136,6 +136,8 @@ void Connections::AddEmitterRecipient(int emitter, CRef cref, ReceiverFunc func)
     }
 
     m_emitterRecipientsLock.Unlock();
+
+    return !alreadyConnected;
 }
 
 
