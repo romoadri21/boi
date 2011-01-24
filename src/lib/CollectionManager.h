@@ -70,6 +70,8 @@ class CollectionManager
         void ImportComponent(ImportData* pImportData, QDataStream& in);
         void ExportComponent(Component* pComponent, QDataStream& out);
 
+        QString GetPath(const QString& uuid);
+
     private:
         ISI* m_pISI;
 

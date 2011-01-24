@@ -9,6 +9,7 @@
 #include <QUuid>
 #include <QHash>
 #include <QLineF>
+#include <QFileInfo>
 #include <QDataStream>
 #include <QHashIterator>
 #include "ISI.h"
@@ -70,7 +71,6 @@ QString CollectionManager::CreateCollection(CRefList crefs,
     if (numCRefs == 0) return QString();
 
     QString uuid;
-    QString path;
     QString filePath;
 
     QUuid tempUuid(uuidIn);
@@ -84,28 +84,21 @@ QString CollectionManager::CreateCollection(CRefList crefs,
         uuid = QUuid::createUuid().toString();
     }
 
-    while (true)
-    {
-        path = m_basePath + '/' + uuid.at(1) +
-                            '/' + uuid.at(2) +
-                            '/' + uuid.at(3);
-        filePath = path + '/' + uuid;
 
-        if (QFile::exists(filePath))
-        {
-            uuid = QUuid::createUuid().toString();
-        }
-        else
-        {
-            break;
-        }
+    filePath = GetPath(uuid);
+
+    while (QFile::exists(filePath))
+    {
+        uuid = QUuid::createUuid().toString();
+        filePath = GetPath(uuid);
     }
 
-    QDir dir(path);
+    QDir dir = QFileInfo(filePath).dir();
     if (!dir.exists())
     {
-        dir.mkpath(path);
+        dir.mkpath(dir.absolutePath());
     }
+
 
     QFile file(filePath);
     if (!file.open(QIODevice::WriteOnly)) return QString();
@@ -148,10 +141,7 @@ CRefList CollectionManager::OpenCollection(const QString& uuid,
 {
     if (uuid.length() < 4) return CRefList();
 
-    QString path = m_basePath + '/' + uuid.at(1) +
-                                '/' + uuid.at(2) +
-                                '/' + uuid.at(3);
-    QString filePath = path + '/' + uuid;
+    QString filePath = GetPath(uuid);
 
     if (!QFile::exists(filePath)) return CRefList();
 
@@ -397,12 +387,7 @@ bool CollectionManager::CollectionExists(const QString& uuid)
 {
     if (uuid.length() < 4) return false;
 
-    QString path = m_basePath + '/' + uuid.at(1) +
-                                '/' + uuid.at(2) +
-                                '/' + uuid.at(3);
-    QString filePath = path + '/' + uuid;
-
-    return QFile::exists(filePath);
+    return QFile::exists(GetPath(uuid));
 }
 
 
@@ -410,12 +395,16 @@ bool CollectionManager::DeleteCollection(const QString& uuid)
 {
     if (uuid.length() < 4) return false;
 
+    return QFile::remove(GetPath(uuid));
+}
+
+
+QString CollectionManager::GetPath(const QString& uuid)
+{
     QString path = m_basePath + '/' + uuid.at(1) +
                                 '/' + uuid.at(2) +
                                 '/' + uuid.at(3);
-    QString filePath = path + '/' + uuid;
-
-    return QFile::remove(filePath);
+    return path + '/' + uuid;
 }
 
 
