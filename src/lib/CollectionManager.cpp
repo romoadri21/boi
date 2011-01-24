@@ -178,6 +178,9 @@ CRefList CollectionManager::OpenCollection(const QString& uuid,
         {
             ImportData* pImportData = new ImportData[numComponents];
 
+            QHash<int, ImportData*> prevIds;
+            prevIds.reserve(numComponents);
+
             QRectF boundingRect;
 
             for (int i=0; i < numComponents; i++)
@@ -187,13 +190,19 @@ CRefList CollectionManager::OpenCollection(const QString& uuid,
 
                 if (isValid)
                 {
-                    ImportComponent(&pImportData[i], in);
+                    ImportData* pData = &pImportData[i];
 
-                    if ((pImportData[i].cref.IsValid()) &&
-                        (pImportData[i].layer == ViewLayerId_Main) &&
-                        (pImportData[i].visible))
+                    ImportComponent(pData, in);
+
+                    if (pData->cref.IsValid())
                     {
-                        boundingRect |= pImportData[i].layerBoundingRect;
+                        prevIds.insert(pData->id, pData);
+
+                        if ((pData->layer == ViewLayerId_Main) &&
+                            (pData->visible))
+                        {
+                            boundingRect |= pData->layerBoundingRect;
+                        }
                     }
                 }
             }
@@ -203,15 +212,17 @@ CRefList CollectionManager::OpenCollection(const QString& uuid,
 
             for (int i=0; i < numComponents; i++)
             {
-                if (pImportData[i].cref.IsValid())
+                ImportData* pData = &pImportData[i];
+
+                if (pData->cref.IsValid())
                 {
-                    Component* pComponent = pImportData[i].cref.GetInstance();
+                    Component* pComponent = pData->cref.GetInstance();
                     if (pComponent != NULL)
                     {
-                        if (pImportData[i].layer == ViewLayerId_Main)
+                        if (pData->layer == ViewLayerId_Main)
                         {
                             QPointF oldCenter = boundingRect.center();
-                            QPointF delta = oldCenter - pImportData[i].layerPos;
+                            QPointF delta = oldCenter - pData->layerPos;
                             QPointF newPos = point - delta;
 
                             pComponent->SetPosition(newPos);
@@ -220,17 +231,48 @@ CRefList CollectionManager::OpenCollection(const QString& uuid,
                         {
                             // TODO: what if the new window size is smaller or
                             // different than the previous window size?
-                            pComponent->SetPosition(pImportData[i].layerPos);
+                            pComponent->SetPosition(pData->layerPos);
                         }
 
-                        if (pImportData[i].visible)
+                        if (pData->visible)
                         {
                             pComponent->SetVisible(true);
                         }
 
-                        crefs.Append(pImportData[i].cref);
+                        crefs.Append(pData->cref);
 
-                        pImportData[i].cref.ReleaseInstance();
+                        pData->cref.ReleaseInstance();
+                    }
+                }
+            }
+
+            for (int i=0; i < numComponents; i++)
+            {
+                ImportData* pData = &pImportData[i];
+
+                if (pData->cref.IsValid())
+                {
+                    Component* pComponent = pData->cref.GetInstance();
+                    if (pComponent != NULL)
+                    {
+                        int parentId = pData->parentId;
+
+                        if (parentId != -1)
+                        {
+                            ImportData* pParentData = prevIds.value(parentId, NULL);
+
+                            if (pParentData != NULL)
+                            {
+                                /*
+                                 * Note: parenting must occur after
+                                 * all the positions are set to avoid
+                                 * incorrect placement.
+                                 */
+                                pComponent->SetParent(pParentData->cref);
+                            }
+                        }
+
+                        pData->cref.ReleaseInstance();
                     }
                 }
             }
