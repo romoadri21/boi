@@ -130,6 +130,8 @@ class BOI_LIB_EXPORT Component
 
         void PostToReceiver(int receiver, DRef& data, bool release=false);
 
+        void SetParent(CRef& parent);
+
     private:
         ComponentData* m_pData;
 

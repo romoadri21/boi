@@ -431,6 +431,18 @@ void Component::PostToReceiver(int receiver, DRef& data, bool release)
 }
 
 
+void Component::SetParent(CRef& parent)
+{
+    GuiRequest request;
+
+    request.cref = m_pData->cref;
+    request.cref2 = parent;
+    request.type = GuiRequest::RequestType_SetParent;
+
+    m_pData->pISI->PostRequest(&request);
+}
+
+
 void Component::SetPosition(DRef& dref, int source)
 {
     Q_UNUSED(source);
