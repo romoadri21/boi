@@ -209,13 +209,7 @@ void ASI::SetParent(CRef& cref, CRef& parent)
     {
         if (!pComponent->m_pData->inLayout)
         {
-            GuiRequest request;
-
-            request.cref = cref;
-            request.cref2 = parent;
-            request.type = GuiRequest::RequestType_SetParent;
-
-            m_pGuiRequestHandler->PostRequest(&request);
+            pComponent->SetParent(parent);
         }
 
         cref.ReleaseInstance();
@@ -310,7 +304,7 @@ void ASI::AddToLayout(CRef& cref, CRef& layout)
                 if ((!pComponent->m_pData->inLayout) &&
                     (pComponent != pLayoutComponent))
                 {
-                    SetParent(cref, layout);
+                    pComponent->SetParent(layout);
 
                     /*
                      * Tell the layout component to add
@@ -368,7 +362,7 @@ void ASI::RemoveFromLayout(CRef& cref, CRef& layout)
                     pComponent->m_pData->inLayout = false;
 
                     CRef invalidCRef;
-                    SetParent(cref, invalidCRef);
+                    pComponent->SetParent(invalidCRef);
                 }
 
                 cref.ReleaseInstance();
