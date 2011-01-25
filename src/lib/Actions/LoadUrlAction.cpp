@@ -4,6 +4,7 @@
  * http://www.boi-project.org/license
  */
 
+#include <QUrl>
 #include "ASI.h"
 #include "ActionArgs.h"
 #include "StandardActions.h"
@@ -122,14 +123,19 @@ ActionCommand LoadUrlAction::Update(ASI* pSI, const ActionArgs* pArgs)
     {
         QString text = pArgs->Value<QString>("Text");
 
-        int receiver = pSI->GetReceiver(m_activeComponent,
-                                        "{7473aebc-56e3-4dc4-994e-da426f45866c}");
-        if (receiver != -1)
-        {
-            DRef dref = pSI->NewData(BOI_STD_D(String));
-            *dref.GetWriteInstance<QString>() = text;
+        QUrl url = QUrl::fromUserInput(text);
 
-            pSI->EmitTo(m_activeComponent, receiver, dref);
+        if (url.isValid())
+        {
+            int receiver = pSI->GetReceiver(m_activeComponent,
+                                            "{7473aebc-56e3-4dc4-994e-da426f45866c}");
+            if (receiver != -1)
+            {
+                DRef dref = pSI->NewData(BOI_STD_D(String));
+                *dref.GetWriteInstance<QString>() = url.toString();
+
+                pSI->EmitTo(m_activeComponent, receiver, dref);
+            }
         }
     }
 
