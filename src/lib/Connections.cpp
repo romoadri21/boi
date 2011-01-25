@@ -141,50 +141,52 @@ bool Connections::AddEmitterRecipient(int emitter, CRef cref, ReceiverFunc func)
 }
 
 
-void Connections::RemoveEmitterRecipient(int emitter, CRef cref)
+bool Connections::RemoveEmitterRecipient(int emitter, CRef cref)
 {
+    bool found = false;
+
     m_emitterRecipientsLock.Lock();
 
-    EmitterRecipient* pEmitterRecipient = m_emitterRecipients[emitter].pHead;
+    EmitterRecipient* pHead = m_emitterRecipients[emitter].pHead;
+    EmitterRecipient* pEmitterRecipient = pHead;
+    EmitterRecipient* pPrev = NULL;
 
-    if (pEmitterRecipient != NULL)
+    while (pEmitterRecipient != NULL)
     {
         if (pEmitterRecipient->cref == cref)
         {
-            if (pEmitterRecipient->isNew)
-            {
-                m_emitterRecipients[emitter].numNewRecipients--;
-            }
+            found = true;
+            break;
+        }
 
-            m_emitterRecipients[emitter].numEmitterRecipients--;
+        pPrev = pEmitterRecipient;
+        pEmitterRecipient = pEmitterRecipient->pNext;
+    }
+
+    if (found)
+    {
+        if (pEmitterRecipient->isNew)
+        {
+            m_emitterRecipients[emitter].numNewRecipients--;
+        }
+
+        m_emitterRecipients[emitter].numEmitterRecipients--;
+
+        if (pEmitterRecipient == pHead)
+        {
             m_emitterRecipients[emitter].pHead = pEmitterRecipient->pNext;
-            delete pEmitterRecipient;
         }
         else
         {
-            while (pEmitterRecipient->pNext != NULL)
-            {
-                if (pEmitterRecipient->pNext->cref == cref)
-                {
-                    if (pEmitterRecipient->pNext->isNew)
-                    {
-                        m_emitterRecipients[emitter].numNewRecipients--;
-                    }
-
-                    m_emitterRecipients[emitter].numEmitterRecipients--;
-
-                    EmitterRecipient* pTempRecipient = pEmitterRecipient->pNext;
-                    pEmitterRecipient->pNext = pTempRecipient->pNext;
-                    delete pTempRecipient;
-                    break;
-                }
-
-                pEmitterRecipient = pEmitterRecipient->pNext;
-            }
+            pPrev->pNext = pEmitterRecipient->pNext;
         }
+
+        delete pEmitterRecipient;
     }
 
     m_emitterRecipientsLock.Unlock();
+
+    return found;
 }
 
 

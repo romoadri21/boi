@@ -30,7 +30,7 @@ class Connections
         void Destroy();
 
         bool AddEmitterRecipient(int emitter, CRef cref, ReceiverFunc func);
-        void RemoveEmitterRecipient(int emitter, CRef cref);
+        bool RemoveEmitterRecipient(int emitter, CRef cref);
 
         bool EmitterHasNew(int emitter);
         bool EmitterConnected(int emitter);
