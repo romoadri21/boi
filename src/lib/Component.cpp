@@ -86,7 +86,10 @@ bool Component::DisconnectFromFuncSet(int caller)
 
 void Component::DisconnectFromReceiver(int emitter, CRef cref)
 {
-    m_pData->connections.RemoveEmitterRecipient(emitter, cref);
+    if (m_pData->connections.RemoveEmitterRecipient(emitter, cref))
+    {
+        m_pData->pISI->PostEmitterDisconnectedTask(m_pData->cref, emitter, cref.Id());
+    }
 }
 
 
@@ -142,6 +145,14 @@ void Component::HandleStateChanged(StateId stateId, DRef& dref)
 
 void Component::HandleEmitterConnected(int emitter,
                                        int componentId)
+{
+    Q_UNUSED(emitter);
+    Q_UNUSED(componentId);
+}
+
+
+void Component::HandleEmitterDisconnected(int emitter,
+                                          int componentId)
 {
     Q_UNUSED(emitter);
     Q_UNUSED(componentId);
@@ -382,6 +393,21 @@ void Component::HandleEmitterConnectedInternal(int emitter,
         request.type = GuiRequest::RequestType_Emit;
 
         m_pData->pISI->PostRequest(&request);
+    }
+}
+
+
+void Component::HandleEmitterDisconnectedInternal(int emitter,
+                                                  int componentId)
+{
+    if (emitter >= StandardEmitters::NumEmitters)
+    {
+        /*
+         * Components should only receive this notification for
+         * emitters that they have defined themselves. The system
+         * handles the notifications for the standard emitters.
+         */
+        HandleEmitterDisconnected(emitter, componentId);
     }
 }
 

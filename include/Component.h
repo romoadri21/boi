@@ -61,8 +61,8 @@ class BOI_LIB_EXPORT Component
 
         virtual void HandleStateChanged(StateId stateId, DRef& dref);
 
-        virtual void HandleEmitterConnected(int emitter,
-                                            int componentId);
+        virtual void HandleEmitterConnected(int emitter, int componentId);
+        virtual void HandleEmitterDisconnected(int emitter, int componentId);
 
         virtual int AcceptTransaction(int funcSet);
         virtual void TransactionEnded(int id);
@@ -125,6 +125,7 @@ class BOI_LIB_EXPORT Component
         void DisconnectFromReceiver(int emitter, CRef cref);
 
         void HandleEmitterConnectedInternal(int emitter, int componentId);
+        void HandleEmitterDisconnectedInternal(int emitter, int componentId);
 
         DRef CallFunc(int funcSet, int func, DRef& dref, bool passThru=false);
 

@@ -191,6 +191,23 @@ void TaskProcessor::PostEmitterConnectedTask(CRef cref, int emitter, int compone
 }
 
 
+void TaskProcessor::PostEmitterDisconnectedTask(CRef cref, int emitter, int componentId)
+{
+    Component* pComponent = cref.GetInstance();
+    if (pComponent != NULL)
+    {
+        Task* pTask = m_taskPool.Get();
+        pTask->type = Task::TaskType_HandleEmitterDisconnected;
+        pTask->data.emitterDisconnectedData.emitter = emitter;
+        pTask->data.emitterDisconnectedData.componentId = componentId;
+
+        Enqueue(pComponent, pTask);
+
+        cref.ReleaseInstance();
+    }
+}
+
+
 void TaskProcessor::PostEmitTask(int source, CRef cref, ReceiverFunc func, DRef& dref, bool release)
 {
     Component* pComponent = cref.GetInstance();
@@ -305,6 +322,11 @@ void TaskProcessor::ProcessTask(TaskThread* pTaskThread)
                 {
                     pComponent->HandleEmitterConnectedInternal(pTask->data.emitterConnectedData.emitter,
                                                                pTask->data.emitterConnectedData.componentId);
+                }
+                else if (pTask->type == Task::TaskType_HandleEmitterDisconnected)
+                {
+                    pComponent->HandleEmitterDisconnectedInternal(pTask->data.emitterDisconnectedData.emitter,
+                                                                  pTask->data.emitterDisconnectedData.componentId);
                 }
                 else if (pTask->type == Task::TaskType_HandleStateChanged)
                 {

@@ -73,6 +73,7 @@ class ISI
         void PostTouchEventTask(CRef cref, TouchEvent* pTouchEvent);
         void PostStateChangedTask(CRef cref, StateId stateId, DRef& dref);
         void PostEmitterConnectedTask(CRef cref, int emitter, int componentId);
+        void PostEmitterDisconnectedTask(CRef cref, int emitter, int componentId);
         void PostEmitTask(int source, CRef cref, ReceiverFunc func, DRef& dref, bool release);
 
         void FreeTasks(ComponentData* pComponentData);

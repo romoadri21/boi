@@ -122,6 +122,12 @@ void ISI::PostEmitterConnectedTask(CRef cref, int emitter, int componentId)
 }
 
 
+void ISI::PostEmitterDisconnectedTask(CRef cref, int emitter, int componentId)
+{
+    m_pTaskProcessor->PostEmitterDisconnectedTask(cref, emitter, componentId);
+}
+
+
 void ISI::PostEmitTask(int source, CRef cref, ReceiverFunc func, DRef& dref, bool release)
 {
     m_pTaskProcessor->PostEmitTask(source, cref, func, dref, release);

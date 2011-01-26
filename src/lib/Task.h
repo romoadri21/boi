@@ -27,7 +27,8 @@ class Task
             TaskType_HandleKeyEvent,
             TaskType_HandleTouchEvent,
             TaskType_HandleStateChanged,
-            TaskType_HandleEmitterConnected
+            TaskType_HandleEmitterConnected,
+            TaskType_HandleEmitterDisconnected
         };
 
     public:
@@ -51,6 +52,12 @@ class Task
                 int emitter;
                 int componentId;
             } emitterConnectedData;
+
+            struct
+            {
+                int emitter;
+                int componentId;
+            } emitterDisconnectedData;
         } data;
 
         Task* pNext;
