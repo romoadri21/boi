@@ -49,9 +49,10 @@ TextInputComponent::TextInputComponent()
       m_shiftPressed(false),
       m_windowSize(),
       m_boundingRect(),
+      m_innerBoundingRect(),
       m_textPen(),
-      m_borderPen(),
       m_bgFill(),
+      m_textBgFill(),
       m_font(),
       m_action(BOI_STD_A(Null)),
       m_pActionArgs(NULL),
@@ -67,10 +68,9 @@ bool TextInputComponent::Initialize()
     m_windowSize = value.toSizeF();
 
     // TODO: get these values from State.
-    m_bgFill = QBrush(QColor(245, 245, 245, 240));
     m_textPen = QPen(QColor(50, 50, 50));
-    m_borderPen = QPen(QColor(200, 200, 200));
-    m_borderPen.setWidth(7);
+    m_bgFill = QBrush(QColor(200, 200, 200));
+    m_textBgFill = QBrush(QColor(245, 245, 245));
 
     UpdateDimensions();
 
@@ -206,15 +206,13 @@ void TextInputComponent::Draw(QPainter* pPainter,
     LockDraw();
 
     pPainter->fillRect(m_boundingRect, m_bgFill);
-
-    pPainter->setPen(m_borderPen);
-    pPainter->drawRect(m_boundingRect);
+    pPainter->fillRect(m_innerBoundingRect, m_textBgFill);
 
     pPainter->setFont(m_font);
     pPainter->setPen(m_textPen);
 
-    QRectF textRect = m_boundingRect;
-    textRect.moveLeft(m_boundingRect.height() / 2);
+    QRectF textRect = m_innerBoundingRect;
+    textRect.setX(m_innerBoundingRect.x() + (m_innerBoundingRect.height() / 2));
     pPainter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, m_text);
 
     UnlockDraw();
@@ -266,15 +264,15 @@ void TextInputComponent::ClearOnNextPress(DRef& dref, int source)
 void TextInputComponent::UpdateDimensions()
 {
     // TODO: replace the percentages here with values stored in state.
-    qreal top = m_windowSize.height() * 0.9;
+
     qreal width = m_windowSize.width() * 0.85;
     qreal height = m_windowSize.height() * 0.05;
     qreal leftMargin = m_windowSize.width() * ((1.0 - 0.85) / 2.0);
 
-    m_boundingRect.setSize(QSizeF(width, height));
+    m_boundingRect.setRect(0, 0, m_windowSize.width(), height*2);
+    m_innerBoundingRect.setRect(leftMargin, (height / 2), width, height);
 
-    QPointF topLeft(leftMargin, top);
-    SetPosition(topLeft);
+    SetPosition(QPointF(0, 0));
 
     m_font.setPixelSize(height * 0.5);
 

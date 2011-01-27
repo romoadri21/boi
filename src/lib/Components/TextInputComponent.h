@@ -72,10 +72,11 @@ class TextInputComponent
 
         QSizeF m_windowSize;
         QRectF m_boundingRect;
+        QRectF m_innerBoundingRect;
 
         QPen m_textPen;
-        QPen m_borderPen;
         QBrush m_bgFill;
+        QBrush m_textBgFill;
 
         QFont m_font;
 
