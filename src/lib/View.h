@@ -32,6 +32,7 @@ class QGraphicsScene;
 namespace BOI {
 
 
+class KeyEvent;
 class TouchEvent;
 class EventDispatcher;
 
@@ -97,6 +98,8 @@ class View
         void ProcessQTouchEvent(QTouchEvent* pEvent);
         void HandleTouch(TouchEvent* pEvent);
 
+        void UpdateModifiers(KeyEvent* pEvent);
+
         ViewLayerId LayerId(QGraphicsItem* pItem);
 
     private:
@@ -118,6 +121,10 @@ class View
         int m_hotSpotTouchId;
         bool m_hotSpotEnabled;
         QRectF m_hotSpotBounds;
+
+        int m_keyModifiers;
+        int m_shiftPressed;
+        int m_controlPressed;
 };
 
 

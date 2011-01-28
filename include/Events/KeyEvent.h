@@ -14,16 +14,24 @@ namespace BOI {
 class KeyEvent
 {
     public:
-		enum
-		{
-			Type_Press = 0,
-			Type_Release
-		};
+        enum
+        {
+            Type_Press = 0,
+            Type_Release
+        };
+
+        enum
+        {
+            Modifier_None = 0x0,
+            Modifier_Shift = 0x1,
+            Modifier_Control = 0x2
+        };
 
     public:
         int id;
         int key;
         int type;
+        int modifiers;
 };
 
 

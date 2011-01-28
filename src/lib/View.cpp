@@ -33,7 +33,10 @@ View::View(QWidget* pParent)
       m_numButtonsPressed(0),
       m_hotSpotTouchId(-1),
       m_hotSpotEnabled(false),
-      m_hotSpotBounds()
+      m_hotSpotBounds(),
+      m_keyModifiers(0),
+      m_shiftPressed(0),
+      m_controlPressed(0)
 {
     m_pScene = new QGraphicsScene();
     m_pScene->setSceneRect(-30000000, -30000000, 60000000, 60000000);
@@ -259,6 +262,8 @@ bool View::eventFilter(QObject* pTarget, QEvent* pEvent)
         keyEvent.key  = ((QKeyEvent*)pEvent)->key();
         keyEvent.type = KeyEvent::Type_Press;
 
+        UpdateModifiers(&keyEvent);
+
         m_pEventDispatcher->DispatchKeyEvent(&keyEvent);
         return true;
     }
@@ -269,6 +274,8 @@ bool View::eventFilter(QObject* pTarget, QEvent* pEvent)
         keyEvent.id   = ((QKeyEvent*)pEvent)->nativeScanCode();
         keyEvent.key  = ((QKeyEvent*)pEvent)->key();
         keyEvent.type = KeyEvent::Type_Release;
+
+        UpdateModifiers(&keyEvent);
 
         m_pEventDispatcher->DispatchKeyEvent(&keyEvent);
         return true;
@@ -370,6 +377,49 @@ void View::HandleTouch(TouchEvent* pEvent)
     {
         m_pEventDispatcher->DispatchTouchEvent(pEvent);
     }
+}
+
+
+void View::UpdateModifiers(KeyEvent* pEvent)
+{
+    int key = pEvent->key;
+
+    if (pEvent->type == KeyEvent::Type_Press)
+    {
+        if (key == Qt::Key_Shift)
+        {
+            m_keyModifiers |= KeyEvent::Modifier_Shift;
+            m_shiftPressed++;
+        }
+        else if (key == Qt::Key_Control)
+        {
+            m_keyModifiers |= KeyEvent::Modifier_Control;
+            m_controlPressed++;
+        }
+    }
+    else
+    {
+        if (key == Qt::Key_Shift)
+        {
+            m_shiftPressed--;
+
+            if (m_shiftPressed == 0)
+            {
+                m_keyModifiers &= ~(KeyEvent::Modifier_Shift);
+            }
+        }
+        else if (key == Qt::Key_Control)
+        {
+            m_controlPressed--;
+
+            if (m_controlPressed == 0)
+            {
+                m_keyModifiers &= ~(KeyEvent::Modifier_Control);
+            }
+        }
+    }
+
+    pEvent->modifiers = m_keyModifiers;
 }
 
 
