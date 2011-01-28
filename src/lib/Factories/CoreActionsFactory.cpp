@@ -32,6 +32,7 @@
 #include "Actions/SetRotationAction.h"
 #include "Actions/AddToLayoutAction.h"
 #include "Actions/FitAllInViewAction.h"
+#include "Actions/InsertBrowserAction.h"
 #include "Actions/ToggleHotSpotAction.h"
 #include "Actions/ResetViewScaleAction.h"
 #include "Actions/ClearSelectionAction.h"
@@ -207,6 +208,11 @@ void CoreActionsFactory::RegisterTypes(TypeRegistrar* pRegistrar)
                              BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
                              NULL,
                              StandardActions::Uuid(BOI_STD_A(ToggleHotSpot)));
+
+    pRegistrar->RegisterType(this,
+                             BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
+                             NULL,
+                             StandardActions::Uuid(BOI_STD_A(InsertBrowser)));
 }
 
 
@@ -338,6 +344,10 @@ Object* CoreActionsFactory::GetAction(int type)
 
         case BOI_STD_A(ToggleHotSpot):
             pAction = new ToggleHotSpotAction();
+            break;
+
+        case BOI_STD_A(InsertBrowser):
+            pAction = new InsertBrowserAction();
             break;
 
         default:

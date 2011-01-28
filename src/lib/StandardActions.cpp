@@ -43,6 +43,7 @@ const char* StandardActions::s_uuids[] =
     "{cc5ae59e-b61e-42db-9b90-cd03ccd59a00}", // Action_Copy
     "{29d681a6-8c1c-4d35-92fd-5fa6928dc56c}", // Action_Paste
     "{31dc8fc7-1c4b-4510-af87-3ef2074f1a15}", // Action_ToggleHotSpot
+    "{b4388785-830d-4f4d-b1a4-3b95a5737628}", // Action_InsertBrowser
 };
 
 
