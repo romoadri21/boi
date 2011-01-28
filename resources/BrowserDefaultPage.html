@@ -25,11 +25,44 @@ body
     background-color:#fff;
 }
 </style>
+
+<script type="text/javascript">
+function InitPage()
+{
+    document.getElementById("UrlTextBox").focus();
+}
+
+function HandleKeyDown(keyDownEvent)
+{
+    var unicode = keyDownEvent.keyCode ?
+                  keyDownEvent.keyCode :
+                  keyDownEvent.charCode;
+
+    if (unicode == 13)
+    {
+        var textElement = document.getElementById("UrlTextBox");
+        var url = CleanUrl(textElement.value);
+        window.location.replace(url);
+    }
+}
+
+function CleanUrl(url)
+{
+    // TODO: make this more robust
+
+    if (!url.match(/^http:\/\//))
+    {
+        return "http://" + url;
+    }
+
+    return url;
+}
+</script>
 </head>
 
-<body>
+<body onload='InitPage()'>
     <div id="Container">
-        <input type="text" name="UrlTextBox" maxlength="128" id="UrlTextBox" />
+        <input type="text" name="UrlTextBox" maxlength="128" id="UrlTextBox" onkeydown="HandleKeyDown(event)"/>
     </div>
 </body>
 </html>
