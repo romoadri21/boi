@@ -100,7 +100,6 @@ class TextComponent
         QAbstractTextDocumentLayout* m_pLayout;
 
         bool m_handledPress;
-        bool m_shiftPressed;
 
         friend class TextComponentHelper;
         TextComponentHelper m_helper;

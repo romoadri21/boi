@@ -48,7 +48,6 @@ TextComponent::TextComponent()
       m_cursor(&m_document),
       m_pLayout(NULL),
       m_handledPress(false),
-      m_shiftPressed(false),
       m_helper(this)
 {
     m_pLayout = m_document.documentLayout();
@@ -124,42 +123,41 @@ void TextComponent::HandleKeyEvent(KeyEvent* pEvent)
                 Update(); // TODO: only update the part that needs updating?
                 break;
 
-            case Qt::Key_Shift:
-                m_shiftPressed = true;
-                break;
-
             case Qt::Key_Return:
                 m_cursor.insertText("\n");
                 EmitText();
                 break;
 
-            default:
-                if (m_shiftPressed)
-                {
-                    m_cursor.insertText(QChar(pEvent->key));
-                }
-                else
-                {
-                    m_cursor.insertText(QChar(pEvent->key).toLower());
-                }
+            case Qt::Key_Shift:
+            case Qt::Key_Control:
+                /*
+                 * Avoid handling the shift and control keys
+                 * since they are incorrectly printed below.
+                 */
+                break;
 
-                EmitText();
+            default:
+                {
+                    QChar ch(pEvent->key);
+
+                    if (ch.isPrint())
+                    {
+                        if (pEvent->modifiers & KeyEvent::Modifier_Shift)
+                        {
+                            m_cursor.insertText(ch);
+                        }
+                        else
+                        {
+                            m_cursor.insertText(ch.toLower());
+                        }
+
+                        EmitText();
+                    }
+                }
                 break;
         }
 
         UnlockDraw();
-    }
-    else if (eventType == KeyEvent::Type_Release)
-    {
-        switch (pEvent->key)
-        {
-            case Qt::Key_Shift:
-                m_shiftPressed = false;
-                break;
-
-            default:
-                break;
-        }
     }
 }
 
