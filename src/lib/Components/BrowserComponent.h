@@ -69,8 +69,8 @@ class BrowserObject
         void HandleMousePressEvent(QPoint point);
         void HandleMouseReleaseEvent(QPoint point);
 
-        void HandleKeyPressEvent(int key);
-        void HandleKeyReleaseEvent(int key);
+        void HandleKeyPressEvent(int key, int modifiers);
+        void HandleKeyReleaseEvent(int key, int modifiers);
 
         void HandleComponentDestroyed();
         void Delete();
@@ -103,8 +103,8 @@ class BrowserObjectController
         void PostMousePressEvent(QPoint point);
         void PostMouseReleaseEvent(QPoint point);
 
-        void PostKeyPressEvent(int key);
-        void PostKeyReleaseEvent(int key);
+        void PostKeyPressEvent(int key, int modifiers);
+        void PostKeyReleaseEvent(int key, int modifiers);
 
     signals:
         void Load(QString url);
@@ -119,8 +119,8 @@ class BrowserObjectController
         void MousePressEvent(QPoint point);
         void MouseReleaseEvent(QPoint point);
 
-        void KeyPressEvent(int key);
-        void KeyReleaseEvent(int key);
+        void KeyPressEvent(int key, int modifiers);
+        void KeyReleaseEvent(int key, int modifiers);
 };
 
 

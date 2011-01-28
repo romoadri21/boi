@@ -184,16 +184,34 @@ void BrowserObject::HandleMouseReleaseEvent(QPoint point)
 }
 
 
-void BrowserObject::HandleKeyPressEvent(int key)
+void BrowserObject::HandleKeyPressEvent(int key, int modifiers)
 {
-    QKeyEvent event(QEvent::KeyPress, key, Qt::NoModifier);
+    QChar ch(key);
+
+    if (key == Qt::Key_Shift) ch = QChar();
+
+    if ((~modifiers) & KeyEvent::Modifier_Shift)
+    {
+        ch = ch.toLower();
+    }
+
+    QKeyEvent event(QEvent::KeyPress, key, Qt::NoModifier, ch);
     m_webPage.event(&event);
 }
 
 
-void BrowserObject::HandleKeyReleaseEvent(int key)
+void BrowserObject::HandleKeyReleaseEvent(int key, int modifiers)
 {
-    QKeyEvent event(QEvent::KeyRelease, key, Qt::NoModifier);
+    QChar ch(key);
+
+    if (key == Qt::Key_Shift) ch = QChar();
+
+    if ((~modifiers) & KeyEvent::Modifier_Shift)
+    {
+        ch = ch.toLower();
+    }
+
+    QKeyEvent event(QEvent::KeyRelease, key, Qt::NoModifier, ch);
     m_webPage.event(&event);
 }
 
@@ -266,15 +284,15 @@ void BrowserObjectController::PostMouseReleaseEvent(QPoint point)
 }
 
 
-void BrowserObjectController::PostKeyPressEvent(int key)
+void BrowserObjectController::PostKeyPressEvent(int key, int modifiers)
 {
-    emit KeyPressEvent(key);
+    emit KeyPressEvent(key, modifiers);
 }
 
 
-void BrowserObjectController::PostKeyReleaseEvent(int key)
+void BrowserObjectController::PostKeyReleaseEvent(int key, int modifiers)
 {
-    emit KeyReleaseEvent(key);
+    emit KeyReleaseEvent(key, modifiers);
 }
 
 
@@ -353,12 +371,12 @@ bool BrowserComponent::Initialize()
                      m_pBrowserObject, SLOT(HandleMouseReleaseEvent(QPoint)),
                      Qt::QueuedConnection);
 
-    QObject::connect(&m_controller,  SIGNAL(KeyPressEvent(int)),
-                     m_pBrowserObject, SLOT(HandleKeyPressEvent(int)),
+    QObject::connect(&m_controller,  SIGNAL(KeyPressEvent(int, int)),
+                     m_pBrowserObject, SLOT(HandleKeyPressEvent(int, int)),
                      Qt::QueuedConnection);
 
-    QObject::connect(&m_controller,  SIGNAL(KeyReleaseEvent(int)),
-                     m_pBrowserObject, SLOT(HandleKeyReleaseEvent(int)),
+    QObject::connect(&m_controller,  SIGNAL(KeyReleaseEvent(int, int)),
+                     m_pBrowserObject, SLOT(HandleKeyReleaseEvent(int, int)),
                      Qt::QueuedConnection);
 
     m_controller.LoadUrl("qrc:///BOI/BrowserDefaultPage.html");
@@ -416,11 +434,11 @@ void BrowserComponent::HandleKeyEvent(KeyEvent* pEvent)
 {
     if (pEvent->type == KeyEvent::Type_Press)
     {
-        m_controller.PostKeyPressEvent(pEvent->key);
+        m_controller.PostKeyPressEvent(pEvent->key, pEvent->modifiers);
     }
     else if (pEvent->type == KeyEvent::Type_Release)
     {
-        m_controller.PostKeyReleaseEvent(pEvent->key);
+        m_controller.PostKeyReleaseEvent(pEvent->key, pEvent->modifiers);
     }
 }
 
