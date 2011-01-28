@@ -46,7 +46,6 @@ TextInputComponent::TextInputComponent()
     : Component(BOI_STD_C(TextInput)),
       m_text(),
       m_clearOnNext(false),
-      m_shiftPressed(false),
       m_windowSize(),
       m_boundingRect(),
       m_innerBoundingRect(),
@@ -120,58 +119,46 @@ void TextInputComponent::HandleKeyEvent(KeyEvent* pEvent)
             m_clearOnNext = false;
         }
 
-        switch (pEvent->key)
+        int key = pEvent->key;
+
+        if (key == Qt::Key_Backspace)
         {
-            case Qt::Key_Backspace:
-                m_text.chop(1);
-                EmitText();
-                Update();
-                break;
+            m_text.chop(1);
+            EmitText();
+            Update();
+        }
+        else if ((key == Qt::Key_Return) ||
+                 (key == Qt::Key_Enter))
+        {
+            ActionArgs* pArgs = (m_pActionArgs != NULL) ?
+                                (m_pActionArgs) :
+                                (new ActionArgs);
+            pArgs->Set("Text", m_text);
 
-            case Qt::Key_Shift:
-                m_shiftPressed = true;
-                break;
+            SI()->UpdateActiveAction(m_action, pArgs);
+        }
+        else if ((key != Qt::Key_Shift) &&
+                 (key != Qt::Key_Control))
+        {
+            QChar ch(key);
 
-            case Qt::Key_Return:
-            case Qt::Key_Enter:
+            if (ch.isPrint())
+            {
+                if (pEvent->modifiers & KeyEvent::Modifier_Shift)
                 {
-                    ActionArgs* pArgs = (m_pActionArgs != NULL) ?
-                                        (m_pActionArgs) :
-                                        (new ActionArgs);
-                    pArgs->Set("Text", m_text);
-
-                    SI()->UpdateActiveAction(m_action, pArgs);
-                }
-                break;
-
-            default:
-                if (m_shiftPressed)
-                {
-                    m_text.append(QChar(pEvent->key));
+                    m_text.append(ch);
                 }
                 else
                 {
-                    m_text.append(QChar(pEvent->key).toLower());
+                    m_text.append(ch.toLower());
                 }
 
                 EmitText();
                 Update();
-                break;
+            }
         }
 
         UnlockDraw();
-    }
-    else if (eventType == KeyEvent::Type_Release)
-    {
-        switch (pEvent->key)
-        {
-            case Qt::Key_Shift:
-                m_shiftPressed = false;
-                break;
-
-            default:
-                break;
-        }
     }
 }
 

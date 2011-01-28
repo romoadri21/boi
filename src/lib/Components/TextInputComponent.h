@@ -68,7 +68,6 @@ class TextInputComponent
         QString m_text;
 
         bool m_clearOnNext;
-        bool m_shiftPressed;
 
         QSizeF m_windowSize;
         QRectF m_boundingRect;
