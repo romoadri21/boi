@@ -30,7 +30,7 @@ ResizeAction::ResizeAction()
 ActionCommand ResizeAction::Start(ASI* pSI, const ActionArgs* pArgs)
 {
     m_numTouchStreams = 0;
-    m_acceptKeyEvents = true;
+    m_textInputActive = false;
 
     m_axis = Axis_XY;
 
@@ -75,6 +75,14 @@ void ResizeAction::Stop(ASI* pSI)
 {
     Q_UNUSED(pSI);
 
+    if (m_textInputActive)
+    {
+        pSI->SetVisible(m_textInputComponent, false);
+        pSI->SetKeyEventHandler(m_prevKeyEventHandler);
+
+        m_prevKeyEventHandler.Reset();
+    }
+
     m_cref.Reset();
 }
 
@@ -87,7 +95,14 @@ void ResizeAction::Destroy()
 
 bool ResizeAction::AcceptKeyStream()
 {
-    return m_acceptKeyEvents;
+    /*
+     * Stop accepting key events when the
+     * TextInput component is active so
+     * that the events will be routed to
+     * the text input component instead
+     * of to 'this' action.
+     */
+    return !m_textInputActive;
 }
 
 
@@ -207,12 +222,7 @@ ActionCommand ResizeAction::HandleKeyEvent(ASI* pSI, KeyEvent* pEvent)
         pSI->SetKeyEventHandler(m_textInputComponent);
         pSI->SetVisible(m_textInputComponent, true);
 
-        /*
-         * Stop accepting key events so that
-         * the events will be routed to the
-         * text input component instead.
-         */
-        m_acceptKeyEvents = false;
+        m_textInputActive = true;
     }
 
     return BOI_AC_CONTINUE;
@@ -224,7 +234,7 @@ ActionCommand ResizeAction::Update(ASI* pSI, const ActionArgs* pArgs)
     pSI->SetVisible(m_textInputComponent, false);
     pSI->SetKeyEventHandler(m_prevKeyEventHandler);
 
-    m_acceptKeyEvents = true;
+    m_textInputActive = false;
 
     if ((pArgs != NULL) &&
         (pArgs->Contains("Text")))

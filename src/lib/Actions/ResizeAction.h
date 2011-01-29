@@ -54,7 +54,7 @@ class ResizeAction
         CRef m_cref;
         int m_funcSet;
 
-        bool m_acceptKeyEvents;
+        bool m_textInputActive;
         int  m_setTextReceiver;
         CRef m_textInputComponent;
 
