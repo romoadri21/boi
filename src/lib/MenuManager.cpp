@@ -149,7 +149,7 @@ void MenuManager::InitStandardMenus()
 
     ActionArgs opacityArgs;
     opacityArgs.Set("Receiver", BOI_UUID_R(SetOpacity));
-    opacityArgs.Set("MinValue", 0.0);
+    opacityArgs.Set("MinValue", 0.01);
     opacityArgs.Set("MaxValue", 1.0);
     opacityArgs.Set("MinDelta", 0.01);
     opacityArgs.Set("MaxDelta", 0.10);
