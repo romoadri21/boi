@@ -44,6 +44,7 @@ const char* StandardActions::s_uuids[] =
     "{29d681a6-8c1c-4d35-92fd-5fa6928dc56c}", // Action_Paste
     "{31dc8fc7-1c4b-4510-af87-3ef2074f1a15}", // Action_ToggleHotSpot
     "{b4388785-830d-4f4d-b1a4-3b95a5737628}", // Action_InsertBrowser
+    "{4849a9fd-1324-49ec-8952-a1b4d3b05510}", // Action_SetNumber
 };
 
 

@@ -25,6 +25,7 @@
 #include "Actions/ShutdownAction.h"
 #include "Actions/ResetViewAction.h"
 #include "Actions/SetChildAction.h"
+#include "Actions/SetNumberAction.h"
 #include "Actions/RectSelectAction.h"
 #include "Actions/InsertTextAction.h"
 #include "Actions/AppendTextAction.h"
@@ -213,6 +214,11 @@ void CoreActionsFactory::RegisterTypes(TypeRegistrar* pRegistrar)
                              BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
                              NULL,
                              StandardActions::Uuid(BOI_STD_A(InsertBrowser)));
+
+    pRegistrar->RegisterType(this,
+                             BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
+                             NULL,
+                             StandardActions::Uuid(BOI_STD_A(SetNumber)));
 }
 
 
@@ -348,6 +354,10 @@ Object* CoreActionsFactory::GetAction(int type)
 
         case BOI_STD_A(InsertBrowser):
             pAction = new InsertBrowserAction();
+            break;
+
+        case BOI_STD_A(SetNumber):
+            pAction = new SetNumberAction();
             break;
 
         default:

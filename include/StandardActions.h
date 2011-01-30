@@ -59,6 +59,7 @@ class BOI_LIB_EXPORT StandardActions
             Action_Paste,
             Action_ToggleHotSpot,
             Action_InsertBrowser,
+            Action_SetNumber,
 
             NumActions
         };
