@@ -9,6 +9,7 @@
 #include "ProfileType.h"
 #include "StandardMenus.h"
 #include "StandardActions.h"
+#include "StandardReceivers.h"
 #include "StandardComponents.h"
 #include "MenuManager.h"
 
@@ -146,6 +147,15 @@ void MenuManager::InitStandardMenus()
     ActionArgs connectOutputArgs;
     connectOutputArgs.Set("Type", ProfileType_Output);
 
+    ActionArgs opacityArgs;
+    opacityArgs.Set("Receiver", BOI_UUID_R(SetOpacity));
+    opacityArgs.Set("MinValue", 0.0);
+    opacityArgs.Set("MaxValue", 1.0);
+    opacityArgs.Set("MinDelta", 0.01);
+    opacityArgs.Set("MaxDelta", 0.10);
+    opacityArgs.Set("Value", 1.0);
+    opacityArgs.Set("Interactive", true);
+
     pRootItem = new MenuItem("Disconnect");
     pRootItem
     -> SetNext("Connect")
@@ -169,7 +179,8 @@ void MenuManager::InitStandardMenus()
             -> SetNext("+90")
             -> SetNext("-90")
             -> SetNext("+180")
-            -> SetNext("-180") -> Parent() -> Parent()
+            -> SetNext("-180") -> Parent()
+        -> SetNext("Opacity", BOI_UUID_A(SetNumber), opacityArgs) -> Parent()
     -> SetNext("Delete", BOI_UUID_A(Delete))
     -> SetNext("Hide")
     -> SetNext("Stack")
