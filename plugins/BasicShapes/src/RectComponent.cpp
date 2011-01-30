@@ -25,6 +25,9 @@ BOI_BEGIN_RECEIVERS(RectComponent)
 
     BOI_DECLARE_RECEIVER("{7a2a089c-8ca9-4813-bba3-14aa55cae552}",
                          BOI_RECEIVER_FUNC(RectComponent, SetRadii))
+
+    BOI_DECLARE_RECEIVER("{041ca99e-2564-4ddc-84c9-4538e8f75379}",
+                         BOI_RECEIVER_FUNC(RectComponent, SetBorderWidth))
 BOI_END_RECEIVERS(RectComponent)
 
 
@@ -65,6 +68,8 @@ bool RectComponent::Initialize()
     QVariant var;
     SI()->GetState(BOI::StateId_Pen, var);
     m_pen = var.value<QPen>();
+
+    m_pen.setJoinStyle(Qt::MiterJoin);
 
     SI()->GetState(BOI::StateId_Brush, var);
     m_brush = var.value<QBrush>();
@@ -159,6 +164,22 @@ void RectComponent::SetRadii(BOI::DRef& dref, int source)
         UnlockDraw();
 
         Update();
+    }
+}
+
+
+void RectComponent::SetBorderWidth(BOI::DRef& dref, int source)
+{
+    Q_UNUSED(source);
+
+    if (dref.Type() == BOI_STD_D(Double))
+    {
+        LockDraw();
+
+        m_pen.setWidthF(*dref.GetReadInstance<double>());
+        UpdateRect();
+
+        UnlockDraw();
     }
 }
 

@@ -25,6 +25,8 @@ class RectComponent
     BOI_DEFINE_RECEIVER_FUNC(RectComponent, SetBrush);
     BOI_DEFINE_RECEIVER_FUNC(RectComponent, SetRadii);
 
+    BOI_DEFINE_RECEIVER_FUNC(RectComponent, SetBorderWidth);
+
     BOI_DEFINE_FUNCSET_FUNC(RectComponent, GetSize);
     BOI_DEFINE_FUNCSET_FUNC(RectComponent, SetSize);
 
