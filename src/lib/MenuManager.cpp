@@ -233,6 +233,27 @@ void MenuManager::InitStandardMenus()
     -> SetNext("Insert", BOI_UUID_A(PutText));
 
     RegisterMenu(BOI_UUID_M(Text), pRootItem);
+
+    /*
+     * Border Menu.
+     */
+
+    ActionArgs borderWidthArgs;
+    borderWidthArgs.Set("Receiver", "{041ca99e-2564-4ddc-84c9-4538e8f75379}");
+    borderWidthArgs.Set("MinValue", 0);
+    borderWidthArgs.Set("MaxValue", 1000);
+    borderWidthArgs.Set("MinDelta", 1);
+    borderWidthArgs.Set("MaxDelta", 10);
+    borderWidthArgs.Set("Value", 1);
+    borderWidthArgs.Set("Interactive", true);
+
+    pRootItem = new MenuItem("Border");
+    pRootItem
+        -> SetChild("Width", BOI_UUID_A(SetNumber), borderWidthArgs)
+        -> SetNext("Color")
+        -> SetNext("Style");
+
+    RegisterMenu(BOI_UUID_M(Border), pRootItem);
 }
 
 
@@ -294,6 +315,19 @@ void MenuManager::InitStandardProfiles()
     uuids.append("{c768ae35-9c07-46d8-be25-3ad3f65ccdfd}");
     uuids.append("{fb120d04-b81a-41cb-bb48-ca0295b4498f}");
     menus.append(BOI_UUID_M(Text));
+
+    RegisterProfile(uuids, menus);
+
+    /*
+     * Register the profile
+     * for the Border menu.
+     */
+
+    uuids.clear();
+    menus.clear();
+
+    uuids.append("{041ca99e-2564-4ddc-84c9-4538e8f75379}");
+    menus.append(BOI_UUID_M(Border));
 
     RegisterProfile(uuids, menus);
 }
