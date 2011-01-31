@@ -27,6 +27,7 @@
 #include "Actions/SetChildAction.h"
 #include "Actions/SetNumberAction.h"
 #include "Actions/RectSelectAction.h"
+#include "Actions/ZoomToRectAction.h"
 #include "Actions/InsertTextAction.h"
 #include "Actions/AppendTextAction.h"
 #include "Actions/FreeRotateAction.h"
@@ -219,6 +220,11 @@ void CoreActionsFactory::RegisterTypes(TypeRegistrar* pRegistrar)
                              BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
                              NULL,
                              StandardActions::Uuid(BOI_STD_A(SetNumber)));
+
+    pRegistrar->RegisterType(this,
+                             BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
+                             NULL,
+                             StandardActions::Uuid(BOI_STD_A(ZoomToRect)));
 }
 
 
@@ -358,6 +364,10 @@ Object* CoreActionsFactory::GetAction(int type)
 
         case BOI_STD_A(SetNumber):
             pAction = new SetNumberAction();
+            break;
+
+        case BOI_STD_A(ZoomToRect):
+            pAction = new ZoomToRectAction();
             break;
 
         default:

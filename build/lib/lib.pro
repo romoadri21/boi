@@ -138,6 +138,7 @@ HEADERS += \
     $${BOI_LIB_SRC_DIR}/Actions/SetChildAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/SetNumberAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/RectSelectAction.h \
+    $${BOI_LIB_SRC_DIR}/Actions/ZoomToRectAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/InsertTextAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/AppendTextAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/FreeRotateAction.h \
@@ -258,6 +259,7 @@ SOURCES += \
     $${BOI_LIB_SRC_DIR}/Actions/SetChildAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/SetNumberAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/RectSelectAction.cpp \
+    $${BOI_LIB_SRC_DIR}/Actions/ZoomToRectAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/InsertTextAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/AppendTextAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/FreeRotateAction.cpp \

@@ -60,6 +60,7 @@ class BOI_LIB_EXPORT StandardActions
             Action_ToggleHotSpot,
             Action_InsertBrowser,
             Action_SetNumber,
+            Action_ZoomToRect,
 
             NumActions
         };

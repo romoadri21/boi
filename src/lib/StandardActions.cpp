@@ -45,6 +45,7 @@ const char* StandardActions::s_uuids[] =
     "{31dc8fc7-1c4b-4510-af87-3ef2074f1a15}", // Action_ToggleHotSpot
     "{b4388785-830d-4f4d-b1a4-3b95a5737628}", // Action_InsertBrowser
     "{4849a9fd-1324-49ec-8952-a1b4d3b05510}", // Action_SetNumber
+    "{ae5ea269-83e9-4718-8391-d285c7a44ef5}", // Action_ZoomToRect
 };
 
 
