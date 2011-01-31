@@ -145,6 +145,7 @@ class BOI_LIB_EXPORT ASI
         void CenterViewOn(const QPointF& pos);
 
         void FitAllInView();
+        void FitRectInView(const QRectF& rect);
 
         void AlignLayerToView(const QPointF& layerPoint,
                               const QPointF& viewPoint);

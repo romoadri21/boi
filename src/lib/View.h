@@ -73,6 +73,7 @@ class View
         void CenterOn(qreal x, qreal y);
 
         void FitAllInView();
+        void FitRectInView(const QRectF& rect);
 
         void AlignLayerToView(const QPointF& layerPoint,
                               const QPointF& viewPoint);

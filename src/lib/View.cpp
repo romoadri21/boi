@@ -519,17 +519,23 @@ void View::FitAllInView()
 {
     QRectF bounds = m_pMainLayer->childrenBoundingRect();
 
-    if (!bounds.isEmpty())
+    FitRectInView(bounds);
+}
+
+
+void View::FitRectInView(const QRectF& rect)
+{
+    if (!rect.isEmpty())
     {
         QRectF viewBounds = m_pView->frameRect();
 
-        qreal xScale = viewBounds.width() / bounds.width();
-        qreal yScale = viewBounds.height() / bounds.height();
+        qreal xScale = viewBounds.width() / rect.width();
+        qreal yScale = viewBounds.height() / rect.height();
         qreal scale = (xScale < yScale) ? xScale : yScale;
 
         m_pMainLayer->setScale(scale);
 
-        AlignLayerToView(bounds.topLeft(), QPoint(0, 0));
+        AlignLayerToView(rect.topLeft(), QPoint(0, 0));
     }
 }
 

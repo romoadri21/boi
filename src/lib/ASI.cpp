@@ -645,6 +645,12 @@ void ASI::FitAllInView()
 }
 
 
+void ASI::FitRectInView(const QRectF& rect)
+{
+    m_pView->FitRectInView(rect);
+}
+
+
 void ASI::AlignLayerToView(const QPointF& layerPoint,
                            const QPointF& viewPoint)
 {
