@@ -35,7 +35,6 @@ class ZoomToRectAction
 
     protected:
         void UpdateRectComponent(ASI* pSI);
-        void UpdateViewTransform(ASI* pSI);
 
     private:
         int m_numTouchStreams;
