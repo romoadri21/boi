@@ -11,7 +11,6 @@
 #include <QPen>
 #include <QBrush>
 #include <QRectF>
-#include <QAtomicInt>
 #include "Component.h"
 
 
@@ -21,23 +20,19 @@ class RectComponent
     BOI_INTERFACE_DEFINITION();
 
     BOI_DEFINE_RECEIVER_FUNC(RectComponent, SetSize);
+    BOI_DEFINE_RECEIVER_FUNC(RectComponent, UpdateSize);
+
     BOI_DEFINE_RECEIVER_FUNC(RectComponent, SetPen);
     BOI_DEFINE_RECEIVER_FUNC(RectComponent, SetBrush);
     BOI_DEFINE_RECEIVER_FUNC(RectComponent, SetRadii);
 
     BOI_DEFINE_RECEIVER_FUNC(RectComponent, SetBorderWidth);
 
-    BOI_DEFINE_FUNCSET_FUNC(RectComponent, GetSize);
-    BOI_DEFINE_FUNCSET_FUNC(RectComponent, SetSize);
-
     public:
         RectComponent(int type);
 
     protected:
         virtual bool Initialize();
-
-        virtual int AcceptTransaction(int funcSet);
-        virtual void TransactionEnded(int id);
 
         virtual void Draw(QPainter* pPainter,
                           const QStyleOptionGraphicsItem* pOption);
@@ -56,8 +51,6 @@ class RectComponent
 
         QPen   m_pen;
         QBrush m_brush;
-
-        QAtomicInt m_numTransactions;
 };
 
 

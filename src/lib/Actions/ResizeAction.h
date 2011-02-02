@@ -52,7 +52,8 @@ class ResizeAction
         qreal m_yPrev;
 
         CRef m_cref;
-        int m_funcSet;
+        int m_setSizeReceiver;
+        int m_updateSizeReceiver;
 
         bool m_textInputActive;
         int  m_setTextReceiver;

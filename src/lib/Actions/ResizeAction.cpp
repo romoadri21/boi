@@ -6,6 +6,7 @@
 
 #include <QStringList>
 #include <QString>
+#include <QPointF>
 #include <QSizeF>
 #include "ASI.h"
 #include "ActionArgs.h"
@@ -55,9 +56,11 @@ ActionCommand ResizeAction::Start(ASI* pSI, const ActionArgs* pArgs)
 
     if (m_cref.IsValid())
     {
-        m_funcSet = pSI->GetFuncSet(m_cref, "{acb9a365-42b3-47b9-a2a7-a7c5f1999b0f}");
+        m_setSizeReceiver = pSI->GetReceiver(m_cref, "{fb33af5a-942a-4e9d-814e-87d67228bc26}");
+        m_updateSizeReceiver = pSI->GetReceiver(m_cref, "{b06ff327-be49-4617-9391-f192b64b82f5}");
 
-        if (m_funcSet != -1)
+        if ((m_setSizeReceiver != -1) &&
+            (m_updateSizeReceiver != -1))
         {
             return BOI_AC_CONTINUE;
         }
@@ -129,26 +132,27 @@ ActionCommand ResizeAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
         {
             qreal scaleFactor = pSI->ViewScaleFactor();
 
-            DRef dref;
-            DRef sizeRef = pSI->CallFunc(m_cref, m_funcSet, 0, dref);
+            DRef dref = pSI->NewData(BOI_STD_D(Point));
+            QPointF* point = dref.GetWriteInstance<QPointF>();
 
-            QSizeF* pSize = sizeRef.GetWriteInstance<QSizeF>();
+            point->setX(0);
+            point->setY(0);
 
             if ((m_axis == Axis_X) || (m_axis == Axis_XY))
             {
                 qreal delta = pEvent->x - m_xPrev;
                 delta /= scaleFactor;
-                pSize->rwidth() += delta;
+                point->setX(delta);
             }
 
             if ((m_axis == Axis_Y) || (m_axis == Axis_XY))
             {
                 qreal delta = pEvent->y - m_yPrev;
                 delta /= scaleFactor;
-                pSize->rheight() += delta;
+                point->setY(delta);
             }
 
-            pSI->CallFunc(m_cref, m_funcSet, 1, sizeRef);
+            pSI->EmitTo(m_cref, m_updateSizeReceiver, dref, true);
 
             m_xPrev = pEvent->x;
             m_yPrev = pEvent->y;
@@ -267,26 +271,27 @@ ActionCommand ResizeAction::Update(ASI* pSI, const ActionArgs* pArgs)
         }
 
 
-        DRef dref;
-        DRef sizeRef = pSI->CallFunc(m_cref, m_funcSet, 0, dref);
+        DRef dref = pSI->NewData(BOI_STD_D(Size));
+        QSizeF* pSize = dref.GetWriteInstance<QSizeF>();
 
-        QSizeF* pSize = sizeRef.GetWriteInstance<QSizeF>();
+        pSize->setWidth(-1);
+        pSize->setHeight(-1);
 
         if ((m_axis == Axis_X) && num1Valid)
         {
-            pSize->rwidth() = num1;
+            pSize->setWidth(num1);
         }
         else if ((m_axis == Axis_Y) && num1Valid)
         {
-            pSize->rheight() = num1;
+            pSize->setHeight(num1);
         }
         else if (m_axis == Axis_XY)
         {
-            if (num1Valid) pSize->rwidth() = num1;
-            if (num2Valid) pSize->rheight() = num2;
+            if (num1Valid) pSize->setWidth(num1);
+            if (num2Valid) pSize->setHeight(num2);
         }
 
-        pSI->CallFunc(m_cref, m_funcSet, 1, sizeRef);
+        pSI->EmitTo(m_cref, m_setSizeReceiver, dref, true);
     }
 
     return BOI_AC_CONTINUE;

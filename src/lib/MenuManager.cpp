@@ -299,7 +299,8 @@ void MenuManager::InitStandardProfiles()
      * for the Resize menu.
      */
 
-    uuids.append("{acb9a365-42b3-47b9-a2a7-a7c5f1999b0f}");
+    uuids.append("{b06ff327-be49-4617-9391-f192b64b82f5}");
+    uuids.append("{fb33af5a-942a-4e9d-814e-87d67228bc26}");
     menus.append(BOI_UUID_M(Resize));
 
     RegisterProfile(uuids, menus);
