@@ -267,6 +267,13 @@ void DescriptionManager::InitStandardDescriptions()
     pDescription->SetBody("The fourth javascript receiver.");
 
     RegisterDescription(pDescription);
+
+    pDescription = new Description();
+    pDescription->SetUuidMajor("{b7b98851-6c34-4fa7-beff-2b98aea6041f}");
+    pDescription->SetTitle("Set Font Size [Receiver]");
+    pDescription->SetBody("Sets the font size.");
+
+    RegisterDescription(pDescription);
 }
 
 

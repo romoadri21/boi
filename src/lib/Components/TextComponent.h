@@ -58,6 +58,8 @@ class TextComponent
     BOI_DEFINE_RECEIVER_FUNC(TextComponent, AppendText);
     BOI_DEFINE_RECEIVER_FUNC(TextComponent, InsertText);
 
+    BOI_DEFINE_RECEIVER_FUNC(TextComponent, SetFontSize);
+
     BOI_DEFINE_FUNCSET_FUNC(TextComponent, GetText);
 
     public:

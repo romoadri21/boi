@@ -23,6 +23,8 @@ BOI_BEGIN_RECEIVERS(TextComponent)
                          BOI_RECEIVER_FUNC(TextComponent, AppendText))
     BOI_DECLARE_RECEIVER("{fb120d04-b81a-41cb-bb48-ca0295b4498f}",
                          BOI_RECEIVER_FUNC(TextComponent, InsertText))
+    BOI_DECLARE_RECEIVER("{b7b98851-6c34-4fa7-beff-2b98aea6041f}",
+                         BOI_RECEIVER_FUNC(TextComponent, SetFontSize))
 BOI_END_RECEIVERS(TextComponent)
 
 
@@ -354,6 +356,77 @@ void TextComponent::InsertText(DRef& dref, int source)
 }
 
 
+void TextComponent::SetFontSize(DRef& dref, int source)
+{
+    Q_UNUSED(source);
+
+    double newSize;
+    bool doSetSize = false;
+    int drefType = dref.Type();
+
+    if (drefType == BOI_STD_D(Double))
+    {
+        newSize = *dref.GetReadInstance<double>();
+
+        doSetSize = true;
+    }
+    else if (drefType == BOI_STD_D(Float))
+    {
+        newSize = *dref.GetReadInstance<float>();
+
+        doSetSize = true;
+    }
+    else if (drefType == BOI_STD_D(Int))
+    {
+        newSize = *dref.GetReadInstance<int>();
+
+        doSetSize = true;
+    }
+    else if (drefType == BOI_STD_D(Font))
+    {
+        const QFont font = *dref.GetReadInstance<QFont>();
+        newSize = font.pointSizeF();
+
+        doSetSize = true;
+    }
+    else if (drefType == BOI_STD_D(String))
+    {
+        bool conversionValid;
+        const QString* pString = dref.GetReadInstance<QString>();
+
+        newSize = pString->toDouble(&conversionValid);
+
+        if (conversionValid)
+        {
+            doSetSize = true;
+        }
+    }
+
+
+    if (doSetSize)
+    {
+        LockDraw();
+
+        QTextCharFormat charFormat = m_cursor.charFormat();
+        charFormat.setFontPointSize(newSize);
+
+        m_document.setDefaultFont(charFormat.font());
+
+        int position = m_cursor.position();
+
+        m_cursor.select(QTextCursor::Document);
+        m_cursor.setCharFormat(charFormat);
+        m_cursor.clearSelection();
+
+        m_cursor.setPosition(position);
+
+        UnlockDraw();
+
+        Update();
+    }
+}
+
+
 DRef TextComponent::GetText(int id, DRef& dref)
 {
     Q_UNUSED(id);
@@ -375,20 +448,26 @@ void TextComponent::Import(const QHash<int, DRef>& in)
 {
     DRef dref = in.value(1);
     SetText(dref);
+
+    dref = in.value(2);
+    SetFontSize(dref, -1);
 }
 
 
 void TextComponent::Export(QHash<int, DRef>& out)
 {
-    DRef dref = SI()->NewData(BOI_STD_D(String));
+    DRef textRef = SI()->NewData(BOI_STD_D(String));
+    DRef fontRef = SI()->NewData(BOI_STD_D(Font));
 
     LockDraw();
 
-    *dref.GetWriteInstance<QString>() = m_document.toPlainText();
+    *textRef.GetWriteInstance<QString>() = m_document.toPlainText();
+    *fontRef.GetWriteInstance<QFont>() = m_cursor.charFormat().font();
 
     UnlockDraw();
 
-    out.insert(1, dref);
+    out.insert(1, textRef);
+    out.insert(2, fontRef);
 }
 
 
