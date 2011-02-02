@@ -7,6 +7,7 @@
 #include <QHashIterator>
 #include "MenuItem.h"
 #include "ProfileType.h"
+#include "ViewLayerId.h"
 #include "StandardMenus.h"
 #include "StandardActions.h"
 #include "StandardReceivers.h"
@@ -148,6 +149,15 @@ void MenuManager::InitStandardMenus()
     ActionArgs connectOutputArgs;
     connectOutputArgs.Set("Type", ProfileType_Output);
 
+    ActionArgs moveToLayerMainArgs;
+    moveToLayerMainArgs.Set("Layer", ViewLayerId_Main);
+
+    ActionArgs moveToLayerOverlayArgs;
+    moveToLayerOverlayArgs.Set("Layer", ViewLayerId_Overlay);
+
+    ActionArgs moveToLayerUnderlayArgs;
+    moveToLayerUnderlayArgs.Set("Layer", ViewLayerId_Underlay);
+
     ActionArgs opacityArgs;
     opacityArgs.Set("Receiver", BOI_UUID_R(SetOpacity));
     opacityArgs.Set("MinValue", 0.01);
@@ -187,7 +197,11 @@ void MenuManager::InitStandardMenus()
     -> SetNext("Stack")
         -> SetChild("On Top")
         -> SetNext("After")
-        -> SetNext("Before") -> Parent()
+        -> SetNext("Before")
+        -> SetNext("Layer")
+            -> SetChild("Main", BOI_UUID_A(MoveToLayer), moveToLayerMainArgs)
+            -> SetNext("Overlay", BOI_UUID_A(MoveToLayer), moveToLayerOverlayArgs)
+            -> SetNext("Underlay", BOI_UUID_A(MoveToLayer), moveToLayerUnderlayArgs) -> Parent() -> Parent()
     -> SetNext("Collect", BOI_UUID_A(Collect))
     -> SetNext("Parent")
         -> SetChild("Set Child", BOI_UUID_A(SetChild))

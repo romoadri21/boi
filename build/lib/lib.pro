@@ -143,6 +143,7 @@ HEADERS += \
     $${BOI_LIB_SRC_DIR}/Actions/AppendTextAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/FreeRotateAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/SetRotationAction.h \
+    $${BOI_LIB_SRC_DIR}/Actions/MoveToLayerAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/AddToLayoutAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/FitAllInViewAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/InsertBrowserAction.h \
@@ -264,6 +265,7 @@ SOURCES += \
     $${BOI_LIB_SRC_DIR}/Actions/AppendTextAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/FreeRotateAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/SetRotationAction.cpp \
+    $${BOI_LIB_SRC_DIR}/Actions/MoveToLayerAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/AddToLayoutAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/FitAllInViewAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/InsertBrowserAction.cpp \

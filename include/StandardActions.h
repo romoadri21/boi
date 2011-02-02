@@ -61,6 +61,7 @@ class BOI_LIB_EXPORT StandardActions
             Action_InsertBrowser,
             Action_SetNumber,
             Action_ZoomToRect,
+            Action_MoveToLayer,
 
             NumActions
         };

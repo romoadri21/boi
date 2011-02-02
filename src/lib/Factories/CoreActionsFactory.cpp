@@ -32,6 +32,7 @@
 #include "Actions/AppendTextAction.h"
 #include "Actions/FreeRotateAction.h"
 #include "Actions/SetRotationAction.h"
+#include "Actions/MoveToLayerAction.h"
 #include "Actions/AddToLayoutAction.h"
 #include "Actions/FitAllInViewAction.h"
 #include "Actions/InsertBrowserAction.h"
@@ -225,6 +226,11 @@ void CoreActionsFactory::RegisterTypes(TypeRegistrar* pRegistrar)
                              BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
                              NULL,
                              StandardActions::Uuid(BOI_STD_A(ZoomToRect)));
+
+    pRegistrar->RegisterType(this,
+                             BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
+                             NULL,
+                             StandardActions::Uuid(BOI_STD_A(MoveToLayer)));
 }
 
 
@@ -368,6 +374,10 @@ Object* CoreActionsFactory::GetAction(int type)
 
         case BOI_STD_A(ZoomToRect):
             pAction = new ZoomToRectAction();
+            break;
+
+        case BOI_STD_A(MoveToLayer):
+            pAction = new MoveToLayerAction();
             break;
 
         default:
