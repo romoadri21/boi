@@ -230,31 +230,26 @@ void RectComponent::UpdateRect()
 void RectComponent::Import(const QHash<int, BOI::DRef>& in)
 {
     BOI::DRef dref = in.value(1);
+    SetSize(dref, -1);
 
-    if (dref.Type() == BOI_STD_D(Size))
-    {
-        QSizeF newSize = *dref.GetReadInstance<QSizeF>();
-
-        LockDraw();
-
-        m_rect.setSize(newSize);
-        UpdateRect();
-
-        UnlockDraw();
-    }
+    dref = in.value(2);
+    SetPen(dref, -1);
 }
 
 
 void RectComponent::Export(QHash<int, BOI::DRef>& out)
 {
     BOI::DRef sizeRef = SI()->NewData(BOI_STD_D(Size));
+    BOI::DRef penRef = SI()->NewData(BOI_STD_D(Pen));
 
     LockDraw();
 
     *sizeRef.GetWriteInstance<QSizeF>() = m_rect.size();
+    *penRef.GetWriteInstance<QPen>() = m_pen;
 
     UnlockDraw();
 
     out.insert(1, sizeRef);
+    out.insert(2, penRef);
 }
 
