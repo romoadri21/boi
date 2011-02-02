@@ -16,6 +16,7 @@ namespace BOI {
 MoveAction::MoveAction()
     : Action(BOI_STD_A(Move))
 {
+    m_pMoveData = NULL;
 }
 
 
@@ -33,7 +34,7 @@ ActionCommand MoveAction::Start(ASI* pSI, const ActionArgs* pArgs)
 
 void MoveAction::Stop(ASI* pSI)
 {
-    m_cref.Reset();
+    ResetData();
 
     pSI->UnsetCursor();
 }
@@ -63,36 +64,102 @@ ActionCommand MoveAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
 
         if (crefs.Count() > 0)
         {
-            m_cref = crefs.Value(0);
+            CRef cref = crefs.Value(0);
 
-            QPointF origin = pSI->MapToParent(m_cref, QPointF(0, 0));
-            QPointF touchPoint = pSI->MapFromViewToParent(m_cref, point);
+            if (pSI->IsSelected(cref))
+            {
+                crefs = pSI->Selection();
+            }
+            else
+            {
+                crefs = CRefList();
+                crefs.Append(cref);
+            }
 
-            m_xDelta = touchPoint.x() - origin.x();
-            m_yDelta = touchPoint.y() - origin.y();
+            m_count = crefs.Count();
+            Reserve(m_count);
+
+            for (int i=0; i < m_count; i++)
+            {
+                cref = crefs.Value(i);
+
+                m_pMoveData[i].cref = cref;
+
+                QPointF origin = pSI->MapToParent(cref, QPointF(0, 0));
+                QPointF touchPoint = pSI->MapFromViewToParent(cref, point);
+
+                m_pMoveData[i].xDelta = touchPoint.x() - origin.x();
+                m_pMoveData[i].yDelta = touchPoint.y() - origin.y();
+            }
         }
 
         m_numTouchStreams++;
     }
     if (eventType == TouchEvent::Type_Move) 
     {
-        if (m_cref.IsValid())
+        for (int i=0; i < m_count; i++)
         {
-            QPointF point = pSI->MapFromViewToParent(m_cref, QPoint(pEvent->x, pEvent->y));
-            point -= QPointF(m_xDelta, m_yDelta);
+            if (m_pMoveData[i].cref.IsValid())
+            {
+                QPointF point = pSI->MapFromViewToParent(m_pMoveData[i].cref,
+                                                         QPoint(pEvent->x, pEvent->y));
 
-            pSI->SetPosition(m_cref, point);
+                point -= QPointF(m_pMoveData[i].xDelta,
+                                 m_pMoveData[i].yDelta);
+
+                pSI->SetPosition(m_pMoveData[i].cref, point);
+            }
         }
     }
     else if (eventType == TouchEvent::Type_Release) 
     {
-        m_cref.Reset();
+        ResetData();
 
         pSI->SetCursor(Qt::OpenHandCursor);
         m_numTouchStreams--;
     }
 
     return BOI_AC_CONTINUE;
+}
+
+
+void MoveAction::Destroy()
+{
+    delete[] m_pMoveData;
+}
+
+
+void MoveAction::Reserve(int size)
+{
+    if (m_pMoveData == NULL)
+    {
+        m_pMoveData = new MoveData[size];
+        m_capacity = size;
+    }
+    else
+    {
+        if (m_capacity < size)
+        {
+            delete[] m_pMoveData;
+
+            m_pMoveData = new MoveData[size];
+            m_capacity = size;
+        }
+    }
+}
+
+
+void MoveAction::ResetData()
+{
+    if (m_pMoveData != NULL)
+    {
+        for (int i=0; i < m_count; i++)
+        {
+            m_pMoveData[i].cref.Reset();
+        }
+
+        m_count = 0;
+    }
 }
 
 

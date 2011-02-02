@@ -29,13 +29,26 @@ class MoveAction
 
         ActionCommand HandleTouchEvent(ASI* pSI, TouchEvent* pEvent);
 
+        void Destroy();
+
+    private:
+        typedef struct
+        {
+            CRef cref;
+            qreal xDelta;
+            qreal yDelta;
+        } MoveData;
+
+    private:
+        void Reserve(int size);
+        void ResetData();
+
     private:
         int m_numTouchStreams;
 
-        CRef m_cref;
-
-        qreal m_xDelta;
-        qreal m_yDelta;
+        MoveData* m_pMoveData;
+        int m_capacity;
+        int m_count;
 };
 
 
