@@ -247,6 +247,26 @@ void MenuManager::InitStandardMenus()
     RegisterMenu(BOI_UUID_M(Text), pRootItem);
 
     /*
+     * Font Menu.
+     */
+
+    ActionArgs fontSizeArgs;
+    fontSizeArgs.Set("Receiver", "{b7b98851-6c34-4fa7-beff-2b98aea6041f}");
+    fontSizeArgs.Set("MinValue", 1);
+    fontSizeArgs.Set("MaxValue", 1000);
+    fontSizeArgs.Set("MinDelta", 0.25);
+    fontSizeArgs.Set("MaxDelta", 5);
+    fontSizeArgs.Set("Value", 13);
+    fontSizeArgs.Set("Interactive", true);
+
+    pRootItem = new MenuItem("Font");
+    pRootItem
+        -> SetChild("Size", BOI_UUID_A(SetNumber), fontSizeArgs)
+        -> SetNext("Color");
+
+    RegisterMenu(BOI_UUID_M(Font), pRootItem);
+
+    /*
      * Border Menu.
      */
 
@@ -327,6 +347,19 @@ void MenuManager::InitStandardProfiles()
     uuids.append("{c768ae35-9c07-46d8-be25-3ad3f65ccdfd}");
     uuids.append("{fb120d04-b81a-41cb-bb48-ca0295b4498f}");
     menus.append(BOI_UUID_M(Text));
+
+    RegisterProfile(uuids, menus);
+
+    /*
+     * Register the profile
+     * for the Font menu.
+     */
+
+    uuids.clear();
+    menus.clear();
+
+    uuids.append("{b7b98851-6c34-4fa7-beff-2b98aea6041f}");
+    menus.append(BOI_UUID_M(Font));
 
     RegisterProfile(uuids, menus);
 

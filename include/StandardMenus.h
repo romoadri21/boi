@@ -34,6 +34,7 @@ class BOI_LIB_EXPORT StandardMenus
             Menu_Browser,
             Menu_Text,
             Menu_Border,
+            Menu_Font,
 
             NumMenus
         };

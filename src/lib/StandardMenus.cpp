@@ -19,6 +19,7 @@ const char* StandardMenus::s_uuids[] =
     "{7fceed55-47bd-42ce-9cf0-c91f2f9bb867}", // Menu_Browser
     "{838e233a-1083-4b6e-b20d-89fb3f0d405f}", // Menu_Text
     "{f559c728-f7aa-4c35-a800-591dc6fe8c59}", // Menu_Border
+    "{4f05fd40-ea71-4520-92b2-411c94369445}", // Menu_Font
 };
 
 
