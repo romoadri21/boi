@@ -34,9 +34,9 @@ StandardMenu::StandardMenu()
     m_sections.append(-1);
 
     m_fills[0] = QBrush(qRgb(250, 250, 250));
-    m_fills[1] = QBrush(qRgb(235, 235, 235));
-    m_fills[2] = QBrush(qRgb(215, 215, 255));
-    m_fills[3] = QBrush(qRgb(215, 255, 215));
+    m_fills[1] = QBrush(qRgb(250, 250, 250));
+    m_fills[2] = QBrush(qRgb(250, 250, 250));
+    m_fills[3] = QBrush(qRgb(250, 250, 250));
 }
 
 
