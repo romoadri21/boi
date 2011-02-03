@@ -10,6 +10,7 @@
 #include "StandardComponents.h"
 #include "Components/MenuComponent.h"
 #include "Components/TextComponent.h"
+#include "Components/ImageComponent.h"
 #include "Components/BrowserComponent.h"
 #include "Components/XGestureComponent.h"
 #include "Components/TextInputComponent.h"
@@ -100,6 +101,11 @@ void StandardComponentsFactory::RegisterTypes(TypeRegistrar* pRegistrar)
                              BOI_GET_INSTANCE_FUNC(StandardComponentsFactory, GetComponent),
                              NULL,
                              StandardComponents::Uuid(BOI_STD_C(Javascript)));
+
+    pRegistrar->RegisterType(this,
+                             BOI_GET_INSTANCE_FUNC(StandardComponentsFactory, GetComponent),
+                             NULL,
+                             StandardComponents::Uuid(BOI_STD_C(Image)));
 }
 
 
@@ -143,6 +149,10 @@ Object* StandardComponentsFactory::GetComponent(int type)
 
         case BOI_STD_C(Javascript):
             pComponent = new JavascriptComponent(m_pJavascriptDrawData);
+            break;
+
+        case BOI_STD_C(Image):
+            pComponent = new ImageComponent();
             break;
 
         default:

@@ -38,6 +38,7 @@ class BOI_LIB_EXPORT StandardComponents
             Component_Timer,
             Component_Browser,
             Component_Javascript,
+            Component_Image,
 
             NumComponents
         };
