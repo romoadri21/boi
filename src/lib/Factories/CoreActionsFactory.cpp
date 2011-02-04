@@ -34,6 +34,7 @@
 #include "Actions/SetRotationAction.h"
 #include "Actions/MoveToLayerAction.h"
 #include "Actions/AddToLayoutAction.h"
+#include "Actions/CaptureViewAction.h"
 #include "Actions/FitAllInViewAction.h"
 #include "Actions/InsertBrowserAction.h"
 #include "Actions/ToggleHotSpotAction.h"
@@ -231,6 +232,11 @@ void CoreActionsFactory::RegisterTypes(TypeRegistrar* pRegistrar)
                              BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
                              NULL,
                              StandardActions::Uuid(BOI_STD_A(MoveToLayer)));
+
+    pRegistrar->RegisterType(this,
+                             BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
+                             NULL,
+                             StandardActions::Uuid(BOI_STD_A(CaptureView)));
 }
 
 
@@ -378,6 +384,10 @@ Object* CoreActionsFactory::GetAction(int type)
 
         case BOI_STD_A(MoveToLayer):
             pAction = new MoveToLayerAction();
+            break;
+
+        case BOI_STD_A(CaptureView):
+            pAction = new CaptureViewAction();
             break;
 
         default:

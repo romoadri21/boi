@@ -145,6 +145,7 @@ HEADERS += \
     $${BOI_LIB_SRC_DIR}/Actions/SetRotationAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/MoveToLayerAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/AddToLayoutAction.h \
+    $${BOI_LIB_SRC_DIR}/Actions/CaptureViewAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/FitAllInViewAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/InsertBrowserAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/ToggleHotSpotAction.h \
@@ -268,6 +269,7 @@ SOURCES += \
     $${BOI_LIB_SRC_DIR}/Actions/SetRotationAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/MoveToLayerAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/AddToLayoutAction.cpp \
+    $${BOI_LIB_SRC_DIR}/Actions/CaptureViewAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/FitAllInViewAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/InsertBrowserAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/ToggleHotSpotAction.cpp \

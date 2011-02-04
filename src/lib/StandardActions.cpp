@@ -47,6 +47,7 @@ const char* StandardActions::s_uuids[] =
     "{4849a9fd-1324-49ec-8952-a1b4d3b05510}", // Action_SetNumber
     "{ae5ea269-83e9-4718-8391-d285c7a44ef5}", // Action_ZoomToRect
     "{326f0aa5-43f8-4030-9ab4-9b1239bf0248}", // Action_MoveToLayer
+    "{8c7ce920-430d-4464-9ff4-ad5e62d783aa}", // Action_CaptureView
 };
 
 
