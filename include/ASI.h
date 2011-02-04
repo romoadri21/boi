@@ -13,6 +13,7 @@
 #include <QCursor>
 #include <QPointF>
 #include <QRectF>
+#include <QImage>
 #include <QList>
 #include "CRef.h"
 #include "BOILib.h"
@@ -165,6 +166,8 @@ class BOI_LIB_EXPORT ASI
                                        ViewLayerId viewLayerId,
                                        bool visibleOnly=true,
                                        bool intersect=true);
+
+        QImage CaptureRect(const QRectF& rect);
 
         void StackOnTop(CRef cref);
 

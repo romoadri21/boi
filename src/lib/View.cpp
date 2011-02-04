@@ -10,6 +10,7 @@
 #include <QGraphicsItem>
 #include <QMouseEvent>
 #include <QTouchEvent>
+#include <QPainter>
 #include "Events/ResizeEvent.h"
 #include "Events/TouchEvent.h"
 #include "Events/KeyEvent.h"
@@ -675,6 +676,37 @@ QList<QGraphicsItem*> View::ItemsIn(const QRectF& rect,
     }
 
     return filteredItems;
+}
+
+
+QImage View::Capture(const QRectF& rect)
+{
+    m_pSystemLayer->setVisible(false);
+    m_pOverlayLayer->setVisible(false);
+    m_pUnderlayLayer->setVisible(false);
+
+    QTransform transform = m_pMainLayer->transform();
+    m_pMainLayer->resetTransform();
+
+    QRectF sourceRect = m_pMainLayer->mapRectToScene(rect);
+    QRectF targetRect(0, 0, rect.width(), rect.height());
+
+    QImage image(targetRect.width(),
+                 targetRect.height(),
+                 QImage::Format_ARGB32);
+    image.fill(0);
+
+    QPainter painter(&image);
+
+    m_pScene->render(&painter, targetRect, sourceRect);
+
+    m_pMainLayer->setTransform(transform);
+
+    m_pUnderlayLayer->setVisible(true);
+    m_pOverlayLayer->setVisible(true);
+    m_pSystemLayer->setVisible(true);
+
+    return image;
 }
 
 

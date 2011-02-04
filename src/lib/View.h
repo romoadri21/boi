@@ -12,6 +12,7 @@
 #include <QRect>
 #include <QRectF>
 #include <QPoint>
+#include <QImage>
 #include <QPointF>
 #include <QObject>
 #include <QtGlobal>
@@ -89,6 +90,8 @@ class View
         QList<QGraphicsItem*> ItemsIn(const QRectF& rect,
                                       ViewLayerId viewLayerId,
                                       bool intersect);
+
+        QImage Capture(const QRectF& rect);
 
     protected:
         bool eventFilter(QObject* pTarget, QEvent* pEvent);

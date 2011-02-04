@@ -784,6 +784,12 @@ CRefList ASI::ComponentsInLayerRect(const QRectF& rect,
 }
 
 
+QImage ASI::CaptureRect(const QRectF& rect)
+{
+    return m_pView->Capture(rect);
+}
+
+
 void ASI::StackOnTop(CRef cref)
 {
     GuiRequest request;
