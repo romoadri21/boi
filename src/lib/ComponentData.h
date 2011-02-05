@@ -63,6 +63,8 @@ class ComponentData
          */
         int id;
 
+        int flags;
+
         Component* pComponent;
 
         GraphicsItem graphicsItem;
@@ -88,10 +90,7 @@ class ComponentData
          */
 
         bool selected;
-        bool selectable;
-
         bool visible;
-
         bool inLayout;
 };
 

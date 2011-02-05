@@ -145,9 +145,6 @@ class BrowserComponent
         virtual bool Initialize();
         virtual void Destroy();
 
-        virtual bool HandlesTouchEvents();
-        virtual bool HandlesKeyEvents();
-
         virtual void HandleTouchEvent(TouchEvent* pEvent);
         virtual void HandleKeyEvent(KeyEvent* pEvent);
 

@@ -12,6 +12,7 @@
 #include "InputMode.h"
 #include "ViewLayerId.h"
 #include "ActionEngine.h"
+#include "ComponentData.h"
 #include "StandardActions.h"
 #include "Events/InputModeChangeEvent.h"
 #include "InputEventHandler.h"
@@ -162,12 +163,14 @@ void InputEventHandler::HandleTouchEvent(TouchEvent* pEvent)
 
                     if (pComponent != NULL)
                     {
-                        if (pComponent->HandlesKeyEvents())
+                        int flags = pComponent->m_pData->flags;
+
+                        if (flags & ComponentFlag_HandlesKeyEvents)
                         {
                             m_pASI->SetKeyEventHandler(cref);
                         }
 
-                        if (pComponent->HandlesTouchEvents())
+                        if (flags & ComponentFlag_HandlesTouchEvents)
                         {
                             pEventStream->target = EventStream::Target_Component;
                             pEventStream->pComponent = pComponent;
@@ -236,12 +239,14 @@ void InputEventHandler::HandleTouchEvent(TouchEvent* pEvent)
 
                     if (pComponent != NULL)
                     {
-                        if (pComponent->HandlesKeyEvents())
+                        int flags = pComponent->m_pData->flags;
+
+                        if (flags & ComponentFlag_HandlesKeyEvents)
                         {
                             m_pASI->SetKeyEventHandler(cref);
                         }
 
-                        if (pComponent->HandlesTouchEvents())
+                        if (flags & ComponentFlag_HandlesTouchEvents)
                         {
                             pEventStream->target = EventStream::Target_Component;
                             pEventStream->pComponent = pComponent;

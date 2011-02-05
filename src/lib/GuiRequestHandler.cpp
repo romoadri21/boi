@@ -50,6 +50,7 @@ GuiRequestHandler::GuiRequestHandler()
     m_funcs[GuiRequest::RequestType_Update]             = BOI_GUIREQUESTHANDLER_FUNC(Update);
     m_funcs[GuiRequest::RequestType_Emit]               = BOI_GUIREQUESTHANDLER_FUNC(Emit);
     m_funcs[GuiRequest::RequestType_Rotate]             = BOI_GUIREQUESTHANDLER_FUNC(Rotate);
+    m_funcs[GuiRequest::RequestType_SetFlag]            = BOI_GUIREQUESTHANDLER_FUNC(SetFlag);
 }
 
 
@@ -544,6 +545,29 @@ void GuiRequestHandler::Rotate(GuiRequest* pRequest)
         pGraphicsItem->setRotation(rotation);
 
         EmitParentBoundingBox(pComponent, false);
+
+        pRequest->cref.ReleaseInstance();
+    }
+
+    pRequest->cref.Reset();
+}
+
+
+void GuiRequestHandler::SetFlag(GuiRequest* pRequest)
+{
+    Component* pComponent = pRequest->cref.GetInstance();
+    if (pComponent != NULL)
+    {
+        ComponentData* pData = pComponent->m_pData;
+
+        if (pRequest->data.flagData.enabled)
+        {
+            pData->flags |= pRequest->data.flagData.flag;
+        }
+        else
+        {
+            pData->flags &= ~(pRequest->data.flagData.flag);
+        }
 
         pRequest->cref.ReleaseInstance();
     }

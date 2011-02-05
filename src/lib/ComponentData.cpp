@@ -4,6 +4,7 @@
  * http://www.boi-project.org/license
  */
 
+#include "ComponentFlag.h"
 #include "ComponentData.h"
 
 
@@ -20,6 +21,7 @@ ComponentData::ComponentData(Component* pComponentIn)
       crefLock(),
       instanceCount(0),
       needsDestroy(false),
+      flags(ComponentFlag_IsSelectable),
       pComponent(pComponentIn),
       graphicsItem(pComponentIn),
       layer(ViewLayerId_Null),
@@ -30,7 +32,6 @@ ComponentData::ComponentData(Component* pComponentIn)
       pTasksTail(NULL),
       numActiveTasks(1),
       selected(false),
-      selectable(true),
       visible(false),
       inLayout(false)
 {

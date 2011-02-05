@@ -40,7 +40,6 @@ class JavascriptComponent
         virtual bool Initialize();
         virtual void Destroy();
 
-        virtual bool HandlesTouchEvents();
         virtual void HandleTouchEvent(TouchEvent* pEvent);
 
         virtual void Draw(QPainter* pPainter,

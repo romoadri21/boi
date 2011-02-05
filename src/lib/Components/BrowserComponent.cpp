@@ -387,6 +387,9 @@ bool BrowserComponent::Initialize()
      */
     SetBoundingRect(QRectF(0, 0, 800, 40));
 
+    SetFlag(ComponentFlag_HandlesTouchEvents);
+    SetFlag(ComponentFlag_HandlesKeyEvents);
+
     return true;
 }
 
@@ -396,18 +399,6 @@ void BrowserComponent::Destroy()
     m_pBrowserObject->HandleComponentDestroyed();
 
     m_controller.DeleteBrowserObject();
-}
-
-
-bool BrowserComponent::HandlesTouchEvents()
-{
-    return true;
-}
-
-
-bool BrowserComponent::HandlesKeyEvents()
-{
-    return true;
 }
 
 

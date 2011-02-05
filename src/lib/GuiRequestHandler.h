@@ -82,6 +82,7 @@ class GuiRequestHandler
         DEFINE_BOI_GUIREQUESTHANDLER_FUNC(Update);
         DEFINE_BOI_GUIREQUESTHANDLER_FUNC(Emit);
         DEFINE_BOI_GUIREQUESTHANDLER_FUNC(Rotate);
+        DEFINE_BOI_GUIREQUESTHANDLER_FUNC(SetFlag);
 
         void EmitParentBoundingBox(Component* pComponent, bool newOnly);
 

@@ -69,7 +69,6 @@ class TextComponent
         virtual bool Initialize();
         virtual void Destroy();
 
-        virtual bool HandlesKeyEvents();
         virtual void HandleKeyEvent(KeyEvent* pEvent);
 
         virtual void HandleEmitterConnected(int emitter,

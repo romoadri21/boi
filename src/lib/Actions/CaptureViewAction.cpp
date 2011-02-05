@@ -42,7 +42,7 @@ ActionCommand CaptureViewAction::Start(ASI* pSI, const ActionArgs* pArgs)
             m_rectComponent = pSI->NewComponent(typeId, ViewLayerId_Null);
 
             pSI->SetVisible(m_rectComponent, true);
-            pSI->SetSelectable(m_rectComponent, false);
+            pSI->SetFlag(m_rectComponent, ComponentFlag_IsSelectable, false);
 
             m_setSizeReceiver = pSI->GetReceiver(m_rectComponent,
                                                  "{fb33af5a-942a-4e9d-814e-87d67228bc26}");

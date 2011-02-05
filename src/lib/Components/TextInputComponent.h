@@ -45,7 +45,6 @@ class TextInputComponent
 
         virtual void HandleStateChanged(StateId stateId, DRef& dref);
 
-        virtual bool HandlesKeyEvents();
         virtual void HandleKeyEvent(KeyEvent* pEvent);
 
         virtual int AcceptTransaction(int funcSet);

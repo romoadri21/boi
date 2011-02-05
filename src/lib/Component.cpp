@@ -112,18 +112,6 @@ void Component::Draw(QPainter* pPainter,
 }
 
 
-bool Component::HandlesTouchEvents()
-{
-    return false;
-}
-
-
-bool Component::HandlesKeyEvents()
-{
-    return false;
-}
-
-
 void Component::HandleTouchEvent(TouchEvent* pEvent)
 {
     Q_UNUSED(pEvent);
@@ -199,6 +187,19 @@ void Component::LockDraw()
 void Component::UnlockDraw()
 {
     m_pData->drawLock.Unlock();
+}
+
+
+void Component::SetFlag(ComponentFlag flag, bool enabled)
+{
+    GuiRequest request;
+
+    request.cref = m_pData->cref;
+    request.data.flagData.flag = flag;
+    request.data.flagData.enabled = enabled;
+    request.type = GuiRequest::RequestType_SetFlag;
+
+    m_pData->pISI->PostRequest(&request);
 }
 
 

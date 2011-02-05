@@ -39,6 +39,7 @@ class GuiRequest
             RequestType_Update,
             RequestType_Emit,
             RequestType_Rotate,
+            RequestType_SetFlag,
 
             NumRequests
         };
@@ -73,6 +74,12 @@ class GuiRequest
                 qreal width;
                 qreal height;
             } rect;
+
+            struct
+            {
+                int flag;
+                bool enabled;
+            } flagData;
 
             struct
             {

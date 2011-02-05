@@ -22,6 +22,7 @@
 #include "ProfileType.h"
 #include "ViewLayerId.h"
 #include "ViewTransformerId.h"
+#include "ComponentFlag.h"
 #include "CSI.h"
 
 
@@ -80,7 +81,8 @@ class BOI_LIB_EXPORT ASI
 
         void CenterComponentOn(CRef& cref, const QPointF& point, bool relativeToScene=false);
 
-        void SetSelectable(CRef& cref, bool selectable);
+        void SetFlag(CRef& cref, ComponentFlag flag, bool enabled=true);
+
         void SetPosition(CRef cref, const QPointF& pos);
         void SetRotation(CRef cref, qreal rotation);
         void SetOpacity(CRef cref, qreal opacity);

@@ -91,6 +91,8 @@ bool MenuComponent::Initialize()
     SI()->RegisterStateListener(StateId_WindowSize, this, var);
     m_windowRect.setSize(var.toSizeF());
 
+    SetFlag(ComponentFlag_HandlesTouchEvents);
+
     return true;
 }
 
@@ -142,12 +144,6 @@ void MenuComponent::HandleItemTouched(const MenuItem* pItem)
             }
         }
     }
-}
-
-
-bool MenuComponent::HandlesTouchEvents()
-{
-    return true;
 }
 
 

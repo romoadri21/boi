@@ -38,6 +38,7 @@ HEADERS += \
     $${BOI_INCLUDE_DIR}/ActionArgs.h \
     $${BOI_INCLUDE_DIR}/ActionCommand.h \
     $${BOI_INCLUDE_DIR}/BOILib.h \
+    $${BOI_INCLUDE_DIR}/ComponentFlag.h \
     $${BOI_INCLUDE_DIR}/Component.h \
     $${BOI_INCLUDE_DIR}/CRef.h \
     $${BOI_INCLUDE_DIR}/CRefList.h \

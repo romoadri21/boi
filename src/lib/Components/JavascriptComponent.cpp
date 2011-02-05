@@ -80,18 +80,13 @@ bool JavascriptComponent::Initialize()
     boiObject.setProperty("DataType_String", BOI_STD_D(String));
 
     SetBoundingRect(m_pDrawData->BoundingRect());
+    SetFlag(ComponentFlag_HandlesTouchEvents);
     return true;
 }
 
 
 void JavascriptComponent::Destroy()
 {
-}
-
-
-bool JavascriptComponent::HandlesTouchEvents()
-{
-    return true;
 }
 
 

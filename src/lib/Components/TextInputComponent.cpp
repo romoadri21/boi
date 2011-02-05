@@ -73,6 +73,8 @@ bool TextInputComponent::Initialize()
 
     UpdateDimensions();
 
+    SetFlag(ComponentFlag_HandlesKeyEvents);
+
     return true;
 }
 
@@ -96,12 +98,6 @@ void TextInputComponent::HandleStateChanged(StateId stateId, DRef& dref)
 
         UnlockDraw();
     }
-}
-
-
-bool TextInputComponent::HandlesKeyEvents()
-{
-    return true;
 }
 
 

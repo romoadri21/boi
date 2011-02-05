@@ -67,18 +67,14 @@ TextComponent::TextComponent()
 bool TextComponent::Initialize()
 {
     m_document.setPlainText("New Text");
+
+    SetFlag(ComponentFlag_HandlesKeyEvents);
     return true;
 }
 
 
 void TextComponent::Destroy()
 {
-}
-
-
-bool TextComponent::HandlesKeyEvents()
-{
-    return true;
 }
 
 

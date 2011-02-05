@@ -133,12 +133,12 @@ void ASI::CenterComponentOn(CRef& cref, const QPointF& point, bool relativeToSce
 }
 
 
-void ASI::SetSelectable(CRef& cref, bool selectable)
+void ASI::SetFlag(CRef& cref, ComponentFlag flag, bool enabled)
 {
     Component* pComponent = cref.GetInstance();
     if (pComponent != NULL)
     {
-        pComponent->m_pData->selectable = selectable;
+        pComponent->SetFlag(flag, enabled);
         cref.ReleaseInstance();
     }
 }
@@ -741,7 +741,7 @@ CRefList ASI::ComponentsAtViewPoint(const QPoint& point,
          */
         ComponentData* pData = pGraphicsItem->GetComponent()->m_pData;
 
-        if (pData->selectable)
+        if (pData->flags & ComponentFlag_IsSelectable)
         {
             if (!visibleOnly || pData->visible)
             {
@@ -779,7 +779,7 @@ CRefList ASI::ComponentsInLayerRect(const QRectF& rect,
          */
         ComponentData* pData = pGraphicsItem->GetComponent()->m_pData;
 
-        if (pData->selectable)
+        if (pData->flags & ComponentFlag_IsSelectable)
         {
             if (!visibleOnly || pData->visible)
             {

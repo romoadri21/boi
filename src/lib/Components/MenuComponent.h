@@ -51,7 +51,6 @@ class MenuComponent
         virtual void Draw(QPainter* pPainter,
                           const QStyleOptionGraphicsItem* pOption);
 
-        virtual bool HandlesTouchEvents();
         virtual void HandleTouchEvent(TouchEvent* pEvent);
 
         virtual void HandleStateChanged(StateId stateId, DRef& dref);

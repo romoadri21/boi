@@ -18,6 +18,7 @@
 #include "StateId.h"
 #include "Interface.h"
 #include "ProfileType.h"
+#include "ComponentFlag.h"
 
 
 class QString;
@@ -53,9 +54,6 @@ class BOI_LIB_EXPORT Component
         virtual void Draw(QPainter* pPainter,
                           const QStyleOptionGraphicsItem* pOption);
 
-        virtual bool HandlesTouchEvents();
-        virtual bool HandlesKeyEvents();
-
         virtual void HandleTouchEvent(TouchEvent* pEvent);
         virtual void HandleKeyEvent(KeyEvent* pEvent);
 
@@ -76,6 +74,8 @@ class BOI_LIB_EXPORT Component
 
         void LockDraw();
         void UnlockDraw();
+
+        void SetFlag(ComponentFlag flag, bool enabled=true);
 
         void SetTransformOrigin(const QPointF& point);
         void SetBoundingRect(const QRectF& rect);

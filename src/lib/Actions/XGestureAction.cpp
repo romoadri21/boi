@@ -61,7 +61,7 @@ ActionCommand XGestureAction::Start(ASI* pSI, const ActionArgs* pArgs)
         m_xgestureComponent = pSI->NewComponent(BOI_STD_C(XGesture),
                                                 ViewLayerId_System);
 
-        pSI->SetSelectable(m_xgestureComponent, false);
+        pSI->SetFlag(m_xgestureComponent, ComponentFlag_IsSelectable, false);
     }
 
     return BOI_AC_CONTINUE;
