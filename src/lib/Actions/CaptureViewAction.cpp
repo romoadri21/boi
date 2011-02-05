@@ -121,7 +121,7 @@ ActionCommand CaptureViewAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
 
         UpdateRectComponent(pSI);
 
-        pSI->MoveToLayer(m_rectComponent, ViewLayerId_Main);
+        pSI->MoveToLayer(m_rectComponent, ViewLayerId_Overlay);
 
         m_numTouchStreams++;
     }
@@ -218,12 +218,15 @@ void CaptureViewAction::HandleViewTransformed(ASI* pSI)
 
 void CaptureViewAction::UpdateRectComponent(ASI* pSI)
 {
+    QRectF mappedRect = pSI->MapFromLayerToView(m_captureRect.Rect());
+    mappedRect = pSI->MapFromViewToLayer(mappedRect, ViewLayerId_Overlay);
+
     DRef dref = pSI->NewData(BOI_STD_D(Size));
-    *dref.GetWriteInstance<QSizeF>() = m_captureRect.Rect().size();
+    *dref.GetWriteInstance<QSizeF>() = mappedRect.size();
 
     pSI->EmitTo(m_rectComponent, m_setSizeReceiver, dref);
 
-    pSI->SetPosition(m_rectComponent, m_captureRect.Rect().topLeft());
+    pSI->SetPosition(m_rectComponent, mappedRect.topLeft());
 }
 
 
