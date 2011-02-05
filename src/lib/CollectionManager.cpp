@@ -112,7 +112,7 @@ QString CollectionManager::CreateCollection(CRefList crefs,
 
     out << (qint32)numCRefs;
 
-    for (int i=0; i < numCRefs; i++)
+    for (int i=numCRefs-1; i >= 0; i--)
     {
         CRef cref = crefs.Value(i);
 
