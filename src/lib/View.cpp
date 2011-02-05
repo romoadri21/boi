@@ -575,6 +575,19 @@ void View::MoveToLayer(QGraphicsItem* pItem, ViewLayerId viewLayerId)
 }
 
 
+QRectF View::MapToLayer(const QRectF& rect, ViewLayerId viewLayerId)
+{
+    if (viewLayerId == ViewLayerId_Main)
+    {
+        return m_pMainLayer->mapRectFromScene(rect);
+    }
+    else
+    {
+        return rect;
+    }
+}
+
+
 QPointF View::MapToLayer(const QPoint& point, ViewLayerId viewLayerId)
 {
     if (viewLayerId == ViewLayerId_Main)
@@ -584,6 +597,19 @@ QPointF View::MapToLayer(const QPoint& point, ViewLayerId viewLayerId)
     else
     {
         return point;
+    }
+}
+
+
+QRectF View::MapFromLayer(const QRectF& rect, ViewLayerId viewLayerId)
+{
+    if (viewLayerId == ViewLayerId_Main)
+    {
+        return m_pMainLayer->mapRectToScene(rect);
+    }
+    else
+    {
+        return rect;
     }
 }
 

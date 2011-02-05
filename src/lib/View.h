@@ -83,7 +83,11 @@ class View
 
         QPointF MapToItem(QGraphicsItem* pItem, const QPoint& point);
         QPointF MapToParent(QGraphicsItem* pItem, const QPoint& point);
+
+        QRectF MapToLayer(const QRectF& rect, ViewLayerId viewLayerId);
         QPointF MapToLayer(const QPoint& point, ViewLayerId viewLayerId);
+
+        QRectF MapFromLayer(const QRectF& rect, ViewLayerId viewLayerId);
 
         QList<QGraphicsItem*> ItemsAt(const QPoint& point, int viewLayerIds);
 

@@ -658,6 +658,18 @@ void ASI::AlignLayerToView(const QPointF& layerPoint,
 }
 
 
+QRectF ASI::MapFromLayerToView(const QRectF& rect, ViewLayerId viewLayerId)
+{
+    return m_pView->MapFromLayer(rect, viewLayerId);
+}
+
+
+QRectF ASI::MapFromViewToLayer(const QRectF& rect, ViewLayerId viewLayerId)
+{
+    return m_pView->MapToLayer(rect, viewLayerId);
+}
+
+
 QPointF ASI::MapFromViewToLayer(const QPoint& point, ViewLayerId viewLayerId)
 {
     return m_pView->MapToLayer(point, viewLayerId);

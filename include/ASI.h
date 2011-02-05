@@ -151,6 +151,9 @@ class BOI_LIB_EXPORT ASI
         void AlignLayerToView(const QPointF& layerPoint,
                               const QPointF& viewPoint);
 
+        QRectF MapFromLayerToView(const QRectF& rect, ViewLayerId viewLayerId=ViewLayerId_Main);
+
+        QRectF MapFromViewToLayer(const QRectF& rect, ViewLayerId viewLayerId=ViewLayerId_Main);
         QPointF MapFromViewToLayer(const QPoint& point, ViewLayerId viewLayerId=ViewLayerId_Main);
         QPointF MapFromViewToComponent(Component* pComponent, const QPoint& point);
         QPointF MapFromViewToParent(Component* pComponent, const QPoint& point);
