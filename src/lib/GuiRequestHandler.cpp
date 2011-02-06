@@ -559,14 +559,25 @@ void GuiRequestHandler::SetFlag(GuiRequest* pRequest)
     if (pComponent != NULL)
     {
         ComponentData* pData = pComponent->m_pData;
+        int flag = pRequest->data.flagData.flag;
 
         if (pRequest->data.flagData.enabled)
         {
-            pData->flags |= pRequest->data.flagData.flag;
+            pData->flags |= flag;
+
+            if (flag == ComponentFlag_ClipsChildren)
+            {
+                pData->graphicsItem.setFlag(QGraphicsItem::ItemClipsChildrenToShape);
+            }
         }
         else
         {
-            pData->flags &= ~(pRequest->data.flagData.flag);
+            pData->flags &= ~flag;
+
+            if (flag == ComponentFlag_ClipsChildren)
+            {
+                pData->graphicsItem.setFlag(QGraphicsItem::ItemClipsChildrenToShape, false);
+            }
         }
 
         pRequest->cref.ReleaseInstance();
@@ -592,30 +603,69 @@ void GuiRequestHandler::UpdateChildLayers(GraphicsItem* pParent, ViewLayerId lay
 
 void GuiRequestHandler::SetParent(QGraphicsItem* pChild, QGraphicsItem* pParent)
 {
-    if ((pChild->scene()  != NULL) &&
-        (pParent->scene() != NULL))
+    if (pChild->scene() != NULL)
     {
-        /*
-         * Maintain the current position of
-         * the item relative to the scene.
-         */
-        QPointF pos = pChild->scenePos();
-        pos = pParent->mapFromScene(pos);
-        pChild->setPos(pos);
+        if (ItemClipsChildren(pParent))
+        {
+            /*
+             * Currently in Qt, if an item clips its children
+             * to its shape and another item becomes a child
+             * of the item, the area where the new child was
+             * previously drawn will not be updated and thus
+             * cause drawing artifacts. These lines workaround
+             * this issue.
+             * TODO: remove this when parenting in Qt is fixed
+             * with respect to the ItemClipsChildrenToShape flag.
+             */
+            QRectF updateRect = pChild->boundingRect();
+            updateRect |= pChild->childrenBoundingRect();
+            updateRect = pChild->mapRectToScene(updateRect);
+            pChild->scene()->update(updateRect);
+        }
 
-        /*
-         * Maintain the current rotation
-         * relative to the scene.
-         */
-        QLineF childLine(pChild->mapToScene(0, 0),
-                         pChild->mapToScene(1, 0));
-        QLineF parentLine(pParent->mapToScene(0, 0),
-                          pParent->mapToScene(1, 0));
-        qreal rotation = parentLine.angleTo(childLine);
-        pChild->setRotation(rotation * -1);
+        if (pParent->scene() != NULL)
+        {
+            /*
+             * Maintain the current position of
+             * the item relative to the scene.
+             */
+            QPointF pos = pChild->scenePos();
+            pos = pParent->mapFromScene(pos);
+            pChild->setPos(pos);
+
+            /*
+             * Maintain the current rotation
+             * relative to the scene.
+             */
+            QLineF childLine(pChild->mapToScene(0, 0),
+                             pChild->mapToScene(1, 0));
+            QLineF parentLine(pParent->mapToScene(0, 0),
+                              pParent->mapToScene(1, 0));
+            qreal rotation = parentLine.angleTo(childLine);
+            pChild->setRotation(rotation * -1);
+        }
     }
 
     pChild->setParentItem(pParent);
+}
+
+
+bool GuiRequestHandler::ItemClipsChildren(QGraphicsItem* pItem)
+{
+    bool clipsChildren = false;
+
+    while (pItem != NULL)
+    {
+        if (pItem->flags().testFlag(QGraphicsItem::ItemClipsChildrenToShape))
+        {
+            clipsChildren = true;
+            break;
+        }
+
+        pItem = pItem->parentItem();
+    }
+
+    return clipsChildren;
 }
 
 

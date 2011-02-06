@@ -89,6 +89,7 @@ class GuiRequestHandler
         void UpdateChildLayers(GraphicsItem* pParent, ViewLayerId layer);
 
         void SetParent(QGraphicsItem* pChild, QGraphicsItem* pParent);
+        bool ItemClipsChildren(QGraphicsItem* pItem);
 
     private:
         GuiRequestFunc m_funcs[GuiRequest::NumRequests];

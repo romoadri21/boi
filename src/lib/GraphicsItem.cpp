@@ -53,7 +53,7 @@ void GraphicsItem::paint(QPainter *pPainter,
      * exposedRect is smaller than boundingRect()) and thus cause
      * artifacts since only the exposed region should be updated.
      */
-    pPainter->setClipRect(pOption->exposedRect);
+    pPainter->setClipRect(pOption->exposedRect, Qt::IntersectClip);
 
     if (m_pComponent->m_pData->visible)
     {
