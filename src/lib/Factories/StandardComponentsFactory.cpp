@@ -11,6 +11,7 @@
 #include "Components/MenuComponent.h"
 #include "Components/TextComponent.h"
 #include "Components/ImageComponent.h"
+#include "Components/DrawerComponent.h"
 #include "Components/BrowserComponent.h"
 #include "Components/XGestureComponent.h"
 #include "Components/TextInputComponent.h"
@@ -106,6 +107,11 @@ void StandardComponentsFactory::RegisterTypes(TypeRegistrar* pRegistrar)
                              BOI_GET_INSTANCE_FUNC(StandardComponentsFactory, GetComponent),
                              NULL,
                              StandardComponents::Uuid(BOI_STD_C(Image)));
+
+    pRegistrar->RegisterType(this,
+                             BOI_GET_INSTANCE_FUNC(StandardComponentsFactory, GetComponent),
+                             NULL,
+                             StandardComponents::Uuid(BOI_STD_C(Drawer)));
 }
 
 
@@ -153,6 +159,10 @@ Object* StandardComponentsFactory::GetComponent(int type)
 
         case BOI_STD_C(Image):
             pComponent = new ImageComponent();
+            break;
+
+        case BOI_STD_C(Drawer):
+            pComponent = new DrawerComponent();
             break;
 
         default:

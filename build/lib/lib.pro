@@ -185,6 +185,7 @@ HEADERS += \
     $${BOI_LIB_SRC_DIR}/Components/TextComponent.h \
     $${BOI_LIB_SRC_DIR}/Components/TimerComponent.h \
     $${BOI_LIB_SRC_DIR}/Components/ImageComponent.h \
+    $${BOI_LIB_SRC_DIR}/Components/DrawerComponent.h \
     $${BOI_LIB_SRC_DIR}/Components/BrowserComponent.h \
     $${BOI_LIB_SRC_DIR}/Components/XGestureComponent.h \
     $${BOI_LIB_SRC_DIR}/Components/TextInputComponent.h \
@@ -294,6 +295,7 @@ SOURCES += \
     $${BOI_LIB_SRC_DIR}/Components/TextComponent.cpp \
     $${BOI_LIB_SRC_DIR}/Components/TimerComponent.cpp \
     $${BOI_LIB_SRC_DIR}/Components/ImageComponent.cpp \
+    $${BOI_LIB_SRC_DIR}/Components/DrawerComponent.cpp \
     $${BOI_LIB_SRC_DIR}/Components/BrowserComponent.cpp \
     $${BOI_LIB_SRC_DIR}/Components/XGestureComponent.cpp \
     $${BOI_LIB_SRC_DIR}/Components/TextInputComponent.cpp \

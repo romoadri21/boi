@@ -39,6 +39,7 @@ class BOI_LIB_EXPORT StandardComponents
             Component_Browser,
             Component_Javascript,
             Component_Image,
+            Component_Drawer,
 
             NumComponents
         };
