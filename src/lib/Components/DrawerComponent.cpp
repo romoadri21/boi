@@ -17,6 +17,8 @@ namespace BOI {
 
 
 BOI_BEGIN_RECEIVERS(DrawerComponent)
+    BOI_DECLARE_RECEIVER("{7f2249e4-6c3c-40a5-9cff-59501f06ee37}",
+                         BOI_RECEIVER_FUNC(DrawerComponent, SetText))
     BOI_DECLARE_RECEIVER("{86316b23-125f-42b8-8ccc-151e8abca8ba}",
                          BOI_RECEIVER_FUNC(DrawerComponent, SetExtent))
 BOI_END_RECEIVERS(DrawerComponent)
@@ -115,6 +117,45 @@ void DrawerComponent::Draw(QPainter* pPainter,
     pPainter->drawText(m_handleRect, Qt::AlignCenter, m_label);
 
     UnlockDraw();
+}
+
+
+void DrawerComponent::SetText(DRef& dref, int source)
+{
+    Q_UNUSED(source);
+
+    if (dref.Type() == BOI_STD_D(String))
+    {
+        bool fullRectUpdated = false;
+        QRectF updateRect = m_handleRect;
+        QString text = *dref.GetReadInstance<QString>();
+
+        LockDraw();
+
+        m_label = text;
+
+        UpdateHandleRect();
+        updateRect |= m_handleRect;
+
+        if (m_handleRect.width() > m_fullRect.width())
+        {
+            m_fullRect.setWidth(m_handleRect.width());
+            fullRectUpdated = true;
+        }
+
+        if (!m_open)
+        {
+            SetBoundingRect(m_handleRect);
+        }
+        else if (fullRectUpdated)
+        {
+            SetBoundingRect(m_fullRect);
+        }
+
+        UnlockDraw();
+
+        Update(updateRect);
+    }
 }
 
 

@@ -24,6 +24,7 @@ class DrawerComponent
     : public Component
 {
     BOI_INTERFACE_DEFINITION();
+    BOI_DEFINE_RECEIVER_FUNC(DrawerComponent, SetText);
     BOI_DEFINE_RECEIVER_FUNC(DrawerComponent, SetExtent);
 
     public:
