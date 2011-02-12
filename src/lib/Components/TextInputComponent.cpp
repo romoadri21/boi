@@ -4,6 +4,7 @@
  * http://www.boi-project.org/license
  */
 
+#include <QFontMetricsF>
 #include <QPainter>
 #include <QVariant>
 #include "CSI.h"
@@ -45,10 +46,11 @@ BOI_END_CALLERS(TextInputComponent)
 TextInputComponent::TextInputComponent()
     : Component(BOI_STD_C(TextInput)),
       m_text(),
+      m_numNewLines(0),
       m_clearOnNext(false),
       m_windowSize(),
+      m_textRect(),
       m_boundingRect(),
-      m_innerBoundingRect(),
       m_textPen(),
       m_bgFill(),
       m_textBgFill(),
@@ -113,12 +115,24 @@ void TextInputComponent::HandleKeyEvent(KeyEvent* pEvent)
         {
             m_text.clear();
             m_clearOnNext = false;
+
+            if (m_numNewLines > 0)
+            {
+                m_numNewLines = 0;
+                UpdateDimensions();
+            }
         }
 
         int key = pEvent->key;
 
         if (key == Qt::Key_Backspace)
         {
+            if (m_text.endsWith('\n'))
+            {
+                m_numNewLines--;
+                UpdateDimensions();
+            }
+
             m_text.chop(1);
             EmitText();
             Update();
@@ -126,12 +140,22 @@ void TextInputComponent::HandleKeyEvent(KeyEvent* pEvent)
         else if ((key == Qt::Key_Return) ||
                  (key == Qt::Key_Enter))
         {
-            ActionArgs* pArgs = (m_pActionArgs != NULL) ?
-                                (m_pActionArgs) :
-                                (new ActionArgs);
-            pArgs->Set("Text", m_text);
+            if (pEvent->modifiers & KeyEvent::Modifier_Shift)
+            {
+                m_text.append('\n');
+                m_numNewLines++;
 
-            SI()->UpdateActiveAction(m_action, pArgs);
+                UpdateDimensions();
+            }
+            else
+            {
+                ActionArgs* pArgs = (m_pActionArgs != NULL) ?
+                                    (m_pActionArgs) :
+                                    (new ActionArgs);
+                pArgs->Set("Text", m_text);
+
+                SI()->UpdateActiveAction(m_action, pArgs);
+            }
         }
         else if ((key != Qt::Key_Shift) &&
                  (key != Qt::Key_Control))
@@ -189,14 +213,16 @@ void TextInputComponent::Draw(QPainter* pPainter,
     LockDraw();
 
     pPainter->fillRect(m_boundingRect, m_bgFill);
-    pPainter->fillRect(m_innerBoundingRect, m_textBgFill);
+
+    QRectF rect = m_textRect;
+    rect.adjust(-m_xPadding, -m_yPadding, m_xPadding, m_yPadding);
+
+    pPainter->fillRect(rect, m_textBgFill);
 
     pPainter->setFont(m_font);
     pPainter->setPen(m_textPen);
 
-    QRectF textRect = m_innerBoundingRect;
-    textRect.setX(m_innerBoundingRect.x() + (m_innerBoundingRect.height() / 2));
-    pPainter->drawText(textRect, Qt::AlignLeft | Qt::AlignVCenter, m_text);
+    pPainter->drawText(m_textRect, Qt::AlignLeft | Qt::AlignTop, m_text);
 
     UnlockDraw();
 }
@@ -226,6 +252,14 @@ void TextInputComponent::SetText(DRef& dref, int source)
 
         m_text = text;
 
+        int numNewLines = m_text.count('\n');
+
+        if (m_numNewLines != numNewLines)
+        {
+            m_numNewLines = numNewLines;
+            UpdateDimensions();
+        }
+
         UnlockDraw();
 
         Update();
@@ -246,18 +280,29 @@ void TextInputComponent::ClearOnNextPress(DRef& dref, int source)
 
 void TextInputComponent::UpdateDimensions()
 {
-    // TODO: replace the percentages here with values stored in state.
+    // TODO: replace the percentages here with values stored in state?
 
-    qreal width = m_windowSize.width() * 0.85;
-    qreal height = m_windowSize.height() * 0.05;
-    qreal leftMargin = m_windowSize.width() * ((1.0 - 0.85) / 2.0);
+    qreal verticalMargin = m_windowSize.height() * 0.031;
+    qreal horizontalMargin = m_windowSize.width() * 0.05;
 
-    m_boundingRect.setRect(0, 0, m_windowSize.width(), height*2);
-    m_innerBoundingRect.setRect(leftMargin, (height / 2), width, height);
+    m_font.setPointSizeF(m_windowSize.height() * 0.02);
+
+    QFontMetricsF fontMetrics(m_font);
+    qreal fontHeight = fontMetrics.height();
+
+    m_textRect.setRect(horizontalMargin,
+                       verticalMargin,
+                       m_windowSize.width() - (horizontalMargin * 2),
+                       fontHeight * (m_numNewLines + 1));
+
+    m_xPadding = fontHeight * 0.75;
+    m_yPadding = fontHeight * 0.33;
+
+    m_boundingRect.setRect(0, 0,
+                           m_windowSize.width(),
+                           m_textRect.height() + (verticalMargin * 2));
 
     SetPosition(QPointF(0, 0));
-
-    m_font.setPixelSize(height * 0.5);
 
     SetBoundingRect(m_boundingRect);
     Update();

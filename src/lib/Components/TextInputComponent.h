@@ -65,12 +65,17 @@ class TextInputComponent
 
     private:
         QString m_text;
+        int m_numNewLines;
 
         bool m_clearOnNext;
 
         QSizeF m_windowSize;
+
+        qreal m_xPadding;
+        qreal m_yPadding;
+
+        QRectF m_textRect;
         QRectF m_boundingRect;
-        QRectF m_innerBoundingRect;
 
         QPen m_textPen;
         QBrush m_bgFill;
