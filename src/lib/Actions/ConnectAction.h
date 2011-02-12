@@ -8,14 +8,11 @@
 #define __BOI_CONNECTACTION_H
 
 
-#include <QStringList>
 #include <QString>
+#include <QList>
 #include "CRef.h"
 #include "Action.h"
 #include "ProfileType.h"
-
-
-#define BOI_CONNECT_ACTION_MAX_DESCRIPTIONS 30
 
 
 namespace BOI {
@@ -64,10 +61,7 @@ class ConnectAction
         CRef m_browserComponent;
         bool m_pageLoaded;
 
-        QStringList m_uuids;
-
-        int m_numDescriptions;
-        const Description* m_descriptions[BOI_CONNECT_ACTION_MAX_DESCRIPTIONS];
+        QList<const Description*> m_descriptions;
 };
 
 

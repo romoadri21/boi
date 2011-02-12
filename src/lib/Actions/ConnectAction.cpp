@@ -4,9 +4,11 @@
  * http://www.boi-project.org/license
  */
 
+#include <QMap>
 #include <QSizeF>
 #include <QPointF>
 #include <QVariant>
+#include <QStringList>
 #include "ASI.h"
 #include "CRefList.h"
 #include "ActionArgs.h"
@@ -251,12 +253,12 @@ ActionCommand ConnectAction::Update(ASI* pSI, const ActionArgs* pArgs)
 
         if (m_getEmitter && !m_getSource)
         {
-            m_emitter = m_uuids.at(index);
+            m_emitter = m_descriptions.at(index)->UuidMajor();
             m_getEmitter = false;
         }
         else if (m_getReceiver && !m_getTarget)
         {
-            m_receiver = m_uuids.at(index);
+            m_receiver = m_descriptions.at(index)->UuidMajor();
             m_getReceiver = false;
         }
 
@@ -295,24 +297,17 @@ void ConnectAction::UpdatePage(ASI* pSI)
 
     script += "SetItems([";
 
-    for (int i=0; i < m_numDescriptions; i++)
+    int numDescriptions = m_descriptions.size();
+
+    for (int i=0; i < numDescriptions; i++)
     {
-        const Description* pDescription = m_descriptions[i];
+        const Description* pDescription = m_descriptions.at(i);
 
-        if (pDescription == NULL)
-        {
-            script += "['No Title Available', 'No Description Available']";
-        }
-        else
-        {
-            script += "['";
-            script += pDescription->Title();
-            script += "','";
-            script += pDescription->Body();
-            script += "']";
-        }
+        script += QString("['%1','%2']")
+                  .arg(pDescription->Title())
+                  .arg(pDescription->Body());
 
-        if (i < (m_numDescriptions - 1))
+        if (i < (numDescriptions - 1))
         {
             script += ',';
         }
@@ -328,15 +323,27 @@ void ConnectAction::UpdatePage(ASI* pSI)
 
 bool ConnectAction::GetProfile(ASI* pSI, CRef& cref, ProfileType type)
 {
-    m_uuids = pSI->GetProfile(cref, type);
-    m_numDescriptions = m_uuids.size();
+    QStringList uuids = pSI->GetProfile(cref, type);
 
-    if (m_numDescriptions > 0)
+    if (uuids.size() > 0)
     {
-        for (int i=0; i < m_numDescriptions; i++)
+        /*
+         * Insert the descriptions into a
+         * map so that they can be sorted.
+         */
+        QMap<QString, const Description*> map;
+
+        for (int i=0; i < uuids.size(); i++)
         {
-            m_descriptions[i] = pSI->GetDescription(m_uuids.at(i));
+            const Description* pDescription = pSI->GetDescription(uuids.at(i));
+
+            if (pDescription != NULL)
+            {
+                map.insert(pDescription->Title(), pDescription);
+            }
         }
+
+        m_descriptions = map.values();
 
         return true;
     }
