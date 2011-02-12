@@ -4,35 +4,39 @@
 <style type="text/css">
 body
 {
-    padding: 0px;
     margin: 0px;
+    padding: 0px;
+    color: #434343;
+    font-family:"helvetica", sans-serif;
 }
 
 #MainTable
 {
-    background-color: #efeff4;
     width: 500px;
+    padding: 16px;
+    background-color: #f5f5f5;
+    border: 10px solid #c8c8c8;
 }
 
 .Header
 {
-    color: white;
-    background-color: #333;
-    border: 1px solid #555;
     padding: 9px;
+    background-color: #f0f0f0;
+    border: 1px solid #d7d7d7;
 }
 
 .ItemContainer
 {
     padding: 9px;
-    border-left: 1px solid black;
-    border-right: 1px solid black;
-    border-bottom: 1px solid black;
+    background-color: #fafafa;
+    border-left:   1px solid #d7d7d7;
+    border-right:  1px solid #d7d7d7;
+    border-bottom: 1px solid #d7d7d7;
 }
 
 .Title
 {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: bold;
 }
 
@@ -44,9 +48,9 @@ body
 .NavButton
 {
     width: 250px;
-    border: 1px solid black;
-    background-color: #dfdfe4;
     padding: 11px;
+    border: 1px solid #d7d7d7;
+    background-color: #f0f0f0;
     font-weight: bold;
 }
 
@@ -58,6 +62,16 @@ body
 .Next
 {
     text-align: right;
+}
+
+.Enabled
+{
+    color: #434343;
+}
+
+.Disabled
+{
+    color: #d0d0d0;
 }
 </style>
 
@@ -104,11 +118,18 @@ function HandleOnLoad()
 function ShowPage(pageNumber)
 {
     var index = itemsPerPage * pageNumber;
+    var lastPageNumber = Math.ceil(items.length / itemsPerPage) - 1;
 
     var html = '<table id="MainTable" cols="2" cellpadding="0" cellspacing="0">';
     html += '<tr><td colspan="2" class="Header" id="Header">' + header + '</td></tr>';
-    html += '<tr><td class="Previous NavButton" onclick="HandlePrevious();">&lt;&lt;&nbsp;Previous</td>';
-    html += '<td class="Next NavButton" onclick="HandleNext();">Next&nbsp;&gt;&gt;</td></tr>';
+
+    html += '<tr><td class="Previous NavButton ';
+    html += (pageNumber == 0) ? 'Disabled' : 'Enabled';
+    html += '" onclick="HandlePrevious();">&lt;&lt;&nbsp;Previous</td>';
+
+    html += '<td class="Next NavButton ';
+    html += (pageNumber == lastPageNumber) ? 'Disabled' : 'Enabled';
+    html += '" onclick="HandleNext();">Next&nbsp;&gt;&gt;</td></tr>';
 
     for (var i=0; i < itemsPerPage; i++)
     {
