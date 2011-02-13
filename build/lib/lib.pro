@@ -135,6 +135,7 @@ HEADERS += \
     $${BOI_LIB_SRC_DIR}/Actions/CollectAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/LoadUrlAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/PutTextAction.h \
+    $${BOI_LIB_SRC_DIR}/Actions/SetTextAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/ShutdownAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/ResetViewAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/SetChildAction.h \
@@ -260,6 +261,7 @@ SOURCES += \
     $${BOI_LIB_SRC_DIR}/Actions/CollectAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/LoadUrlAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/PutTextAction.cpp \
+    $${BOI_LIB_SRC_DIR}/Actions/SetTextAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/ShutdownAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/ResetViewAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/SetChildAction.cpp \

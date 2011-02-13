@@ -63,6 +63,7 @@ class BOI_LIB_EXPORT StandardActions
             Action_ZoomToRect,
             Action_MoveToLayer,
             Action_CaptureView,
+            Action_SetText,
 
             NumActions
         };

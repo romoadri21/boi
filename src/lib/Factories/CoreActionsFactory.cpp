@@ -22,6 +22,7 @@
 #include "Actions/CollectAction.h"
 #include "Actions/LoadUrlAction.h"
 #include "Actions/PutTextAction.h"
+#include "Actions/SetTextAction.h"
 #include "Actions/ShutdownAction.h"
 #include "Actions/ResetViewAction.h"
 #include "Actions/SetChildAction.h"
@@ -237,6 +238,11 @@ void CoreActionsFactory::RegisterTypes(TypeRegistrar* pRegistrar)
                              BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
                              NULL,
                              StandardActions::Uuid(BOI_STD_A(CaptureView)));
+
+    pRegistrar->RegisterType(this,
+                             BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
+                             NULL,
+                             StandardActions::Uuid(BOI_STD_A(SetText)));
 }
 
 
@@ -388,6 +394,10 @@ Object* CoreActionsFactory::GetAction(int type)
 
         case BOI_STD_A(CaptureView):
             pAction = new CaptureViewAction();
+            break;
+
+        case BOI_STD_A(SetText):
+            pAction = new SetTextAction();
             break;
 
         default:
