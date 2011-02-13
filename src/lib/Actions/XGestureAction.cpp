@@ -5,13 +5,11 @@
  */
 
 #include <QtGlobal>
-#include <QVariant>
 #include "math.h"
 #include "ASI.h"
-#include "MenuSet.h"
 #include "ActionArgs.h"
 #include "ViewLayerId.h"
-#include "StandardMenus.h"
+#include "ComponentFlag.h"
 #include "StandardActions.h"
 #include "Events/KeyEvent.h"
 #include "Events/TouchEvent.h"
@@ -25,7 +23,6 @@ namespace BOI {
 XGestureAction::XGestureAction()
     : Action(BOI_STD_A(XGesture)),
       m_radius(15.0),
-      m_menuComponent(),
       m_xgestureComponent()
 {
 }
@@ -37,30 +34,12 @@ ActionCommand XGestureAction::Start(ASI* pSI, const ActionArgs* pArgs)
 
     m_numTouchStreams = 0;
 
-    if (!m_menuComponent.IsValid())
-    {
-        m_menuComponent = pSI->NewComponent(BOI_STD_C(Menu),
-                                            ViewLayerId_System);
-
-        m_menuFuncSet = pSI->GetFuncSet(m_menuComponent,
-                                        "{1c412c24-6f31-4138-b1f6-b3f4d662fb67}");
-        if (m_menuFuncSet == -1)
-        {
-            /*
-             * TODO: this will cause Start() to always try to get a new menu component
-             * if it is Reset() because it will always be invalid. Since this will not
-             * change throughout the life of the application, make this a bool or
-             * something so that it only runs once.
-             */
-            m_menuComponent.Reset();
-        }
-    }
-
     if (!m_xgestureComponent.IsValid())
     {
         m_xgestureComponent = pSI->NewComponent(BOI_STD_C(XGesture),
-                                                ViewLayerId_System);
+                                                ViewLayerId_Null);
 
+        pSI->SetVisible(m_xgestureComponent, true);
         pSI->SetFlag(m_xgestureComponent, ComponentFlag_IsSelectable, false);
     }
 
@@ -79,72 +58,72 @@ ActionCommand XGestureAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
     ActionCommand command = BOI_AC_CONTINUE;
     int eventType = pEvent->type;
 
-    if (m_numTouchStreams == 1)
+    if (eventType == TouchEvent::Type_Press)
     {
-        if (eventType == TouchEvent::Type_Move) 
+        m_x1 = pEvent->x;
+        m_y1 = pEvent->y;
+
+        QPointF pos(m_x1, m_y1);
+        pSI->CenterComponentOn(m_xgestureComponent, pos);
+        pSI->MoveToLayer(m_xgestureComponent, ViewLayerId_System);
+
+        m_numTouchStreams++;
+    }
+    else if (eventType == TouchEvent::Type_Move) 
+    {
+        double a = pEvent->x - m_x1;
+        double b = pEvent->y - m_y1;
+
+        double length = a*a + b*b;
+        length = sqrt(length);
+
+        if (length >= m_radius)
         {
-            double a = pEvent->x - m_x1;
-            double b = pEvent->y - m_y1;
-
-            double length = a*a + b*b;
-            length = sqrt(length);
-
-            if (length >= m_radius)
+            int quadrant = Quadrant(a, b);
+            if (quadrant == 1)
             {
-                int quadrant = Quadrant(a, b);
-                if (quadrant == 1)
-                {
-                    command = BOI_AC_REPLACE(BOI_STD_A(Zoom), NULL);
-                }
-                else if (quadrant == 3)
-                {
-                    command = BOI_AC_REPLACE(BOI_STD_A(Pan), NULL);
-                }
-                else if (quadrant == 4)
-                {
-                    command = BOI_AC_REPLACE(BOI_STD_A(Move), NULL);
-                }
-                else
-                {
-                    command = BOI_AC_STOP;
-                }
-
-                pSI->SetVisible(m_xgestureComponent, false);
+                command = BOI_AC_REPLACE(BOI_STD_A(Zoom), NULL);
             }
-        }
-        else if (eventType == TouchEvent::Type_Release) 
-        {
-            pSI->SetVisible(m_xgestureComponent, false);
-
-            QPointF centerPoint(pEvent->x, pEvent->y);
-
-            if (ShowMenu(pSI, centerPoint))
+            else if (quadrant == 3)
             {
-                QVariant var;
-                var.setValue(m_menuComponent);
-
-                ActionArgs* pArgs = new ActionArgs;
-                pArgs->Set("CRef", var);
-
-                command = BOI_AC_REPLACE(BOI_STD_A(Hider), pArgs);
+                command = BOI_AC_REPLACE(BOI_STD_A(Pan), NULL);
+            }
+            else if (quadrant == 4)
+            {
+                command = BOI_AC_REPLACE(BOI_STD_A(Move), NULL);
+            }
+            else
+            {
+                command = BOI_AC_STOP;
             }
 
-            m_numTouchStreams--;
+            pSI->MoveToLayer(m_xgestureComponent, ViewLayerId_Null);
         }
     }
-    else
+    else if (eventType == TouchEvent::Type_Release) 
     {
-        if (eventType == TouchEvent::Type_Press)
+        pSI->MoveToLayer(m_xgestureComponent, ViewLayerId_Null);
+
+        QPointF centerPoint(pEvent->x, pEvent->y);
+
+        int viewLayerIds = (ViewLayerId_All ^ ViewLayerId_System);
+        CRefList crefList = pSI->ComponentsAtViewPoint(centerPoint.toPoint(), viewLayerIds);
+        if (crefList.Count() > 0)
         {
-            m_x1 = pEvent->x;
-            m_y1 = pEvent->y;
-
-            QPointF pos(m_x1, m_y1);
-            pSI->CenterComponentOn(m_xgestureComponent, pos);
-            pSI->SetVisible(m_xgestureComponent, true);
-
-            m_numTouchStreams++;
+            pSI->SetActiveComponent(crefList.Value(0));
         }
+        else
+        {
+            CRef cref;
+            pSI->SetActiveComponent(cref);
+        }
+
+        ActionArgs* pArgs = new ActionArgs;
+        pArgs->Set("CenterPoint", centerPoint);
+
+        command = BOI_AC_REPLACE(BOI_STD_A(Menu), pArgs);
+
+        m_numTouchStreams--;
     }
 
     return command;
@@ -193,112 +172,6 @@ int XGestureAction::Quadrant(double x, double y)
 }
 
 
-bool XGestureAction::ShowMenu(ASI* pSI, const QPointF& centerPoint)
-{
-    if (!m_menuComponent.IsValid()) return false;
-
-    MenuSet menuSet;
-    CRef activeComponent;
-
-    int viewLayerIds = (ViewLayerId_All ^ ViewLayerId_System);
-    CRefList crefList = pSI->ComponentsAtViewPoint(centerPoint.toPoint(), viewLayerIds);
-    if (crefList.Count() > 0)
-    {
-        activeComponent = crefList.Value(0);
-
-        pSI->GetMenus(activeComponent, menuSet);
-        pSI->SetActiveComponent(activeComponent);
-    }
-    else
-    {
-        /*
-         * If no component was clicked then set
-         * the active component to an invalid
-         * component.
-         */
-        pSI->SetActiveComponent(activeComponent);
-    }
-
-
-    Component* pComponent = m_menuComponent.GetInstance();
-    if (pComponent != NULL)
-    {
-        DRef dref = pSI->NewData(BOI_STD_D(MenuSet));
-
-        const MenuItem* pMenuItem = pSI->GetMenu(BOI_UUID_M(Root));
-        dref.GetWriteInstance<MenuSet>()->Append(pMenuItem);
-        pSI->CallFunc(pComponent, m_menuFuncSet, 1, dref);
-
-        dref.GetWriteInstance<MenuSet>()->Clear();
-
-        if (activeComponent.IsValid())
-        {
-            if (!menuSet.IsEmpty())
-            {
-                /*
-                 * Set the secondary context menu to the
-                 * general/standard component menu.
-                 */
-                const MenuItem* pMenuItem = pSI->GetMenu(BOI_UUID_M(Component));
-                dref.GetWriteInstance<MenuSet>()->Append(pMenuItem);
-                pSI->CallFunc(pComponent, m_menuFuncSet, 3, dref);
-
-                /*
-                 * Set the primary context menu to the
-                 * custom component menu.
-                 */
-                *dref.GetWriteInstance<MenuSet>() = menuSet;
-                pSI->CallFunc(pComponent, m_menuFuncSet, 2, dref);
-            }
-            else
-            {
-                /*
-                 * Set the secondary context menu to nothing.
-                 */
-                pSI->CallFunc(pComponent, m_menuFuncSet, 3, dref);
-
-                /*
-                 * Set the primary context menu to the
-                 * general/standard component menu.
-                 */
-                const MenuItem* pMenuItem = pSI->GetMenu(BOI_UUID_M(Component));
-                dref.GetWriteInstance<MenuSet>()->Append(pMenuItem);
-                pSI->CallFunc(pComponent, m_menuFuncSet, 2, dref);
-            }
-        }
-        else // (!activeComponent.IsValid())
-        {
-            /*
-             * Set the primary and secondary context
-             * menus to nothing.
-             */
-            pSI->CallFunc(pComponent, m_menuFuncSet, 2, dref);
-            pSI->CallFunc(pComponent, m_menuFuncSet, 3, dref);
-        }
-
-        /*
-         * Set the center point.
-         */
-        dref = pSI->NewData(BOI_STD_D(Point));
-        *dref.GetWriteInstance<QPointF>() = centerPoint;
-        pSI->CallFunc(pComponent, m_menuFuncSet, 4, dref);
-
-        /*
-         * Generate the menu.
-         */
-        pSI->CallFunc(pComponent, m_menuFuncSet, 5, dref);
-
-        pSI->StackOnTop(m_menuComponent);
-        pSI->SetVisible(m_menuComponent, true);
-
-        m_menuComponent.ReleaseInstance();
-        return true;
-    }
-
-    return false;
-}
-
-
 ActionCommand XGestureAction::HandleKeyEvent(ASI* pSI, KeyEvent* pEvent)
 {
     Q_UNUSED(pSI);
@@ -320,7 +193,11 @@ ActionCommand XGestureAction::HandleKeyEvent(ASI* pSI, KeyEvent* pEvent)
 
 void XGestureAction::Destroy()
 {
-    m_menuComponent.Reset();
+    if (m_xgestureComponent.IsValid())
+    {
+        m_xgestureComponent.DestroyInstance();
+    }
+
     m_xgestureComponent.Reset();
 }
 

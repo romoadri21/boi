@@ -14,7 +14,7 @@ const char* StandardActions::s_uuids[] =
 {
     "{0bd92f90-6822-4286-a040-796550328850}", // Action_Null
     "{e7d9d4b1-c0a1-48bd-8aed-bad7f6bfc893}", // Action_XGesture
-    "{eb5fed2b-2532-4979-bb1f-bb60f19e377c}", // Action_Hider
+    "{eb5fed2b-2532-4979-bb1f-bb60f19e377c}", // Action_Menu
     "{9c21c94b-01d7-4601-8856-859a8c79a5c0}", // Action_Pan
     "{957c9060-86ce-493f-83f2-c945f565e0fa}", // Action_Zoom
     "{0b7e24b1-050c-4e0a-895f-65362105fc39}", // Action_ToggleFullScreen

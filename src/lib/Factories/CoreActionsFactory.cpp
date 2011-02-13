@@ -9,9 +9,9 @@
 #include "StandardActions.h"
 #include "Actions/NullAction.h"
 #include "Actions/XGestureAction.h"
-#include "Actions/HiderAction.h"
 #include "Actions/PanAction.h"
 #include "Actions/ZoomAction.h"
+#include "Actions/MenuAction.h"
 #include "Actions/MoveAction.h"
 #include "Actions/CopyAction.h"
 #include "Actions/PasteAction.h"
@@ -72,7 +72,7 @@ void CoreActionsFactory::RegisterTypes(TypeRegistrar* pRegistrar)
     pRegistrar->RegisterType(this,
                              BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
                              NULL,
-                             StandardActions::Uuid(BOI_STD_A(Hider)));
+                             StandardActions::Uuid(BOI_STD_A(Menu)));
 
     pRegistrar->RegisterType(this,
                              BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
@@ -260,8 +260,8 @@ Object* CoreActionsFactory::GetAction(int type)
             pAction = new XGestureAction();
             break;
 
-        case BOI_STD_A(Hider):
-            pAction = new HiderAction();
+        case BOI_STD_A(Menu):
+            pAction = new MenuAction();
             break;
 
         case BOI_STD_A(Pan):

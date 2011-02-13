@@ -33,8 +33,6 @@ class XGestureAction
     private:
         int Quadrant(double x, double y);
 
-        bool ShowMenu(ASI* pSI, const QPointF& centerPoint);
-
     private:
         int m_numTouchStreams;
 
@@ -42,9 +40,6 @@ class XGestureAction
         double m_y1;
         double m_radius;
 
-        int m_menuFuncSet;
-
-        CRef m_menuComponent;
         CRef m_xgestureComponent;
 };
 

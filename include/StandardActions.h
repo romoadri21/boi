@@ -29,7 +29,7 @@ class BOI_LIB_EXPORT StandardActions
         {
             Action_Null = 0,
             Action_XGesture,
-            Action_Hider,
+            Action_Menu,
             Action_Pan,
             Action_Zoom,
             Action_ToggleFullScreen,

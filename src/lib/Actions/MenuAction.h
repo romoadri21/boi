@@ -4,42 +4,42 @@
  * http://www.boi-project.org/license
  */
 
-#ifndef __BOI_HIDERACTION_H
-#define __BOI_HIDERACTION_H
+#ifndef __BOI_MENUACTION_H
+#define __BOI_MENUACTION_H
 
 
 #include "CRef.h"
 #include "Action.h"
 
 
-/*
- * Arguments:
- * ----------
- *  CRef = The component to hide when this
- *         action is stopped or suspended.
- */
+class QPointF;
 
 
 namespace BOI {
 
 
-class HiderAction
+class MenuAction
     : public Action
 {
     public:
-        HiderAction();
+        MenuAction();
 
         ActionCommand Start(ASI* pSI, const ActionArgs* pArgs);
 
         void Stop(ASI* pSI);
+        void Destroy();
+
+    protected:
+        bool ShowMenu(ASI* pSI, const QPointF& centerPoint);
 
     private:
         CRef m_cref;
+        int m_funcSet;
 };
 
 
 } // namespace BOI
 
 
-#endif //__BOI_HIDERACTION_H
+#endif //__BOI_MENUACTION_H
 
