@@ -10,6 +10,7 @@
 
 #include "CRef.h"
 #include "Action.h"
+#include "Utilities/TextInputWrapper.h"
 
 
 namespace BOI {
@@ -29,15 +30,10 @@ class LoadUrlAction
         ActionCommand Update(ASI* pSI, const ActionArgs* pArgs);
 
     private:
-        void ShowTextInputComponent(ASI* pSI);
-
-    private:
         CRef m_activeComponent;
-
-        int  m_setTextReceiver;
-        int  m_clearOnNextReceiver;
-        CRef m_textInputComponent;
         CRef m_prevKeyEventHandler;
+
+        TextInputWrapper m_inputComponent;
 };
 
 
