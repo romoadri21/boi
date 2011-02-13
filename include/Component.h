@@ -51,6 +51,8 @@ class BOI_LIB_EXPORT Component
         virtual bool Initialize();
         virtual void Destroy();
 
+        virtual bool Contains(const QPointF& point);
+
         virtual void Draw(QPainter* pPainter,
                           const QStyleOptionGraphicsItem* pOption);
 

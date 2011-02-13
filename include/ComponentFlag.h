@@ -13,10 +13,11 @@ namespace BOI {
 
 enum ComponentFlag
 {
-    ComponentFlag_HandlesTouchEvents = 0x1,
-    ComponentFlag_HandlesKeyEvents   = 0x2,
-    ComponentFlag_ClipsChildren      = 0x4,
-    ComponentFlag_IsSelectable       = 0x8,
+    ComponentFlag_HandlesTouchEvents = 0x0001,
+    ComponentFlag_HandlesKeyEvents   = 0x0002,
+    ComponentFlag_ClipsChildren      = 0x0004,
+    ComponentFlag_IsSelectable       = 0x0008,
+    ComponentFlag_HasCustomHitTest   = 0x0010,
 
     NumComponentFlags
 };

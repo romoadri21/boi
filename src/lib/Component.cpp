@@ -104,6 +104,14 @@ void Component::Destroy()
 }
 
 
+bool Component::Contains(const QPointF& point)
+{
+    Q_UNUSED(point);
+
+    return false;
+}
+
+
 void Component::Draw(QPainter* pPainter,
                      const QStyleOptionGraphicsItem* pOption)
 {

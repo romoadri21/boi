@@ -36,6 +36,19 @@ QRectF GraphicsItem::boundingRect() const
 }
 
 
+bool GraphicsItem::contains(const QPointF& point) const
+{
+    if (m_pComponent->m_pData->flags & ComponentFlag_HasCustomHitTest)
+    {
+        return m_pComponent->Contains(point);
+    }
+    else
+    {
+        return QGraphicsItem::contains(point);
+    }
+}
+
+
 void GraphicsItem::paint(QPainter *pPainter,
                          const QStyleOptionGraphicsItem *pOption,
                          QWidget *pWidget)

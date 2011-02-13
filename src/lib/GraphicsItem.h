@@ -28,6 +28,8 @@ class GraphicsItem
         void SetBoundingRect(const QRectF& rect);
         QRectF boundingRect() const;
 
+        bool contains(const QPointF& point) const;
+
         void paint(QPainter* pPainter,
                    const QStyleOptionGraphicsItem* pOption,
                    QWidget* pWidget = 0);
