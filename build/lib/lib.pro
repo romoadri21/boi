@@ -70,6 +70,7 @@ HEADERS += \
     $${BOI_INCLUDE_DIR}/StateId.h \
     $${BOI_INCLUDE_DIR}/TypeRegistrar.h \
     $${BOI_INCLUDE_DIR}/ViewTransformerId.h \
+    $${BOI_INCLUDE_DIR}/Utilities/TextInputWrapper.h \
     $${BOI_INCLUDE_DIR}/Utilities/BoxInputHandler.h \
     $${BOI_INCLUDE_DIR}/Utilities/TouchVelocity.h \
     $${BOI_INCLUDE_DIR}/Utilities/Tuple.h \
@@ -286,6 +287,7 @@ SOURCES += \
     $${BOI_LIB_SRC_DIR}/Factories/PrimitiveTypesDataFactory.cpp \
     $${BOI_LIB_SRC_DIR}/Factories/CoreDataTypesFactory.cpp \
     $${BOI_LIB_SRC_DIR}/Factories/TimerComponentFactory.cpp \
+    $${BOI_LIB_SRC_DIR}/Utilities/TextInputWrapper.cpp \
     $${BOI_LIB_SRC_DIR}/Utilities/BoxInputHandler.cpp \
     $${BOI_LIB_SRC_DIR}/Utilities/TouchVelocity.cpp \
     $${BOI_LIB_SRC_DIR}/Components/RootMenu.cpp \
