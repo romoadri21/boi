@@ -41,7 +41,7 @@ CRef::CRef(const CRef& cref)
 }
 
 
-int CRef::Type()
+int CRef::Type() const
 {
     return (m_pComponentData != NULL) ?
            (m_pComponentData->pComponent->Type()) :
@@ -49,7 +49,7 @@ int CRef::Type()
 }
 
 
-int CRef::Id()
+int CRef::Id() const
 {
     return (m_pComponentData != NULL) ?
            (m_pComponentData->id) :
@@ -121,7 +121,7 @@ void CRef::DestroyInstance()
 }
 
 
-bool CRef::IsDestroyed()
+bool CRef::IsDestroyed() const
 {
     if (m_pComponentData != NULL)
     {

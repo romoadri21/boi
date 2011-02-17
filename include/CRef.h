@@ -50,7 +50,7 @@ class BOI_LIB_EXPORT CRef
          * on an invalid CRef. If a CRef has been
          * Reset() then IsValid() will return false.
          */
-        bool IsValid();
+        bool IsValid() const;
 
         /*
          * Returns the system internal type of the
@@ -58,14 +58,14 @@ class BOI_LIB_EXPORT CRef
          * referenced Component (ie. this CRef was
          * reset) the method returns BOI_STD_C(Invalid).
          */
-        int Type();
+        int Type() const;
 
         /*
          * Returns the system wide unique ID that is
          * assigned to the referenced component or -1
          * if this CRef does not reference a component.
          */
-        int Id();
+        int Id() const;
 
         /*
          * Every successfull (non NULL return value) call
@@ -96,7 +96,7 @@ class BOI_LIB_EXPORT CRef
          * on a CRef then it is more efficient to skip this CRef
          * if it has already been destroyed).
          */
-        bool IsDestroyed();
+        bool IsDestroyed() const;
 
         /*
          * Used to simulate a delete for the cases where
@@ -140,7 +140,7 @@ inline CRef::~CRef()
 }
 
 
-inline bool CRef::IsValid()
+inline bool CRef::IsValid() const
 {
     return (m_pComponentData != NULL);
 }
@@ -149,6 +149,12 @@ inline bool CRef::IsValid()
 inline bool CRef::operator==(const CRef& cref)
 {
     return (m_pComponentData == cref.m_pComponentData);
+}
+
+
+inline uint qHash(const CRef& cref)
+{
+    return cref.Id();
 }
 
 
