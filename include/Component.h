@@ -8,6 +8,7 @@
 #define __BOI_COMPONENT_H
 
 
+#include <QString>
 #include <QPointF>
 #include <QRectF>
 #include <QHash>
@@ -120,6 +121,11 @@ class BOI_LIB_EXPORT Component
         int GetEmitter(const QString& uuid);
         int GetReceiver(const QString& uuid);
 
+        QString CallerUuid(int caller);
+        QString FuncSetUuid(int funcSet);
+        QString EmitterUuid(int emitter);
+        QString ReceiverUuid(int receiver);
+
         bool ConnectToFuncSet(int caller, CRef cref, int funcSet);
         bool ConnectToReceiver(int emitter, CRef cref, int receiver);
 
@@ -177,6 +183,30 @@ inline int Component::GetEmitter(const QString& uuid)
 inline int Component::GetReceiver(const QString& uuid)
 {
     return IFace()->GetReceiver(uuid);
+}
+
+
+inline QString Component::CallerUuid(int caller)
+{
+    return IFace()->CallerUuid(caller);
+}
+
+
+inline QString Component::FuncSetUuid(int funcSet)
+{
+    return IFace()->FuncSetUuid(funcSet);
+}
+
+
+inline QString Component::EmitterUuid(int emitter)
+{
+    return IFace()->EmitterUuid(emitter);
+}
+
+
+inline QString Component::ReceiverUuid(int receiver)
+{
+    return IFace()->ReceiverUuid(receiver);
 }
 
 

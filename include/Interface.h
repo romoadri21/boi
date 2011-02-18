@@ -195,6 +195,11 @@ class Interface
         int GetEmitter(const QString& uuid);
         int GetReceiver(const QString& uuid);
 
+        QString CallerUuid(int caller);
+        QString FuncSetUuid(int funcSet);
+        QString EmitterUuid(int emitter);
+        QString ReceiverUuid(int receiver);
+
         ReceiverFunc GetReceiverFunc(int receiver);
 
         int NumFuncSetFuncs(int funcSet);

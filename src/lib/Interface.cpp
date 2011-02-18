@@ -129,6 +129,50 @@ int Interface::GetReceiver(const QString& uuid)
 }
 
 
+QString Interface::CallerUuid(int caller)
+{
+    if ((caller >= 0) && (caller < NumCallers()))
+    {
+        return Callers()[caller].uuid;
+    }
+
+    return QString();
+}
+
+
+QString Interface::FuncSetUuid(int funcSet)
+{
+    if ((funcSet >= 0) && (funcSet < NumFuncSets()))
+    {
+        return FuncSets()[funcSet].uuid;
+    }
+
+    return QString();
+}
+
+
+QString Interface::EmitterUuid(int emitter)
+{
+    if ((emitter >= 0) && (emitter < NumEmitters()))
+    {
+        return Emitters()[emitter].uuid;
+    }
+
+    return QString();
+}
+
+
+QString Interface::ReceiverUuid(int receiver)
+{
+    if ((receiver >= 0) && (receiver < NumReceivers()))
+    {
+        return Receivers()[receiver].uuid;
+    }
+
+    return QString();
+}
+
+
 ReceiverFunc Interface::GetReceiverFunc(int receiver)
 {
     if ((receiver >= 0) && (receiver < NumReceivers()))
