@@ -111,7 +111,7 @@ class BOI_LIB_EXPORT CRef
         void Reset();
 
         CRef& operator=(const CRef& cref);
-        bool operator==(const CRef& cref);
+        bool operator==(const CRef& cref) const;
 
     private:
         /*
@@ -146,7 +146,7 @@ inline bool CRef::IsValid() const
 }
 
 
-inline bool CRef::operator==(const CRef& cref)
+inline bool CRef::operator==(const CRef& cref) const
 {
     return (m_pComponentData == cref.m_pComponentData);
 }
