@@ -8,6 +8,8 @@
 #define __BOI_CONNECTIONS_H
 
 
+#include <QHash>
+#include "Utilities/Tuple.h"
 #include "Interface.h"
 #include "Mutex.h"
 #include "CRef.h"
@@ -29,7 +31,7 @@ class Connections
         void Initialize(ISI* pISI, Interface* pInterface, int componentId);
         void Destroy();
 
-        bool AddEmitterRecipient(int emitter, CRef cref, ReceiverFunc func);
+        bool AddEmitterRecipient(int emitter, CRef cref, int receiver, ReceiverFunc func);
         bool RemoveEmitterRecipient(int emitter, CRef cref);
 
         bool EmitterHasNew(int emitter);
@@ -37,6 +39,8 @@ class Connections
 
         void Emit(int emitter, DRef& data, bool release, bool newOnly);
         bool EmitTo(int emitter, DRef& data, int componentId, bool release);
+
+        QHash<CRef, int> EmitterRecipients(int emitter);
 
         bool SetCallerTarget(int caller,
                              CRef cref,
@@ -46,9 +50,13 @@ class Connections
 
         bool ClearCallerTarget(int caller);
 
+        bool CallerConnected(int caller);
+
         bool StartTransaction(int caller);
         void EndTransaction(int caller);
         DRef Call(int caller, int func, DRef& dref, bool passThru);
+
+        Tuple2<CRef, int> GetCallerTarget(int caller);
 
     protected:
         typedef struct
@@ -68,6 +76,7 @@ class Connections
         {
             CRef cref;
             bool isNew;
+            int receiver;
             ReceiverFunc func;
             EmitterRecipient* pNext;
         } EmitterRecipient;

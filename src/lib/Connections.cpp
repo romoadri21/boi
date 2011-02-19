@@ -103,7 +103,7 @@ void Connections::Destroy()
 }
 
 
-bool Connections::AddEmitterRecipient(int emitter, CRef cref, ReceiverFunc func)
+bool Connections::AddEmitterRecipient(int emitter, CRef cref, int receiver, ReceiverFunc func)
 {
     bool alreadyConnected = false;
 
@@ -128,6 +128,7 @@ bool Connections::AddEmitterRecipient(int emitter, CRef cref, ReceiverFunc func)
         pEmitterRecipient->cref = cref;
         pEmitterRecipient->func = func;
         pEmitterRecipient->isNew = true;
+        pEmitterRecipient->receiver = receiver;
         pEmitterRecipient->pNext = m_emitterRecipients[emitter].pHead;
 
         m_emitterRecipients[emitter].numNewRecipients++;
@@ -309,6 +310,28 @@ bool Connections::EmitTo(int emitter, DRef& data, int componentId, bool release)
 }
 
 
+QHash<CRef, int> Connections::EmitterRecipients(int emitter)
+{
+    QHash<CRef, int> recipients;
+
+    m_emitterRecipientsLock.Lock();
+
+    EmitterRecipient* pEmitterRecipient = m_emitterRecipients[emitter].pHead;
+
+    while (pEmitterRecipient != NULL)
+    {
+        recipients.insert(pEmitterRecipient->cref,
+                          pEmitterRecipient->receiver);
+
+        pEmitterRecipient = pEmitterRecipient->pNext;
+    }
+
+    m_emitterRecipientsLock.Unlock();
+
+    return recipients;
+}
+
+
 bool Connections::SetCallerTarget(int caller,
                                   CRef cref,
                                   int funcSet,
@@ -356,6 +379,25 @@ bool Connections::ClearCallerTarget(int caller)
     m_callerTargetsLock.Unlock();
 
     return targetCleared;
+}
+
+
+bool Connections::CallerConnected(int caller)
+{
+    bool connected = false;
+
+    m_callerTargetsLock.Lock();
+
+    CallerTarget* pTarget = &m_callerTargets[caller];
+
+    if (pTarget->cref.IsValid())
+    {
+        connected = true;
+    }
+
+    m_callerTargetsLock.Unlock();
+
+    return connected;
 }
 
 
@@ -447,6 +489,26 @@ DRef Connections::Call(int caller, int func, DRef& dref, bool passThru)
     }
 
     return DRef();
+}
+
+
+Tuple2<CRef, int> Connections::GetCallerTarget(int caller)
+{
+    Tuple2<CRef, int> target;
+
+    m_callerTargetsLock.Lock();
+
+    CallerTarget* pTarget = &m_callerTargets[caller];
+
+    if (pTarget->cref.IsValid())
+    {
+        target.item1 = pTarget->cref;
+        target.item2 = pTarget->funcSet;
+    }
+
+    m_callerTargetsLock.Unlock();
+
+    return target;
 }
 
 
