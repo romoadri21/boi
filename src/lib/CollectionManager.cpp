@@ -7,7 +7,6 @@
 #include <QDir>
 #include <QFile>
 #include <QUuid>
-#include <QHash>
 #include <QLineF>
 #include <QFileInfo>
 #include <QDataStream>
@@ -166,12 +165,10 @@ CRefList CollectionManager::OpenCollection(const QString& uuid,
 
         if (numComponents > 0)
         {
-            ImportData* pImportData = new ImportData[numComponents];
+            ImportData* pImportDataHead = NULL;
 
             QHash<int, ImportData*> prevIds;
             prevIds.reserve(numComponents);
-
-            QRectF boundingRect;
 
             for (int i=0; i < numComponents; i++)
             {
@@ -180,94 +177,42 @@ CRefList CollectionManager::OpenCollection(const QString& uuid,
 
                 if (isValid)
                 {
-                    ImportData* pData = &pImportData[i];
+                    ImportData* pImportData = new ImportData;
 
-                    ImportComponent(pData, in);
+                    ImportComponent(pImportData, in);
 
-                    if (pData->cref.IsValid())
+                    if (pImportData->pComponent != NULL)
                     {
-                        prevIds.insert(pData->id, pData);
+                        pImportData->pNext = pImportDataHead;
+                        pImportDataHead = pImportData;
 
-                        if ((pData->layer == ViewLayerId_Main) &&
-                            (pData->visible))
-                        {
-                            boundingRect |= pData->layerBoundingRect;
-                        }
+                        prevIds.insert(pImportData->id, pImportData);
+                    }
+                    else
+                    {
+                        pImportData->pNext = NULL;
+
+                        DeleteImportData(pImportData);
                     }
                 }
             }
 
+            RestorePositions(pImportDataHead, point);
+            RestoreVisibility(pImportDataHead);
+            RestoreParenting(pImportDataHead, prevIds);
+            RestoreConnections(pImportDataHead, prevIds);
 
             CRefList crefs = m_pISI->NewCRefList();
+            ImportData* pImportData = pImportDataHead;
 
-            for (int i=0; i < numComponents; i++)
+            while (pImportData != NULL)
             {
-                ImportData* pData = &pImportData[i];
-
-                if (pData->cref.IsValid())
-                {
-                    Component* pComponent = pData->cref.GetInstance();
-                    if (pComponent != NULL)
-                    {
-                        if (pData->layer == ViewLayerId_Main)
-                        {
-                            QPointF oldCenter = boundingRect.center();
-                            QPointF delta = oldCenter - pData->layerPos;
-                            QPointF newPos = point - delta;
-
-                            pComponent->SetPosition(newPos);
-                        }
-                        else
-                        {
-                            // TODO: what if the new window size is smaller or
-                            // different than the previous window size?
-                            pComponent->SetPosition(pData->layerPos);
-                        }
-
-                        if (pData->visible)
-                        {
-                            pComponent->SetVisible(true);
-                        }
-
-                        crefs.Append(pData->cref);
-
-                        pData->cref.ReleaseInstance();
-                    }
-                }
+                crefs.Append(pImportData->cref);
+                pImportData = pImportData->pNext;
             }
 
-            for (int i=0; i < numComponents; i++)
-            {
-                ImportData* pData = &pImportData[i];
+            DeleteImportData(pImportDataHead);
 
-                if (pData->cref.IsValid())
-                {
-                    Component* pComponent = pData->cref.GetInstance();
-                    if (pComponent != NULL)
-                    {
-                        int parentId = pData->parentId;
-
-                        if (parentId != -1)
-                        {
-                            ImportData* pParentData = prevIds.value(parentId, NULL);
-
-                            if (pParentData != NULL)
-                            {
-                                /*
-                                 * Note: parenting must occur after
-                                 * all the positions are set to avoid
-                                 * incorrect placement.
-                                 */
-                                pComponent->SetParent(pParentData->cref);
-                            }
-                        }
-
-                        pData->cref.ReleaseInstance();
-                    }
-                }
-            }
-
-            delete[] pImportData;
             return crefs;
         }
     }
@@ -312,6 +257,9 @@ void CollectionManager::ImportComponent(ImportData* pImportData, QDataStream& in
     }
 
 
+    ImportConnections(pImportData, in);
+
+
     int type = m_pISI->ConvertUuid_C(pImportData->uuid);
     if (type != -1)
     {
@@ -325,10 +273,14 @@ void CollectionManager::ImportComponent(ImportData* pImportData, QDataStream& in
             pComponent->SetTransformOrigin(pImportData->transformOrigin);
             pComponent->Import(data);
 
-            cref.ReleaseInstance();
+            /*
+             * Note: the instance should be released
+             * after all processing is complete.
+             */
         }
 
         pImportData->cref = cref;
+        pImportData->pComponent = pComponent;
     }
 }
 
@@ -379,6 +331,263 @@ void CollectionManager::ExportComponent(Component* pComponent, QDataStream& out)
 
         DRef dref = it.value();
         m_pISI->ExportData(dref, out);
+    }
+
+
+    ExportConnections(pComponent, out);
+}
+
+
+void CollectionManager::ImportConnections(ImportData* pImportData, QDataStream& in)
+{
+    pImportData->pConnections = NULL;
+
+    qint32 type;
+    in >> type;
+
+    while (type != ConnectionRecord::Type_Null)
+    {
+        ConnectionRecord* pConnection = new ConnectionRecord;
+
+        in >> pConnection->id
+           >> pConnection->localUuid
+           >> pConnection->remoteUuid;
+
+        pConnection->type = type;
+        pConnection->pNext = pImportData->pConnections;
+        pImportData->pConnections = pConnection;
+
+        in >> type;
+    }
+}
+
+
+void CollectionManager::ExportConnections(Component* pComponent, QDataStream& out)
+{
+    int numCallers = pComponent->IFace()->NumCallers();
+    int numEmitters = pComponent->IFace()->NumEmitters();
+
+    Connections* pConnections = &pComponent->m_pData->connections;
+
+    for (int i=0; i < numEmitters; i++)
+    {
+        if (pConnections->EmitterConnected(i))
+        {
+            QString emitterUuid = pComponent->EmitterUuid(i);
+
+            QHash<CRef, int> recipients = pConnections->EmitterRecipients(i);
+
+            QHashIterator<CRef, int> it(recipients);
+            while (it.hasNext())
+            {
+                it.next();
+
+                CRef cref = it.key();
+
+                Component* pComponent2 = cref.GetInstance();
+                if (pComponent2 != NULL)
+                {
+                    QString receiverUuid = pComponent2->ReceiverUuid(it.value());
+
+                    out << (qint32)ConnectionRecord::Type_Emitter;
+                    out << (qint32)cref.Id();
+                    out << emitterUuid;
+                    out << receiverUuid;
+
+                    cref.ReleaseInstance();
+                }
+            }
+        }
+    }
+
+
+    for (int i=0; i < numCallers; i++)
+    {
+        if (pConnections->CallerConnected(i))
+        {
+            Tuple2<CRef, int> target = pConnections->GetCallerTarget(i);
+
+            CRef cref = target.item1;
+
+            Component* pComponent2 = cref.GetInstance();
+            if (pComponent2 != NULL)
+            {
+                QString callerUuid = pComponent->CallerUuid(i);
+                QString funcSetUuid = pComponent2->FuncSetUuid(target.item2);
+
+                out << (qint32)ConnectionRecord::Type_Caller;
+                out << (qint32)cref.Id();
+                out << callerUuid;
+                out << funcSetUuid;
+
+                cref.ReleaseInstance();
+            }
+        }
+    }
+
+
+    /*
+     * Mark the end of the connection records.
+     */
+    out << (qint32)ConnectionRecord::Type_Null;
+}
+
+
+void CollectionManager::RestorePositions(ImportData* pImportDataHead,
+                                         const QPointF& point)
+{
+    QRectF boundingRect;
+
+    ImportData* pImportData = pImportDataHead;
+
+    while (pImportData != NULL)
+    {
+        if ((pImportData->layer == ViewLayerId_Main) &&
+            (pImportData->visible))
+        {
+            boundingRect |= pImportData->layerBoundingRect;
+        }
+
+        pImportData = pImportData->pNext;
+    }
+
+
+    pImportData = pImportDataHead;
+
+    while (pImportData != NULL)
+    {
+        if (pImportData->layer == ViewLayerId_Main)
+        {
+            QPointF oldCenter = boundingRect.center();
+            QPointF delta = oldCenter - pImportData->layerPos;
+            QPointF newPos = point - delta;
+
+            pImportData->pComponent->SetPosition(newPos);
+        }
+        else
+        {
+            // TODO: what if the new window size is smaller or
+            // different than the previous window size?
+            pImportData->pComponent->SetPosition(pImportData->layerPos);
+        }
+
+        pImportData = pImportData->pNext;
+    }
+}
+
+
+void CollectionManager::RestoreVisibility(ImportData* pImportData)
+{
+    while (pImportData != NULL)
+    {
+        if (pImportData->visible)
+        {
+            pImportData->pComponent->SetVisible(true);
+        }
+
+        pImportData = pImportData->pNext;
+    }
+}
+
+
+void CollectionManager::RestoreParenting(ImportData* pImportData,
+                                         const QHash<int, ImportData*>& prevIds)
+{
+    /*
+     * Note: parenting must occur after
+     * all the positions are set to avoid
+     * incorrect placement.
+     */
+
+    while (pImportData != NULL)
+    {
+        int parentId = pImportData->parentId;
+
+        if (parentId != -1)
+        {
+            ImportData* pParentData = prevIds.value(parentId, NULL);
+
+            if (pParentData != NULL)
+            {
+                pImportData->pComponent->SetParent(pParentData->cref);
+            }
+        }
+
+        pImportData = pImportData->pNext;
+    }
+}
+
+
+void CollectionManager::RestoreConnections(ImportData* pImportData,
+                                           const QHash<int, ImportData*>& prevIds)
+{
+    while (pImportData != NULL)
+    {
+        ConnectionRecord* pConnection = pImportData->pConnections;
+
+        while (pConnection != NULL)
+        {
+            ImportData* pTargetData = prevIds.value(pConnection->id, NULL);
+
+            if (pTargetData != NULL)
+            {
+                if (pConnection->type == ConnectionRecord::Type_Caller)
+                {
+                    int caller = pImportData->pComponent->GetCaller(pConnection->localUuid);
+                    int funcSet = pTargetData->pComponent->GetFuncSet(pConnection->remoteUuid);
+
+                    if ((caller != -1) && (funcSet != -1))
+                    {
+                        pImportData->pComponent->ConnectToFuncSet(caller, pTargetData->cref, funcSet);
+                    }
+                }
+                else if (pConnection->type == ConnectionRecord::Type_Emitter)
+                {
+                    int emitter = pImportData->pComponent->GetEmitter(pConnection->localUuid);
+                    int receiver = pTargetData->pComponent->GetReceiver(pConnection->remoteUuid);
+
+                    if ((emitter != -1) && (receiver != -1))
+                    {
+                        pImportData->pComponent->ConnectToReceiver(emitter, pTargetData->cref, receiver);
+                    }
+                }
+            }
+
+            pConnection = pConnection->pNext;
+        }
+
+        pImportData = pImportData->pNext;
+    }
+}
+
+
+void CollectionManager::DeleteImportData(ImportData* pImportData)
+{
+    ImportData* pNext;
+
+    while (pImportData != NULL)
+    {
+        pNext = pImportData->pNext;
+
+        if (pImportData->pComponent != NULL)
+        {
+            pImportData->cref.ReleaseInstance();
+            pImportData->cref.Reset();
+        }
+
+        ConnectionRecord* pRecord = pImportData->pConnections;
+        ConnectionRecord* pNextRecord;
+
+        while (pRecord != NULL)
+        {
+            pNextRecord = pRecord->pNext;
+
+            delete pRecord;
+            pRecord = pNextRecord;
+        }
+
+        delete pImportData;
+        pImportData = pNext;
     }
 }
 

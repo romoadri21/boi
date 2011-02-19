@@ -8,6 +8,7 @@
 #define __BOI_COLLECTIONMANAGER_H
 
 
+#include <QHash>
 #include <QRectF>
 #include <QPointF>
 #include <QString>
@@ -45,8 +46,31 @@ class CollectionManager
         bool DeleteCollection(const QString& uuid);
 
     private:
-        typedef struct
+        typedef struct ConnectionRecord
         {
+            enum
+            {
+                Type_Null = 0,
+                Type_Caller,
+                Type_Emitter
+            };
+
+            qint32 id;
+            qint32 type;
+
+            QString localUuid;
+            QString remoteUuid;
+
+            ConnectionRecord* pNext;
+        } ConnectionRecord;
+
+        typedef struct ImportData
+        {
+            ImportData()
+                : pConnections(NULL),
+                  pComponent(NULL),
+                  pNext(NULL) {}
+
             QString uuid;
 
             qint32 id;
@@ -59,16 +83,38 @@ class CollectionManager
 
             QRectF layerBoundingRect;
 
+            ConnectionRecord* pConnections;
+
             qreal rotation;
             qreal opacity;
 
             bool visible;
+
             CRef cref;
+            Component* pComponent;
+
+            ImportData* pNext;
         } ImportData;
 
     private:
         void ImportComponent(ImportData* pImportData, QDataStream& in);
         void ExportComponent(Component* pComponent, QDataStream& out);
+
+        void ImportConnections(ImportData* pImportData, QDataStream& in);
+        void ExportConnections(Component* pComponent, QDataStream& out);
+
+        void RestorePositions(ImportData* pImportDataHead,
+                              const QPointF& centerPoint);
+
+        void RestoreVisibility(ImportData* pImportDataHead);
+
+        void RestoreParenting(ImportData* pImportDataHead,
+                              const QHash<int, ImportData*>& prevIds);
+
+        void RestoreConnections(ImportData* pImportDataHead,
+                                const QHash<int, ImportData*>& prevIds);
+
+        void DeleteImportData(ImportData* pImportData);
 
         QString GetPath(const QString& uuid);
 
