@@ -34,11 +34,11 @@ bool Action::Suspend(ASI* pSI)
 }
 
 
-bool Action::Resume(ASI* pSI)
+ActionCommand Action::Resume(ASI* pSI)
 {
     Q_UNUSED(pSI);
 
-    return false;
+    return BOI_AC_STOP;
 }
 
 

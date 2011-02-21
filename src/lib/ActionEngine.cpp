@@ -150,8 +150,21 @@ void ActionEngine::ProcessCommand(ActionCommand command)
         }
         else if (type == ActionCommand::Type_Stop)
         {
-            Pop();
             advance = false;
+
+            if (!m_stack.isEmpty())
+            {
+                pAction = m_stack.pop();
+                pAction->Stop(m_pASI);
+
+                if (!m_stack.isEmpty())
+                {
+                    pAction = m_stack.top();
+                    command = pAction->Resume(m_pASI);
+
+                    advance = true;
+                }
+            }
         }
         else if (type == ActionCommand::Type_Replace)
         {
@@ -224,31 +237,6 @@ ActionCommand ActionEngine::Push(Action* pNewAction, const ActionArgs* pArgs)
 
     m_stack.push(pNewAction);
     return pNewAction->Start(m_pASI, pArgs);
-}
-
-
-void ActionEngine::Pop()
-{
-    if (!m_stack.isEmpty())
-    {
-        Action* pAction = m_stack.pop();
-        pAction->Stop(m_pASI);
-
-        while (!m_stack.isEmpty())
-        {
-            pAction = m_stack.top();
-
-            if (!pAction->Resume(m_pASI))
-            {
-                pAction->Stop(m_pASI);
-                m_stack.pop();
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
 }
 
 

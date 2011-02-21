@@ -46,7 +46,7 @@ bool CaptureViewAction::Suspend(ASI* pSI)
 }
 
 
-bool CaptureViewAction::Resume(ASI* pSI)
+ActionCommand CaptureViewAction::Resume(ASI* pSI)
 {
     if (m_rect.isValid())
     {
@@ -67,7 +67,7 @@ bool CaptureViewAction::Resume(ASI* pSI)
         pSI->SetPosition(cref, newPos);
     }
 
-    return false;
+    return BOI_AC_STOP;
 }
 
 

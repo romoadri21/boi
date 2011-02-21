@@ -25,7 +25,8 @@ class ZoomToRectAction
         ActionCommand Start(ASI* pSI, const ActionArgs* pArgs);
 
         bool Suspend(ASI* pSI);
-        bool Resume(ASI* pSI);
+
+        ActionCommand Resume(ASI* pSI);
 
     private:
         QRectF m_rect;

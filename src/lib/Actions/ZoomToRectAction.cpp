@@ -42,14 +42,14 @@ bool ZoomToRectAction::Suspend(ASI* pSI)
 }
 
 
-bool ZoomToRectAction::Resume(ASI* pSI)
+ActionCommand ZoomToRectAction::Resume(ASI* pSI)
 {
     if (m_rect.isValid())
     {
         pSI->FitRectInView(m_rect);
     }
 
-    return false;
+    return BOI_AC_STOP;
 }
 
 

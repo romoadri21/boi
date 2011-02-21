@@ -66,7 +66,6 @@ class ActionEngine
     protected:
         void ProcessCommand(ActionCommand command);
 
-        void Pop();
         void Clear();
 
         ActionCommand Push(Action* pAction, const ActionArgs* pArgs);
