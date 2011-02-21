@@ -30,11 +30,16 @@ class BOI_LIB_EXPORT ActionArgs
         void Set(const QString& argName,
                  const QVariant& value);
 
+        void SetPtr(const QString& argName, void* value);
+
         int  NumArgs() const;
         bool Contains(const QString& argName) const;
 
         template<typename T>
         T Value(const QString& argName) const;
+
+        template<typename T>
+        T* ValuePtr(const QString& argName) const;
 
         void Remove(const QString& argName);
 
@@ -76,6 +81,12 @@ inline void ActionArgs::Set(const QString& argName,
 }
 
 
+inline void ActionArgs::SetPtr(const QString& argName, void* value)
+{
+    m_args.insert(argName, QVariant::fromValue(value));
+}
+
+
 inline int ActionArgs::NumArgs() const
 {
     return m_args.size();
@@ -92,6 +103,13 @@ template<typename T>
 inline T ActionArgs::Value(const QString& argName) const
 {
     return m_args.value(argName).value<T>();
+}
+
+
+template<typename T>
+inline T* ActionArgs::ValuePtr(const QString& argName) const
+{
+    return (T*)m_args.value(argName).value<void*>();
 }
 
 
