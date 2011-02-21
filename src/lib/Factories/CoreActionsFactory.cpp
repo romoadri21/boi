@@ -24,8 +24,9 @@
 #include "Actions/PutTextAction.h"
 #include "Actions/SetTextAction.h"
 #include "Actions/ShutdownAction.h"
-#include "Actions/ResetViewAction.h"
 #include "Actions/SetChildAction.h"
+#include "Actions/ResetViewAction.h"
+#include "Actions/ScrollBoxAction.h"
 #include "Actions/SetNumberAction.h"
 #include "Actions/RectSelectAction.h"
 #include "Actions/ZoomToRectAction.h"
@@ -243,6 +244,11 @@ void CoreActionsFactory::RegisterTypes(TypeRegistrar* pRegistrar)
                              BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
                              NULL,
                              StandardActions::Uuid(BOI_STD_A(SetText)));
+
+    pRegistrar->RegisterType(this,
+                             BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
+                             NULL,
+                             StandardActions::Uuid(BOI_STD_A(ScrollBox)));
 }
 
 
@@ -398,6 +404,10 @@ Object* CoreActionsFactory::GetAction(int type)
 
         case BOI_STD_A(SetText):
             pAction = new SetTextAction();
+            break;
+
+        case BOI_STD_A(ScrollBox):
+            pAction = new ScrollBoxAction();
             break;
 
         default:

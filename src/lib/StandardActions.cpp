@@ -49,6 +49,7 @@ const char* StandardActions::s_uuids[] =
     "{326f0aa5-43f8-4030-9ab4-9b1239bf0248}", // Action_MoveToLayer
     "{8c7ce920-430d-4464-9ff4-ad5e62d783aa}", // Action_CaptureView
     "{316e6510-7d8c-47de-9ed6-727817f281d6}", // Action_SetText
+    "{a140412d-297c-4f72-808c-5735fd18f915}", // Action_ScrollBox
 };
 
 

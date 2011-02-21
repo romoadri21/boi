@@ -137,8 +137,9 @@ HEADERS += \
     $${BOI_LIB_SRC_DIR}/Actions/PutTextAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/SetTextAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/ShutdownAction.h \
-    $${BOI_LIB_SRC_DIR}/Actions/ResetViewAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/SetChildAction.h \
+    $${BOI_LIB_SRC_DIR}/Actions/ResetViewAction.h \
+    $${BOI_LIB_SRC_DIR}/Actions/ScrollBoxAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/SetNumberAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/RectSelectAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/ZoomToRectAction.h \
@@ -263,8 +264,9 @@ SOURCES += \
     $${BOI_LIB_SRC_DIR}/Actions/PutTextAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/SetTextAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/ShutdownAction.cpp \
-    $${BOI_LIB_SRC_DIR}/Actions/ResetViewAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/SetChildAction.cpp \
+    $${BOI_LIB_SRC_DIR}/Actions/ResetViewAction.cpp \
+    $${BOI_LIB_SRC_DIR}/Actions/ScrollBoxAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/SetNumberAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/RectSelectAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/ZoomToRectAction.cpp \
