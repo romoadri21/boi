@@ -215,7 +215,7 @@ ActionCommand ActionEngine::Push(Action* pNewAction, const ActionArgs* pArgs)
     if (!m_stack.isEmpty())
     {
         Action* pAction = m_stack.top();
-        if (!pAction->Suspend())
+        if (!pAction->Suspend(m_pASI))
         {
             pAction->Stop(m_pASI);
             m_stack.pop();
@@ -238,7 +238,7 @@ void ActionEngine::Pop()
         {
             pAction = m_stack.top();
 
-            if (!pAction->Resume())
+            if (!pAction->Resume(m_pASI))
             {
                 pAction->Stop(m_pASI);
                 m_stack.pop();

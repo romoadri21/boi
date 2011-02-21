@@ -26,14 +26,18 @@ void Action::Stop(ASI* pSI)
 }
 
 
-bool Action::Suspend()
+bool Action::Suspend(ASI* pSI)
 {
+    Q_UNUSED(pSI);
+
     return false;
 }
 
 
-bool Action::Resume()
+bool Action::Resume(ASI* pSI)
 {
+    Q_UNUSED(pSI);
+
     return false;
 }
 

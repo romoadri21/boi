@@ -38,8 +38,8 @@ class BOI_LIB_EXPORT Action
 
         virtual void Stop(ASI* pSI);
 
-        virtual bool Suspend();
-        virtual bool Resume();
+        virtual bool Suspend(ASI* pSI);
+        virtual bool Resume(ASI* pSI);
 
         virtual bool AcceptTouchStream();
         virtual bool AcceptKeyStream();
