@@ -9,9 +9,8 @@
 
 
 #include <QRectF>
-#include "CRef.h"
 #include "Action.h"
-#include "Utilities/BoxInputHandler.h"
+#include "ActionArgs.h"
 
 
 namespace BOI {
@@ -25,36 +24,13 @@ class RectSelectAction
 
         ActionCommand Start(ASI* pSI, const ActionArgs* pArgs);
 
-        bool AcceptTouchStream();
+        bool Suspend(ASI* pSI);
 
-        ActionCommand HandleTouchEvent(ASI* pSI, TouchEvent* pEvent);
-
-        void HandleViewTransformed(ASI* pSI);
-
-        void Destroy();
-
-    protected:
-        void UpdateRectComponent(ASI* pSI);
+        ActionCommand Resume(ASI* pSI);
 
     private:
-        int m_numTouchStreams;
-
-        QRectF m_innerViewRect;
-
-        qreal m_x;
-        qreal m_y;
-        qreal m_startX;
-        qreal m_startY;
-        qreal m_scaleFactor;
-
-        int  m_scrollerId;
-        bool m_scrollerActive;
-        qreal m_scrollVelocity;
-
-        BoxInputHandler m_selectionRect;
-
-        CRef m_rectComponent;
-        int m_setSizeReceiver;
+        QRectF m_rect;
+        ActionArgs m_args;
 };
 
 
