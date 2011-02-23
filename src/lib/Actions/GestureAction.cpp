@@ -14,21 +14,21 @@
 #include "Events/KeyEvent.h"
 #include "Events/TouchEvent.h"
 #include "StandardComponents.h"
-#include "Actions/XGestureAction.h"
+#include "Actions/GestureAction.h"
 
 
 namespace BOI {
 
 
-XGestureAction::XGestureAction()
-    : Action(BOI_STD_A(XGesture)),
+GestureAction::GestureAction()
+    : Action(BOI_STD_A(Gesture)),
       m_radius(15.0),
       m_xgestureComponent()
 {
 }
 
 
-ActionCommand XGestureAction::Start(ASI* pSI, const ActionArgs* pArgs)
+ActionCommand GestureAction::Start(ASI* pSI, const ActionArgs* pArgs)
 {
     Q_UNUSED(pArgs);
 
@@ -47,13 +47,13 @@ ActionCommand XGestureAction::Start(ASI* pSI, const ActionArgs* pArgs)
 }
 
 
-bool XGestureAction::AcceptTouchStream()
+bool GestureAction::AcceptTouchStream()
 {
     return (m_numTouchStreams == 0);
 }
 
 
-ActionCommand XGestureAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
+ActionCommand GestureAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
 {
     ActionCommand command = BOI_AC_CONTINUE;
     int eventType = pEvent->type;
@@ -130,7 +130,7 @@ ActionCommand XGestureAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
 }
 
 
-int XGestureAction::Quadrant(double x, double y)
+int GestureAction::Quadrant(double x, double y)
 {
     int quadrant = 0;
 
@@ -172,7 +172,7 @@ int XGestureAction::Quadrant(double x, double y)
 }
 
 
-ActionCommand XGestureAction::HandleKeyEvent(ASI* pSI, KeyEvent* pEvent)
+ActionCommand GestureAction::HandleKeyEvent(ASI* pSI, KeyEvent* pEvent)
 {
     Q_UNUSED(pSI);
 
@@ -191,7 +191,7 @@ ActionCommand XGestureAction::HandleKeyEvent(ASI* pSI, KeyEvent* pEvent)
 }
 
 
-void XGestureAction::Destroy()
+void GestureAction::Destroy()
 {
     if (m_xgestureComponent.IsValid())
     {

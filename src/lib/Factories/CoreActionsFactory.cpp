@@ -8,7 +8,7 @@
 #include "Action.h"
 #include "StandardActions.h"
 #include "Actions/NullAction.h"
-#include "Actions/XGestureAction.h"
+#include "Actions/GestureAction.h"
 #include "Actions/PanAction.h"
 #include "Actions/ZoomAction.h"
 #include "Actions/MenuAction.h"
@@ -68,7 +68,7 @@ void CoreActionsFactory::RegisterTypes(TypeRegistrar* pRegistrar)
     pRegistrar->RegisterType(this,
                              BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
                              NULL,
-                             StandardActions::Uuid(BOI_STD_A(XGesture)));
+                             StandardActions::Uuid(BOI_STD_A(Gesture)));
 
     pRegistrar->RegisterType(this,
                              BOI_GET_INSTANCE_FUNC(CoreActionsFactory, GetAction),
@@ -262,8 +262,8 @@ Object* CoreActionsFactory::GetAction(int type)
             pAction = new NullAction();
             break;
 
-        case BOI_STD_A(XGesture):
-            pAction = new XGestureAction();
+        case BOI_STD_A(Gesture):
+            pAction = new GestureAction();
             break;
 
         case BOI_STD_A(Menu):

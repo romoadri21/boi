@@ -4,8 +4,8 @@
  * http://www.boi-project.org/license
  */
 
-#ifndef __BOI_XGESTUREACTION_H
-#define __BOI_XGESTUREACTION_H
+#ifndef __BOI_GESTUREACTION_H
+#define __BOI_GESTUREACTION_H
 
 
 #include "CRef.h"
@@ -15,11 +15,11 @@
 namespace BOI {
 
 
-class XGestureAction
+class GestureAction
     : public Action
 {
     public:
-        XGestureAction();
+        GestureAction();
 
         ActionCommand Start(ASI* pSI, const ActionArgs* pArgs);
 
@@ -47,5 +47,5 @@ class XGestureAction
 } // namespace BOI
 
 
-#endif //__BOI_XGESTUREACTION_H
+#endif //__BOI_GESTUREACTION_H
 

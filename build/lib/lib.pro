@@ -120,7 +120,7 @@ HEADERS += \
     $${BOI_LIB_SRC_DIR}/Events/UpdateActionEventListener.h \
     $${BOI_LIB_SRC_DIR}/Events/InputModeChangeEvent.h \
     $${BOI_LIB_SRC_DIR}/Events/InputModeChangeEventListener.h \
-    $${BOI_LIB_SRC_DIR}/Actions/XGestureAction.h \
+    $${BOI_LIB_SRC_DIR}/Actions/GestureAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/PanAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/ZoomAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/NullAction.h \
@@ -247,7 +247,7 @@ SOURCES += \
     $${BOI_LIB_SRC_DIR}/CollectionManager.cpp \
     $${BOI_LIB_SRC_DIR}/DescriptionManager.cpp \
     $${BOI_LIB_SRC_DIR}/Events/EventDispatcher.cpp \
-    $${BOI_LIB_SRC_DIR}/Actions/XGestureAction.cpp \
+    $${BOI_LIB_SRC_DIR}/Actions/GestureAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/PanAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/ZoomAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/NullAction.cpp \

@@ -28,7 +28,7 @@ class BOI_LIB_EXPORT StandardActions
         enum
         {
             Action_Null = 0,
-            Action_XGesture,
+            Action_Gesture,
             Action_Menu,
             Action_Pan,
             Action_Zoom,

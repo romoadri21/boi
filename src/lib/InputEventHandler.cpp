@@ -68,11 +68,11 @@ void InputEventHandler::HandleInputModeChangeEvent(InputModeChangeEvent* pEvent)
              * and the mode is required.
              */
             m_handleActionChanged = false;
-            m_pActionEngine->Execute(BOI_AEOP(Set), BOI_STD_A(XGesture));
+            m_pActionEngine->Execute(BOI_AEOP(Set), BOI_STD_A(Gesture));
             m_handleActionChanged = true;
 
             if (m_pActionEngine->HasActiveAction() &&
-               (m_pActionEngine->ActiveActionType() == BOI_STD_A(XGesture)))
+               (m_pActionEngine->ActiveActionType() == BOI_STD_A(Gesture)))
             {
                 /*
                  * If the gesture action is still the active action
