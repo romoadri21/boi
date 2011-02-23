@@ -17,6 +17,7 @@ RectSelectAction::RectSelectAction()
 {
     m_args.SetAutoDelete(false);
     m_args.SetPtr("RectPointer", &m_rect);
+    m_args.SetPtr("ErrorCode", &m_errorCode);
 }
 
 
@@ -24,11 +25,6 @@ ActionCommand RectSelectAction::Start(ASI* pSI, const ActionArgs* pArgs)
 {
     Q_UNUSED(pSI);
     Q_UNUSED(pArgs);
-
-    /*
-     * Invalidate the rect.
-     */
-    m_rect.setWidth(0);
 
     return BOI_AC_SET(BOI_STD_A(ScrollBox), &m_args);
 }
@@ -44,10 +40,12 @@ bool RectSelectAction::Suspend(ASI* pSI)
 
 ActionCommand RectSelectAction::Resume(ASI* pSI)
 {
-    if (m_rect.isValid())
+    if ((m_errorCode == 0) && m_rect.isValid())
     {
         CRefList crefs = pSI->ComponentsInLayerRect(m_rect, ViewLayerId_Main);
         pSI->SetSelection(crefs);
+
+        return BOI_AC_SET(BOI_STD_A(ScrollBox), &m_args);
     }
 
     return BOI_AC_STOP;

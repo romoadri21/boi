@@ -31,14 +31,23 @@ ActionCommand ScrollBoxAction::Start(ASI* pSI, const ActionArgs* pArgs)
 {
     m_numTouchStreams = 0;
     m_pTargetRect = NULL;
+    m_pErrorCode = NULL;
 
     if ((pArgs != NULL) &&
+        (pArgs->Contains("ErrorCode")) &&
         (pArgs->Contains("RectPointer")))
     {
+        m_pErrorCode = pArgs->ValuePtr<int>("ErrorCode");
         m_pTargetRect = pArgs->ValuePtr<QRectF>("RectPointer");
     }
 
-    if (m_pTargetRect == NULL) return BOI_AC_STOP;
+    if ((m_pErrorCode == NULL) ||
+        (m_pTargetRect == NULL))
+    {
+        return BOI_AC_STOP;
+    }
+
+    *m_pErrorCode = 1;
 
 
     if (!m_rectComponent.IsValid())
@@ -207,6 +216,7 @@ ActionCommand ScrollBoxAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
 
         pSI->MoveToLayer(m_rectComponent, ViewLayerId_Null);
 
+        *m_pErrorCode = 0;
         *m_pTargetRect = m_rect.Rect();
 
         m_numTouchStreams--;

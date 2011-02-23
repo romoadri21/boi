@@ -21,6 +21,7 @@ CaptureViewAction::CaptureViewAction()
 {
     m_args.SetAutoDelete(false);
     m_args.SetPtr("RectPointer", &m_rect);
+    m_args.SetPtr("ErrorCode", &m_errorCode);
 }
 
 
@@ -28,11 +29,6 @@ ActionCommand CaptureViewAction::Start(ASI* pSI, const ActionArgs* pArgs)
 {
     Q_UNUSED(pSI);
     Q_UNUSED(pArgs);
-
-    /*
-     * Invalidate the rect.
-     */
-    m_rect.setWidth(0);
 
     return BOI_AC_SET(BOI_STD_A(ScrollBox), &m_args);
 }
@@ -48,7 +44,7 @@ bool CaptureViewAction::Suspend(ASI* pSI)
 
 ActionCommand CaptureViewAction::Resume(ASI* pSI)
 {
-    if (m_rect.isValid())
+    if ((m_errorCode == 0) && m_rect.isValid())
     {
         QImage image = pSI->CaptureRect(m_rect);
 

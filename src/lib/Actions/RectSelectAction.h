@@ -30,6 +30,8 @@ class RectSelectAction
 
     private:
         QRectF m_rect;
+
+        int m_errorCode;
         ActionArgs m_args;
 };
 

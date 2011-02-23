@@ -56,6 +56,7 @@ class ScrollBoxAction
         CRef m_rectComponent;
         int m_setSizeReceiver;
 
+        int* m_pErrorCode;
         QRectF* m_pTargetRect;
 };
 
