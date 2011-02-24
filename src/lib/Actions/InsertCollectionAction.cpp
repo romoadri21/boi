@@ -11,10 +11,7 @@
 #include "ASI.h"
 #include "UuidType.h"
 #include "CRefList.h"
-#include "ActionArgs.h"
 #include "StandardActions.h"
-#include "StandardDataTypes.h"
-#include "StandardComponents.h"
 #include "Events/TouchEvent.h"
 #include "Actions/InsertCollectionAction.h"
 
@@ -25,38 +22,32 @@ namespace BOI {
 InsertCollectionAction::InsertCollectionAction()
     : Action(BOI_STD_A(InsertCollection))
 {
+    m_args.SetAutoDelete(false);
+    m_args.SetPtr("TextPointer", &m_text);
+    m_args.SetPtr("ErrorCode", &m_errorCode);
+    m_args.Set("InitialText", "Enter keywords that have been associated with a collection...");
+    m_args.Set("ClearOnNextPress", true);
 }
 
 
 ActionCommand InsertCollectionAction::Start(ASI* pSI, const ActionArgs* pArgs)
 {
+    Q_UNUSED(pSI);
     Q_UNUSED(pArgs);
 
     m_uuid.clear();
     m_numTouchStreams = 0;
 
-    ShowTextInputComponent(pSI);
-
-    return BOI_AC_CONTINUE;
+    return BOI_AC_SET(BOI_STD_A(TextInput), &m_args);
 }
 
 
 void InsertCollectionAction::Stop(ASI* pSI)
 {
-    Q_UNUSED(pSI);
-
     if (!m_uuid.isEmpty())
     {
         pSI->UnsetCursor();
     }
-
-    m_prevKeyEventHandler.Reset();
-}
-
-
-void InsertCollectionAction::Destroy()
-{
-    m_textInputComponent.Reset();
 }
 
 
@@ -92,74 +83,19 @@ ActionCommand InsertCollectionAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEv
 }
 
 
-void InsertCollectionAction::ShowTextInputComponent(ASI* pSI)
+bool InsertCollectionAction::Suspend(ASI* pSI)
 {
-    if (!m_textInputComponent.IsValid() ||
-         m_textInputComponent.IsDestroyed())
-    {
-        m_textInputComponent = pSI->NewComponent(BOI_STD_C(TextInput),
-                                                 ViewLayerId_System);
+    Q_UNUSED(pSI);
 
-        int funcSet = pSI->GetFuncSet(m_textInputComponent,
-                                      "{790e6f3f-4433-4490-a141-a4cb4433b0e7}");
-        if (funcSet != -1)
-        {
-            /*
-             * Set the Action type id so that
-             * Update gets called correctly.
-             */
-
-            DRef dref = pSI->NewData(BOI_STD_D(Int));
-            *dref.GetWriteInstance<int>() = Type();
-            pSI->CallFunc(m_textInputComponent, funcSet, 0, dref);
-        }
-
-        m_clearOnNextReceiver = pSI->GetReceiver(m_textInputComponent,
-                                               "{f58a0c2e-63c7-41e4-8895-6c7fa44ae32f}");
-
-        m_setTextReceiver = pSI->GetReceiver(m_textInputComponent,
-                                             "{7f2249e4-6c3c-40a5-9cff-59501f06ee37}");
-    }
-
-    if (m_clearOnNextReceiver != -1)
-    {
-        /*
-         * Tell the component to remove the
-         * text after the next key press.
-         */
-
-        DRef dref = pSI->NewData(BOI_STD_D(Bool));
-        *dref.GetWriteInstance<bool>() = true;
-
-        pSI->EmitTo(m_textInputComponent, m_clearOnNextReceiver, dref);
-    }
-
-    if (m_setTextReceiver != -1)
-    {
-        DRef dref = pSI->NewData(BOI_STD_D(String));
-        *dref.GetWriteInstance<QString>() =
-            "Enter keywords that have been associated with a collection...";
-
-        pSI->EmitTo(m_textInputComponent, m_setTextReceiver, dref);
-    }
-
-    m_prevKeyEventHandler = pSI->KeyEventHandler();
-
-    pSI->SetKeyEventHandler(m_textInputComponent);
-    pSI->SetVisible(m_textInputComponent, true);
+    return m_uuid.isEmpty();
 }
 
 
-ActionCommand InsertCollectionAction::Update(ASI* pSI, const ActionArgs* pArgs)
+ActionCommand InsertCollectionAction::Resume(ASI* pSI)
 {
-    pSI->SetVisible(m_textInputComponent, false);
-    pSI->SetKeyEventHandler(m_prevKeyEventHandler);
-
-    if ((pArgs != NULL) &&
-        (pArgs->Contains("Text")))
+    if ((m_errorCode == 0) && !m_text.isEmpty())
     {
-        QString text = pArgs->Value<QString>("Text");
-        QStringList parts = text.split(' ', QString::SkipEmptyParts);
+        QStringList parts = m_text.split(' ', QString::SkipEmptyParts);
 
         int numTags = parts.size();
         if (numTags > 0)

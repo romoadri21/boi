@@ -11,6 +11,7 @@
 #include <QString>
 #include "CRef.h"
 #include "Action.h"
+#include "ActionArgs.h"
 
 
 namespace BOI {
@@ -25,26 +26,23 @@ class InsertCollectionAction
         ActionCommand Start(ASI* pSI, const ActionArgs* pArgs);
 
         void Stop(ASI* pSI);
-        void Destroy();
 
         bool AcceptTouchStream();
 
         ActionCommand HandleTouchEvent(ASI* pSI, TouchEvent* pEvent);
 
-        ActionCommand Update(ASI* pSI, const ActionArgs* pArgs);
+        bool Suspend(ASI* pSI);
 
-    private:
-        void ShowTextInputComponent(ASI* pSI);
+        ActionCommand Resume(ASI* pSI);
 
     private:
         QString m_uuid;
 
         int m_numTouchStreams;
 
-        int  m_setTextReceiver;
-        int  m_clearOnNextReceiver;
-        CRef m_textInputComponent;
-        CRef m_prevKeyEventHandler;
+        QString m_text;
+        int m_errorCode;
+        ActionArgs m_args;
 };
 
 
