@@ -8,9 +8,10 @@
 #define __BOI_LOADURLACTION_H
 
 
+#include <QString>
 #include "CRef.h"
 #include "Action.h"
-#include "Utilities/TextInputWrapper.h"
+#include "ActionArgs.h"
 
 
 namespace BOI {
@@ -25,15 +26,17 @@ class LoadUrlAction
         ActionCommand Start(ASI* pSI, const ActionArgs* pArgs);
 
         void Stop(ASI* pSI);
-        void Destroy();
 
-        ActionCommand Update(ASI* pSI, const ActionArgs* pArgs);
+        bool Suspend(ASI* pSI);
+
+        ActionCommand Resume(ASI* pSI);
 
     private:
-        CRef m_activeComponent;
-        CRef m_prevKeyEventHandler;
+        QString m_text;
+        int m_errorCode;
+        ActionArgs m_args;
 
-        TextInputWrapper m_inputComponent;
+        CRef m_activeComponent;
 };
 
 

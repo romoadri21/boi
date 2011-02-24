@@ -6,7 +6,6 @@
 
 #include <QUrl>
 #include "ASI.h"
-#include "ActionArgs.h"
 #include "StandardActions.h"
 #include "StandardDataTypes.h"
 #include "Actions/LoadUrlAction.h"
@@ -18,6 +17,11 @@ namespace BOI {
 LoadUrlAction::LoadUrlAction()
     : Action(BOI_STD_A(LoadUrl))
 {
+    m_args.SetAutoDelete(false);
+    m_args.SetPtr("TextPointer", &m_text);
+    m_args.SetPtr("ErrorCode", &m_errorCode);
+    m_args.Set("InitialText", "Enter the URL to load into the browser component...");
+    m_args.Set("ClearOnNextPress", true);
 }
 
 
@@ -29,21 +33,7 @@ ActionCommand LoadUrlAction::Start(ASI* pSI, const ActionArgs* pArgs)
 
     if (m_activeComponent.IsValid())
     {
-        if (!m_inputComponent.IsValid() &&
-            !m_inputComponent.Initialize(pSI))
-        {
-            return BOI_AC_STOP;
-        }
-
-        m_prevKeyEventHandler = pSI->KeyEventHandler();
-
-        m_inputComponent.SetAction(pSI, Type());
-        m_inputComponent.SetClearOnNextPress(pSI, true);
-        m_inputComponent.SetText(pSI, "Enter the URL to load into the browser component...");
-        m_inputComponent.SetFocus(pSI);
-        m_inputComponent.Show(pSI);
-
-        return BOI_AC_CONTINUE;
+        return BOI_AC_SET(BOI_STD_A(TextInput), &m_args);
     }
 
     return BOI_AC_STOP;
@@ -54,36 +44,23 @@ void LoadUrlAction::Stop(ASI* pSI)
 {
     Q_UNUSED(pSI);
 
-    if (m_inputComponent.IsVisible())
-    {
-        m_inputComponent.Hide(pSI);
-
-        pSI->SetKeyEventHandler(m_prevKeyEventHandler);
-    }
-
     m_activeComponent.Reset();
-    m_prevKeyEventHandler.Reset();
 }
 
 
-void LoadUrlAction::Destroy()
+bool LoadUrlAction::Suspend(ASI* pSI)
 {
-    m_inputComponent.Destroy();
+    Q_UNUSED(pSI);
+
+    return true;
 }
 
 
-ActionCommand LoadUrlAction::Update(ASI* pSI, const ActionArgs* pArgs)
+ActionCommand LoadUrlAction::Resume(ASI* pSI)
 {
-    m_inputComponent.Hide(pSI);
-
-    pSI->SetKeyEventHandler(m_prevKeyEventHandler);
-
-    if ((pArgs != NULL) &&
-        (pArgs->Contains("Text")))
+    if ((m_errorCode == 0) && !m_text.isEmpty())
     {
-        QString text = pArgs->Value<QString>("Text");
-
-        QUrl url = QUrl::fromUserInput(text);
+        QUrl url = QUrl::fromUserInput(m_text);
 
         if (url.isValid())
         {
