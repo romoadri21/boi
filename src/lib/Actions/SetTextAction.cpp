@@ -5,7 +5,6 @@
  */
 
 #include "ASI.h"
-#include "ActionArgs.h"
 #include "StandardActions.h"
 #include "StandardDataTypes.h"
 #include "Actions/SetTextAction.h"
@@ -17,6 +16,11 @@ namespace BOI {
 SetTextAction::SetTextAction()
     : Action(BOI_STD_A(SetText))
 {
+    m_args.SetAutoDelete(false);
+    m_args.SetPtr("TextPointer", &m_text);
+    m_args.SetPtr("ErrorCode", &m_errorCode);
+    m_args.Set("InitialText", "Enter the text to load into the component...");
+    m_args.Set("ClearOnNextPress", true);
 }
 
 
@@ -28,21 +32,7 @@ ActionCommand SetTextAction::Start(ASI* pSI, const ActionArgs* pArgs)
 
     if (m_activeComponent.IsValid())
     {
-        if (!m_inputComponent.IsValid() &&
-            !m_inputComponent.Initialize(pSI))
-        {
-            return BOI_AC_STOP;
-        }
-
-        m_prevKeyEventHandler = pSI->KeyEventHandler();
-
-        m_inputComponent.SetAction(pSI, Type());
-        m_inputComponent.SetClearOnNextPress(pSI, true);
-        m_inputComponent.SetText(pSI, "Enter the text to load into the component...");
-        m_inputComponent.SetFocus(pSI);
-        m_inputComponent.Show(pSI);
-
-        return BOI_AC_CONTINUE;
+        return BOI_AC_SET(BOI_STD_A(TextInput), &m_args);
     }
 
     return BOI_AC_STOP;
@@ -53,41 +43,28 @@ void SetTextAction::Stop(ASI* pSI)
 {
     Q_UNUSED(pSI);
 
-    if (m_inputComponent.IsVisible())
-    {
-        m_inputComponent.Hide(pSI);
-
-        pSI->SetKeyEventHandler(m_prevKeyEventHandler);
-    }
-
     m_activeComponent.Reset();
-    m_prevKeyEventHandler.Reset();
 }
 
 
-void SetTextAction::Destroy()
+bool SetTextAction::Suspend(ASI* pSI)
 {
-    m_inputComponent.Destroy();
+    Q_UNUSED(pSI);
+
+    return true;
 }
 
 
-ActionCommand SetTextAction::Update(ASI* pSI, const ActionArgs* pArgs)
+ActionCommand SetTextAction::Resume(ASI* pSI)
 {
-    m_inputComponent.Hide(pSI);
-
-    pSI->SetKeyEventHandler(m_prevKeyEventHandler);
-
-    if ((pArgs != NULL) &&
-        (pArgs->Contains("Text")))
+    if ((m_errorCode == 0) && !m_text.isEmpty())
     {
-        QString text = pArgs->Value<QString>("Text");
-
         int receiver = pSI->GetReceiver(m_activeComponent,
                                         "{7f2249e4-6c3c-40a5-9cff-59501f06ee37}");
         if (receiver != -1)
         {
             DRef dref = pSI->NewData(BOI_STD_D(String));
-            *dref.GetWriteInstance<QString>() = text;
+            *dref.GetWriteInstance<QString>() = m_text;
 
             pSI->EmitTo(m_activeComponent, receiver, dref, true);
         }
