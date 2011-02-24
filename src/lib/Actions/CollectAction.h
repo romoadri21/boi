@@ -8,9 +8,10 @@
 #define __BOI_COLLECTACTION_H
 
 
-#include "CRef.h"
+#include <QString>
 #include "Action.h"
 #include "CRefList.h"
+#include "ActionArgs.h"
 
 
 namespace BOI {
@@ -25,20 +26,17 @@ class CollectAction
         ActionCommand Start(ASI* pSI, const ActionArgs* pArgs);
 
         void Stop(ASI* pSI);
-        void Destroy();
 
-        ActionCommand Update(ASI* pSI, const ActionArgs* pArgs);
+        bool Suspend(ASI* pSI);
 
-    private:
-        void ShowTextInputComponent(ASI* pSI);
+        ActionCommand Resume(ASI* pSI);
 
     private:
         CRefList m_crefs;
 
-        int  m_setTextReceiver;
-        int  m_clearOnNextReceiver;
-        CRef m_textInputComponent;
-        CRef m_prevKeyEventHandler;
+        QString m_text;
+        int m_errorCode;
+        ActionArgs m_args;
 };
 
 
