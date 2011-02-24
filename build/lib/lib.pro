@@ -141,6 +141,7 @@ HEADERS += \
     $${BOI_LIB_SRC_DIR}/Actions/ResetViewAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/ScrollBoxAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/SetNumberAction.h \
+    $${BOI_LIB_SRC_DIR}/Actions/TextInputAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/RectSelectAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/ZoomToRectAction.h \
     $${BOI_LIB_SRC_DIR}/Actions/InsertTextAction.h \
@@ -268,6 +269,7 @@ SOURCES += \
     $${BOI_LIB_SRC_DIR}/Actions/ResetViewAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/ScrollBoxAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/SetNumberAction.cpp \
+    $${BOI_LIB_SRC_DIR}/Actions/TextInputAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/RectSelectAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/ZoomToRectAction.cpp \
     $${BOI_LIB_SRC_DIR}/Actions/InsertTextAction.cpp \

@@ -65,6 +65,7 @@ class BOI_LIB_EXPORT StandardActions
             Action_CaptureView,
             Action_SetText,
             Action_ScrollBox,
+            Action_TextInput,
 
             NumActions
         };
