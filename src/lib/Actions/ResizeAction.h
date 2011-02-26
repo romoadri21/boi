@@ -8,8 +8,10 @@
 #define __BOI_RESIZEACTION_H
 
 
+#include <QString>
 #include "CRef.h"
 #include "Action.h"
+#include "ActionArgs.h"
 
 
 namespace BOI {
@@ -31,9 +33,9 @@ class ResizeAction
         ActionCommand HandleTouchEvent(ASI* pSI, TouchEvent* pEvent);
         ActionCommand HandleKeyEvent(ASI* pSI, KeyEvent* pEvent);
 
-        ActionCommand Update(ASI* pSI, const ActionArgs* pArgs);
+        bool Suspend(ASI* pSI);
 
-        void Destroy();
+        ActionCommand Resume(ASI* pSI);
 
     private:
         enum
@@ -55,11 +57,11 @@ class ResizeAction
         int m_setSizeReceiver;
         int m_updateSizeReceiver;
 
-        bool m_textInputActive;
-        int  m_setTextReceiver;
-        CRef m_textInputComponent;
+        bool m_doSuspend;
 
-        CRef m_prevKeyEventHandler;
+        QString m_text;
+        int m_errorCode;
+        ActionArgs m_args;
 };
 
 

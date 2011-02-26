@@ -5,17 +5,13 @@
  */
 
 #include <QStringList>
-#include <QString>
 #include <QPointF>
 #include <QSizeF>
 #include "ASI.h"
-#include "ActionArgs.h"
-#include "ViewLayerId.h"
-#include "StandardActions.h"
-#include "StandardDataTypes.h"
-#include "StandardComponents.h"
 #include "Events/KeyEvent.h"
 #include "Events/TouchEvent.h"
+#include "StandardActions.h"
+#include "StandardDataTypes.h"
 #include "Actions/ResizeAction.h"
 
 
@@ -25,13 +21,17 @@ namespace BOI {
 ResizeAction::ResizeAction()
     : Action(BOI_STD_A(Resize))
 {
+    m_args.SetAutoDelete(false);
+    m_args.SetPtr("TextPointer", &m_text);
+    m_args.SetPtr("ErrorCode", &m_errorCode);
+    m_args.Set("ClearOnNextPress", false);
 }
 
 
 ActionCommand ResizeAction::Start(ASI* pSI, const ActionArgs* pArgs)
 {
+    m_doSuspend = false;
     m_numTouchStreams = 0;
-    m_textInputActive = false;
 
     m_axis = Axis_XY;
 
@@ -64,10 +64,6 @@ ActionCommand ResizeAction::Start(ASI* pSI, const ActionArgs* pArgs)
         {
             return BOI_AC_CONTINUE;
         }
-        else
-        {
-            m_cref.Reset();
-        }
     }
 
     return BOI_AC_STOP;
@@ -78,34 +74,13 @@ void ResizeAction::Stop(ASI* pSI)
 {
     Q_UNUSED(pSI);
 
-    if (m_textInputActive)
-    {
-        pSI->SetVisible(m_textInputComponent, false);
-        pSI->SetKeyEventHandler(m_prevKeyEventHandler);
-
-        m_prevKeyEventHandler.Reset();
-    }
-
     m_cref.Reset();
-}
-
-
-void ResizeAction::Destroy()
-{
-    m_textInputComponent.Reset();
 }
 
 
 bool ResizeAction::AcceptKeyStream()
 {
-    /*
-     * Stop accepting key events when the
-     * TextInput component is active so
-     * that the events will be routed to
-     * the text input component instead
-     * of to 'this' action.
-     */
-    return !m_textInputActive;
+    return true;
 }
 
 
@@ -169,132 +144,90 @@ ActionCommand ResizeAction::HandleTouchEvent(ASI* pSI, TouchEvent* pEvent)
 
 ActionCommand ResizeAction::HandleKeyEvent(ASI* pSI, KeyEvent* pEvent)
 {
+    Q_UNUSED(pSI);
+
     if (pEvent->type == KeyEvent::Type_Press)
     {
-        if (!m_textInputComponent.IsValid())
-        {
-            m_textInputComponent = pSI->NewComponent(BOI_STD_C(TextInput),
-                                                     ViewLayerId_System);
+        m_doSuspend = true;
+        m_args.Set("InitialText", QChar(pEvent->key));
 
-            int funcSet = pSI->GetFuncSet(m_textInputComponent,
-                                          "{790e6f3f-4433-4490-a141-a4cb4433b0e7}");
-            if (funcSet != -1)
-            {
-                /*
-                 * Set the Action type id so that
-                 * Update gets called correctly.
-                 */
-
-                DRef dref = pSI->NewData(BOI_STD_D(Int));
-                *dref.GetWriteInstance<int>() = Type();
-                pSI->CallFunc(m_textInputComponent, funcSet, 0, dref);
-            }
-
-            int receiver = pSI->GetReceiver(m_textInputComponent,
-                                            "{f58a0c2e-63c7-41e4-8895-6c7fa44ae32f}");
-            if (receiver != -1)
-            {
-                /*
-                 * Tell the component to keep the
-                 * text after a new key press.
-                 */
-
-                DRef dref = pSI->NewData(BOI_STD_D(Bool));
-                *dref.GetWriteInstance<bool>() = false;
-
-                pSI->EmitTo(m_textInputComponent, receiver, dref);
-            }
-
-            m_setTextReceiver = pSI->GetReceiver(m_textInputComponent,
-                                                 "{7f2249e4-6c3c-40a5-9cff-59501f06ee37}");
-        }
-
-        if (m_setTextReceiver != -1)
-        {
-            /*
-             * Set the text to the key pressed.
-             */
-
-            DRef dref = pSI->NewData(BOI_STD_D(String));
-            *dref.GetWriteInstance<QString>() = QChar(pEvent->key);
-
-            pSI->EmitTo(m_textInputComponent, m_setTextReceiver, dref);
-        }
-
-        m_prevKeyEventHandler = pSI->KeyEventHandler();
-
-        pSI->SetKeyEventHandler(m_textInputComponent);
-        pSI->SetVisible(m_textInputComponent, true);
-
-        m_textInputActive = true;
+        return BOI_AC_SET(BOI_STD_A(TextInput), &m_args);
     }
 
     return BOI_AC_CONTINUE;
 }
 
 
-ActionCommand ResizeAction::Update(ASI* pSI, const ActionArgs* pArgs)
+bool ResizeAction::Suspend(ASI* pSI)
 {
-    pSI->SetVisible(m_textInputComponent, false);
-    pSI->SetKeyEventHandler(m_prevKeyEventHandler);
+    Q_UNUSED(pSI);
 
-    m_textInputActive = false;
+    return m_doSuspend;
+}
 
-    if ((pArgs != NULL) &&
-        (pArgs->Contains("Text")))
+
+ActionCommand ResizeAction::Resume(ASI* pSI)
+{
+    m_doSuspend = false;
+
+    if (m_errorCode == 0)
     {
-        qreal num1 = 0.0;
-        qreal num2 = 0.0;
-
-        bool num1Valid = false;
-        bool num2Valid = false;
-
-        QString text = pArgs->Value<QString>("Text");
-        QStringList parts = text.split(',');
-
-        if (parts.size() > 0)
+        if (!m_text.isEmpty())
         {
-            QString num1String = parts.at(0).trimmed();
-            if (!num1String.isEmpty())
+            qreal num1 = 0.0;
+            qreal num2 = 0.0;
+
+            bool num1Valid = false;
+            bool num2Valid = false;
+
+            QStringList parts = m_text.split(',');
+
+            if (parts.size() > 0)
             {
-                num1 = num1String.toDouble(&num1Valid);
+                QString num1String = parts.at(0).trimmed();
+                if (!num1String.isEmpty())
+                {
+                    num1 = num1String.toDouble(&num1Valid);
+                }
             }
-        }
 
-        if (parts.size() > 1)
-        {
-            QString num2String = parts.at(1).trimmed();
-            if (!num2String.isEmpty())
+            if (parts.size() > 1)
             {
-                num2 = num2String.toDouble(&num2Valid);
+                QString num2String = parts.at(1).trimmed();
+                if (!num2String.isEmpty())
+                {
+                    num2 = num2String.toDouble(&num2Valid);
+                }
             }
+
+
+            DRef dref = pSI->NewData(BOI_STD_D(Size));
+            QSizeF* pSize = dref.GetWriteInstance<QSizeF>();
+
+            pSize->setWidth(-1);
+            pSize->setHeight(-1);
+
+            if ((m_axis == Axis_X) && num1Valid)
+            {
+                pSize->setWidth(num1);
+            }
+            else if ((m_axis == Axis_Y) && num1Valid)
+            {
+                pSize->setHeight(num1);
+            }
+            else if (m_axis == Axis_XY)
+            {
+                if (num1Valid) pSize->setWidth(num1);
+                if (num2Valid) pSize->setHeight(num2);
+            }
+
+            pSI->EmitTo(m_cref, m_setSizeReceiver, dref, true);
         }
 
-
-        DRef dref = pSI->NewData(BOI_STD_D(Size));
-        QSizeF* pSize = dref.GetWriteInstance<QSizeF>();
-
-        pSize->setWidth(-1);
-        pSize->setHeight(-1);
-
-        if ((m_axis == Axis_X) && num1Valid)
-        {
-            pSize->setWidth(num1);
-        }
-        else if ((m_axis == Axis_Y) && num1Valid)
-        {
-            pSize->setHeight(num1);
-        }
-        else if (m_axis == Axis_XY)
-        {
-            if (num1Valid) pSize->setWidth(num1);
-            if (num2Valid) pSize->setHeight(num2);
-        }
-
-        pSI->EmitTo(m_cref, m_setSizeReceiver, dref, true);
+        return BOI_AC_CONTINUE;
     }
 
-    return BOI_AC_CONTINUE;
+    return BOI_AC_STOP;
 }
 
 
