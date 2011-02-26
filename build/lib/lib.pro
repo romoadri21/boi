@@ -182,7 +182,6 @@ HEADERS += \
     $${BOI_LIB_SRC_DIR}/Factories/CoreDataTypesFactory.h \
     $${BOI_LIB_SRC_DIR}/Factories/TimerComponentFactory.h \
     $${BOI_LIB_SRC_DIR}/Components/RootMenu.h \
-    $${BOI_LIB_SRC_DIR}/Components/ContextMenu.h \
     $${BOI_LIB_SRC_DIR}/Components/StandardMenu.h \
     $${BOI_LIB_SRC_DIR}/Components/MenuComponent.h \
     $${BOI_LIB_SRC_DIR}/Components/TextComponent.h \
@@ -295,7 +294,6 @@ SOURCES += \
     $${BOI_LIB_SRC_DIR}/Utilities/BoxInputHandler.cpp \
     $${BOI_LIB_SRC_DIR}/Utilities/TouchVelocity.cpp \
     $${BOI_LIB_SRC_DIR}/Components/RootMenu.cpp \
-    $${BOI_LIB_SRC_DIR}/Components/ContextMenu.cpp \
     $${BOI_LIB_SRC_DIR}/Components/StandardMenu.cpp \
     $${BOI_LIB_SRC_DIR}/Components/MenuComponent.cpp \
     $${BOI_LIB_SRC_DIR}/Components/TextComponent.cpp \
