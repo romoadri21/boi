@@ -166,6 +166,7 @@ bool Base::Initialize(QCoreApplication* pApp,
 
         m_pEventDispatcher->SetCloseEventListener(this);
         m_pEventDispatcher->SetResizeEventListener(m_pState);
+        m_pEventDispatcher->SetVirtualKeyEventListener(m_pView);
         m_pEventDispatcher->SetKeyEventListener(m_pInputEventHandler);
         m_pEventDispatcher->SetSetActionEventListener(m_pActionEngine);
         m_pEventDispatcher->SetTouchEventListener(m_pInputEventHandler);

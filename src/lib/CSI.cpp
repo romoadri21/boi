@@ -13,6 +13,7 @@
 #include "ComponentData.h"
 #include "ComponentManager.h"
 #include "Events/SetActionEvent.h"
+#include "Events/VirtualKeyEvent.h"
 #include "Events/EventDispatcher.h"
 #include "Events/UpdateActionEvent.h"
 #include "Factories/CustomEventsFactory.h"
@@ -121,6 +122,17 @@ void CSI::UpdateActiveAction(int action, const ActionArgs* pArgs)
     UpdateActionEvent* pEvent = m_pCustomEventsFactory->NewUpdateActionEvent();
     pEvent->action = action;
     pEvent->pArgs = pArgs;
+
+    QApplication::postEvent(m_pEventDispatcher, pEvent);
+}
+
+
+void CSI::PostKeyEvent(int key, bool pressed)
+{
+    VirtualKeyEvent* pEvent = m_pCustomEventsFactory->NewVirtualKeyEvent();
+    pEvent->key = key;
+    pEvent->type = pressed ? VirtualKeyEvent::Type_Press:
+                             VirtualKeyEvent::Type_Release;
 
     QApplication::postEvent(m_pEventDispatcher, pEvent);
 }

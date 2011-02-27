@@ -69,6 +69,8 @@ class BOI_LIB_EXPORT CSI
         void SetActiveAction(int action, const ActionArgs* pArgs=NULL);
         void UpdateActiveAction(int action, const ActionArgs* pArgs=NULL);
 
+        void PostKeyEvent(int key, bool pressed);
+
     protected:
         CustomEventsFactory* m_pCustomEventsFactory;
         ComponentManager*    m_pComponentManager;

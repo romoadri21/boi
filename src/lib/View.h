@@ -18,6 +18,7 @@
 #include <QtGlobal>
 #include <QTransform>
 #include "ViewLayerId.h"
+#include "Events/VirtualKeyEventListener.h"
 
 
 class QCursor;
@@ -39,7 +40,8 @@ class EventDispatcher;
 
 
 class View
-    : public QObject
+    : public QObject,
+      public VirtualKeyEventListener
 {
     public:
         View(QWidget* pParent=NULL);
@@ -99,6 +101,8 @@ class View
 
     protected:
         bool eventFilter(QObject* pTarget, QEvent* pEvent);
+
+        void HandleVirtualKeyEvent(VirtualKeyEvent* pEvent);
 
         void HandleCloseEvent(QCloseEvent* pEvent);
         void HandleResizeEvent(QResizeEvent* pEvent);

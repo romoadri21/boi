@@ -17,6 +17,7 @@ EventDispatcher::EventDispatcher()
       m_pInputModeChangeEventListener(NULL),
       m_pUpdateActionEventListener(NULL),
       m_pGuiRequestEventListener(NULL),
+      m_pVirtualKeyEventListener(NULL),
       m_pSetActionEventListener(NULL),
       m_pResizeEventListener(NULL),
       m_pTouchEventListener(NULL),
@@ -24,6 +25,7 @@ EventDispatcher::EventDispatcher()
       m_pKeyEventListener(NULL),
       m_pCustomEventsFactory(NULL),
       m_setActionEventType(QEvent::None),
+      m_virtualKeyEventType(QEvent::None),
       m_guiRequestEventType(QEvent::None),
       m_updateActionEventType(QEvent::None),
       m_inputModeChangeEventType(QEvent::None)
@@ -36,6 +38,7 @@ void EventDispatcher::SetCustomEventsFactory(CustomEventsFactory* pFactory)
     m_pCustomEventsFactory = pFactory;
 
     m_setActionEventType = pFactory->SetActionEventType();
+    m_virtualKeyEventType = pFactory->VirtualKeyEventType();
     m_guiRequestEventType = pFactory->GuiRequestEventType();
     m_updateActionEventType = pFactory->UpdateActionEventType();
     m_inputModeChangeEventType = pFactory->InputModeChangeEventType();
@@ -47,6 +50,12 @@ bool EventDispatcher::event(QEvent* pEvent)
     if (pEvent->type() == m_guiRequestEventType)
     {
         DispatchGuiRequestEvent();
+        pEvent->setAccepted(true);
+        return true;
+    }
+    else if (pEvent->type() == m_virtualKeyEventType)
+    {
+        DispatchVirtualKeyEvent((VirtualKeyEvent*)pEvent);
         pEvent->setAccepted(true);
         return true;
     }

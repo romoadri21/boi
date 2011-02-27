@@ -6,6 +6,7 @@
 
 #include <QEvent>
 #include "Events/SetActionEvent.h"
+#include "Events/VirtualKeyEvent.h"
 #include "Events/GuiRequestEvent.h"
 #include "Events/UpdateActionEvent.h"
 #include "Events/InputModeChangeEvent.h"
@@ -18,6 +19,7 @@ namespace BOI {
 CustomEventsFactory::CustomEventsFactory()
 {
     m_setActionEventType = QEvent::registerEventType();
+    m_virtualKeyEventType = QEvent::registerEventType();
     m_guiRequestEventType = QEvent::registerEventType();
     m_updateActionEventType = QEvent::registerEventType();
     m_inputModeChangeEventType = QEvent::registerEventType();
@@ -27,6 +29,12 @@ CustomEventsFactory::CustomEventsFactory()
 SetActionEvent* CustomEventsFactory::NewSetActionEvent()
 {
     return new SetActionEvent(m_setActionEventType);
+}
+
+
+VirtualKeyEvent* CustomEventsFactory::NewVirtualKeyEvent()
+{
+    return new VirtualKeyEvent(m_virtualKeyEventType);
 }
 
 

@@ -12,6 +12,7 @@ namespace BOI {
 
 
 class SetActionEvent;
+class VirtualKeyEvent;
 class GuiRequestEvent;
 class UpdateActionEvent;
 class InputModeChangeEvent;
@@ -23,17 +24,20 @@ class CustomEventsFactory
         CustomEventsFactory();
 
         SetActionEvent* NewSetActionEvent();
+        VirtualKeyEvent* NewVirtualKeyEvent();
         GuiRequestEvent* NewGuiRequestEvent();
         UpdateActionEvent* NewUpdateActionEvent();
         InputModeChangeEvent* NewInputModeChangeEvent();
 
         int SetActionEventType();
+        int VirtualKeyEventType();
         int GuiRequestEventType();
         int UpdateActionEventType();
         int InputModeChangeEventType();
 
     private:
         int m_setActionEventType;
+        int m_virtualKeyEventType;
         int m_guiRequestEventType;
         int m_updateActionEventType;
         int m_inputModeChangeEventType;
@@ -43,6 +47,12 @@ class CustomEventsFactory
 inline int CustomEventsFactory::SetActionEventType()
 {
     return m_setActionEventType;
+}
+
+
+inline int CustomEventsFactory::VirtualKeyEventType()
+{
+    return m_virtualKeyEventType;
 }
 
 

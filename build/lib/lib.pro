@@ -111,6 +111,8 @@ HEADERS += \
     $${BOI_LIB_SRC_DIR}/Events/TouchEventListener.h \
     $${BOI_LIB_SRC_DIR}/Events/ResizeEvent.h \
     $${BOI_LIB_SRC_DIR}/Events/ResizeEventListener.h \
+    $${BOI_LIB_SRC_DIR}/Events/VirtualKeyEvent.h \
+    $${BOI_LIB_SRC_DIR}/Events/VirtualKeyEventListener.h \
     $${BOI_LIB_SRC_DIR}/Events/GuiRequestEvent.h \
     $${BOI_LIB_SRC_DIR}/Events/GuiRequestEventListener.h \
     $${BOI_LIB_SRC_DIR}/Events/SetActionEvent.h \

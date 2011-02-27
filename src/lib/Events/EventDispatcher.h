@@ -12,6 +12,7 @@
 #include "Events/InputModeChangeEventListener.h"
 #include "Events/UpdateActionEventListener.h"
 #include "Events/GuiRequestEventListener.h"
+#include "Events/VirtualKeyEventListener.h"
 #include "Events/SetActionEventListener.h"
 #include "Events/ResizeEventListener.h"
 #include "Events/TouchEventListener.h"
@@ -44,6 +45,7 @@ class EventDispatcher
         void SetInputModeChangeEventListener(InputModeChangeEventListener* pInputModeChangeEventListener);
         void SetUpdateActionEventListener(UpdateActionEventListener* pUpdateActionEventListener);
         void SetGuiRequestEventListener(GuiRequestEventListener* pGuiRequestEventListener);
+        void SetVirtualKeyEventListener(VirtualKeyEventListener* pVirtualKeyEventListener);
         void SetSetActionEventListener(SetActionEventListener*   pSetActionEventListener);
         void SetResizeEventListener(ResizeEventListener*         pResizeEventListener);
         void SetTouchEventListener(TouchEventListener*           pTouchEventListener);
@@ -52,6 +54,7 @@ class EventDispatcher
 
         void DispatchInputModeChangeEvent(InputModeChangeEvent* pEvent);
         void DispatchUpdateActionEvent(UpdateActionEvent* pEvent);
+        void DispatchVirtualKeyEvent(VirtualKeyEvent* pEvent);
         void DispatchSetActionEvent(SetActionEvent* pEvent);
         void DispatchResizeEvent(ResizeEvent* pEvent);
         void DispatchTouchEvent(TouchEvent* pEvent);
@@ -66,6 +69,7 @@ class EventDispatcher
         InputModeChangeEventListener* m_pInputModeChangeEventListener;
         UpdateActionEventListener*    m_pUpdateActionEventListener;
         GuiRequestEventListener*      m_pGuiRequestEventListener;
+        VirtualKeyEventListener*      m_pVirtualKeyEventListener;
         SetActionEventListener*       m_pSetActionEventListener;
         ResizeEventListener*          m_pResizeEventListener;
         TouchEventListener*           m_pTouchEventListener;
@@ -74,6 +78,7 @@ class EventDispatcher
 
         CustomEventsFactory* m_pCustomEventsFactory;
         int m_setActionEventType;
+        int m_virtualKeyEventType;
         int m_guiRequestEventType;
         int m_updateActionEventType;
         int m_inputModeChangeEventType;
@@ -95,6 +100,12 @@ inline void EventDispatcher::SetUpdateActionEventListener(UpdateActionEventListe
 inline void EventDispatcher::SetGuiRequestEventListener(GuiRequestEventListener* pGuiRequestEventListener)
 {
     m_pGuiRequestEventListener = pGuiRequestEventListener;
+}
+
+
+inline void EventDispatcher::SetVirtualKeyEventListener(VirtualKeyEventListener* pVirtualKeyEventListener)
+{
+    m_pVirtualKeyEventListener = pVirtualKeyEventListener;
 }
 
 
@@ -143,6 +154,12 @@ inline void EventDispatcher::DispatchUpdateActionEvent(UpdateActionEvent* pEvent
 inline void EventDispatcher::DispatchGuiRequestEvent()
 {
     m_pGuiRequestEventListener->HandleGuiRequestEvent();
+}
+
+
+inline void EventDispatcher::DispatchVirtualKeyEvent(VirtualKeyEvent* pEvent)
+{
+    m_pVirtualKeyEventListener->HandleVirtualKeyEvent(pEvent);
 }
 
 

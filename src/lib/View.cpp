@@ -296,6 +296,12 @@ bool View::eventFilter(QObject* pTarget, QEvent* pEvent)
 }
 
 
+void View::HandleVirtualKeyEvent(VirtualKeyEvent* pEvent)
+{
+    Q_UNUSED(pEvent);
+}
+
+
 void View::ProcessQTouchEvent(QTouchEvent* pEvent)
 {
     const QList<QTouchEvent::TouchPoint>& touchPoints = pEvent->touchPoints();
