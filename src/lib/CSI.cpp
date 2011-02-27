@@ -127,12 +127,25 @@ void CSI::UpdateActiveAction(int action, const ActionArgs* pArgs)
 }
 
 
-void CSI::PostKeyEvent(int key, bool pressed)
+void CSI::PostKeyPressEvent(int defaultKey, int shiftKey)
 {
     VirtualKeyEvent* pEvent = m_pCustomEventsFactory->NewVirtualKeyEvent();
-    pEvent->key = key;
-    pEvent->type = pressed ? VirtualKeyEvent::Type_Press:
-                             VirtualKeyEvent::Type_Release;
+
+    pEvent->shiftKey = shiftKey;
+    pEvent->defaultKey = defaultKey;
+    pEvent->type = VirtualKeyEvent::Type_Press;
+
+    QApplication::postEvent(m_pEventDispatcher, pEvent);
+}
+
+
+void CSI::PostKeyReleaseEvent(int defaultKey, int shiftKey)
+{
+    VirtualKeyEvent* pEvent = m_pCustomEventsFactory->NewVirtualKeyEvent();
+
+    pEvent->shiftKey = shiftKey;
+    pEvent->defaultKey = defaultKey;
+    pEvent->type = VirtualKeyEvent::Type_Release;
 
     QApplication::postEvent(m_pEventDispatcher, pEvent);
 }

@@ -25,8 +25,9 @@ class VirtualKeyEvent
         };
 
     public:
-        int key;
         int type;
+        int shiftKey;
+        int defaultKey;
 
     private:
         friend class CustomEventsFactory;
