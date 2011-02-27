@@ -110,7 +110,8 @@ class View
         void ProcessQTouchEvent(QTouchEvent* pEvent);
         void HandleTouch(TouchEvent* pEvent);
 
-        void UpdateModifiers(KeyEvent* pEvent);
+        void ProcessKeyPressEvent(KeyEvent* pEvent);
+        void ProcessKeyReleaseEvent(KeyEvent* pEvent);
 
         ViewLayerId LayerId(QGraphicsItem* pItem);
 

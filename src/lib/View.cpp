@@ -14,6 +14,7 @@
 #include "Events/ResizeEvent.h"
 #include "Events/TouchEvent.h"
 #include "Events/KeyEvent.h"
+#include "Events/VirtualKeyEvent.h"
 #include "Events/EventDispatcher.h"
 #include "Events/InputModeChangeEvent.h"
 #include "View.h"
@@ -244,41 +245,23 @@ bool View::eventFilter(QObject* pTarget, QEvent* pEvent)
     else if (eventType == QEvent::KeyPress)
     {
         KeyEvent keyEvent;
-
-        /*
-         * Use the native scan code for the id since
-         * the value of key() may not match the key
-         * in the corresponding release event. For
-         * instance, if key was used as the id:
-         *     <shift press>
-         *     <colon press>
-         *     <shift release>
-         *     <semicolon release>,
-         * which would set the id in the release as
-         * a different value as the id in the press.
-         * The id should always match up a key press
-         * with its corresponding release.
-         */
-        keyEvent.id   = ((QKeyEvent*)pEvent)->nativeScanCode();
+        keyEvent.id   = ((QKeyEvent*)pEvent)->key();
         keyEvent.key  = ((QKeyEvent*)pEvent)->key();
         keyEvent.type = KeyEvent::Type_Press;
 
-        UpdateModifiers(&keyEvent);
+        ProcessKeyPressEvent(&keyEvent);
 
-        m_pEventDispatcher->DispatchKeyEvent(&keyEvent);
         return true;
     }
     else if (eventType == QEvent::KeyRelease)
     {
         KeyEvent keyEvent;
-
-        keyEvent.id   = ((QKeyEvent*)pEvent)->nativeScanCode();
+        keyEvent.id   = ((QKeyEvent*)pEvent)->key();
         keyEvent.key  = ((QKeyEvent*)pEvent)->key();
         keyEvent.type = KeyEvent::Type_Release;
 
-        UpdateModifiers(&keyEvent);
+        ProcessKeyReleaseEvent(&keyEvent);
 
-        m_pEventDispatcher->DispatchKeyEvent(&keyEvent);
         return true;
     }
     else if (eventType == QEvent::Resize)
@@ -293,12 +276,6 @@ bool View::eventFilter(QObject* pTarget, QEvent* pEvent)
     }
 
     return QObject::eventFilter(pTarget, pEvent);
-}
-
-
-void View::HandleVirtualKeyEvent(VirtualKeyEvent* pEvent)
-{
-    Q_UNUSED(pEvent);
 }
 
 
@@ -387,46 +364,87 @@ void View::HandleTouch(TouchEvent* pEvent)
 }
 
 
-void View::UpdateModifiers(KeyEvent* pEvent)
+void View::HandleVirtualKeyEvent(VirtualKeyEvent* pEvent)
 {
-    int key = pEvent->key;
+    int key = (m_keyModifiers & KeyEvent::Modifier_Shift) ?
+              (pEvent->shiftKey) :
+              (pEvent->defaultKey);
 
-    if (pEvent->type == KeyEvent::Type_Press)
+    KeyEvent keyEvent;
+    keyEvent.id  = key;
+    keyEvent.key = key;
+
+    if (pEvent->type == VirtualKeyEvent::Type_Press)
     {
-        if (key == Qt::Key_Shift)
-        {
-            m_keyModifiers |= KeyEvent::Modifier_Shift;
-            m_shiftPressed++;
-        }
-        else if (key == Qt::Key_Control)
-        {
-            m_keyModifiers |= KeyEvent::Modifier_Control;
-            m_controlPressed++;
-        }
+        keyEvent.type = KeyEvent::Type_Press;
+        ProcessKeyPressEvent(&keyEvent);
     }
     else
     {
-        if (key == Qt::Key_Shift)
-        {
-            m_shiftPressed--;
+        keyEvent.type = KeyEvent::Type_Release;
+        ProcessKeyReleaseEvent(&keyEvent);
+    }
+}
 
-            if (m_shiftPressed == 0)
-            {
-                m_keyModifiers &= ~(KeyEvent::Modifier_Shift);
-            }
+
+void View::ProcessKeyPressEvent(KeyEvent* pEvent)
+{
+    int key = pEvent->key;
+
+    if (key == Qt::Key_Shift)
+    {
+        m_keyModifiers |= KeyEvent::Modifier_Shift;
+        m_shiftPressed++;
+    }
+    else if (key == Qt::Key_Control)
+    {
+        m_keyModifiers |= KeyEvent::Modifier_Control;
+        m_controlPressed++;
+    }
+
+    pEvent->modifiers = m_keyModifiers;
+
+    m_pEventDispatcher->DispatchKeyEvent(pEvent);
+
+    if ((key != Qt::Key_Shift) &&
+        (key != Qt::Key_Control))
+    {
+        pEvent->type = KeyEvent::Type_Release;
+        m_pEventDispatcher->DispatchKeyEvent(pEvent);
+    }
+}
+
+
+void View::ProcessKeyReleaseEvent(KeyEvent* pEvent)
+{
+    int key = pEvent->key;
+
+    if (key == Qt::Key_Shift)
+    {
+        m_shiftPressed--;
+
+        if (m_shiftPressed == 0)
+        {
+            m_keyModifiers &= ~(KeyEvent::Modifier_Shift);
         }
-        else if (key == Qt::Key_Control)
-        {
-            m_controlPressed--;
+    }
+    else if (key == Qt::Key_Control)
+    {
+        m_controlPressed--;
 
-            if (m_controlPressed == 0)
-            {
-                m_keyModifiers &= ~(KeyEvent::Modifier_Control);
-            }
+        if (m_controlPressed == 0)
+        {
+            m_keyModifiers &= ~(KeyEvent::Modifier_Control);
         }
     }
 
     pEvent->modifiers = m_keyModifiers;
+
+    if ((key == Qt::Key_Shift) ||
+        (key == Qt::Key_Control))
+    {
+        m_pEventDispatcher->DispatchKeyEvent(pEvent);
+    }
 }
 
 
