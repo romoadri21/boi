@@ -168,6 +168,7 @@ HEADERS += \
     $${BOI_LIB_SRC_DIR}/DataTypes/DoubleData.h \
     $${BOI_LIB_SRC_DIR}/DataTypes/StringData.h \
     $${BOI_LIB_SRC_DIR}/DataTypes/ImageData.h \
+    $${BOI_LIB_SRC_DIR}/DataTypes/ListData.h \
     $${BOI_LIB_SRC_DIR}/DataTypes/SizeData.h \
     $${BOI_LIB_SRC_DIR}/DataTypes/RectData.h \
     $${BOI_LIB_SRC_DIR}/DataTypes/ColorData.h \
