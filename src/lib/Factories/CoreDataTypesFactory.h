@@ -33,6 +33,7 @@ class CoreDataTypesFactory
         DEFINE_BOI_GET_INSTANCE_FUNC(CoreDataTypesFactory, GetRectData);
         DEFINE_BOI_GET_INSTANCE_FUNC(CoreDataTypesFactory, GetBoundingBoxData);
         DEFINE_BOI_GET_INSTANCE_FUNC(CoreDataTypesFactory, GetImageData);
+        DEFINE_BOI_GET_INSTANCE_FUNC(CoreDataTypesFactory, GetIntListData);
 
         DEFINE_BOI_DELETE_INSTANCE_FUNC(CoreDataTypesFactory, DeleteStringData);
         DEFINE_BOI_DELETE_INSTANCE_FUNC(CoreDataTypesFactory, DeleteSizeData);
@@ -45,6 +46,7 @@ class CoreDataTypesFactory
         DEFINE_BOI_DELETE_INSTANCE_FUNC(CoreDataTypesFactory, DeleteRectData);
         DEFINE_BOI_DELETE_INSTANCE_FUNC(CoreDataTypesFactory, DeleteBoundingBoxData);
         DEFINE_BOI_DELETE_INSTANCE_FUNC(CoreDataTypesFactory, DeleteImageData);
+        DEFINE_BOI_DELETE_INSTANCE_FUNC(CoreDataTypesFactory, DeleteIntListData);
 };
 
 

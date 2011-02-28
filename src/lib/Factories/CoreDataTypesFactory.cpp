@@ -8,6 +8,7 @@
 #include "TypeRegistrar.h"
 #include "StandardDataTypes.h"
 #include "DataTypes/PenData.h"
+#include "DataTypes/ListData.h"
 #include "DataTypes/SizeData.h"
 #include "DataTypes/FontData.h"
 #include "DataTypes/RectData.h"
@@ -86,6 +87,11 @@ void CoreDataTypesFactory::RegisterTypes(TypeRegistrar* pRegistrar)
                              BOI_GET_INSTANCE_FUNC(CoreDataTypesFactory,    GetImageData),
                              BOI_DELETE_INSTANCE_FUNC(CoreDataTypesFactory, DeleteImageData),
                              StandardDataTypes::Uuid(BOI_STD_D(Image)));
+
+    pRegistrar->RegisterType(this,
+                             BOI_GET_INSTANCE_FUNC(CoreDataTypesFactory,    GetIntListData),
+                             BOI_DELETE_INSTANCE_FUNC(CoreDataTypesFactory, DeleteIntListData),
+                             StandardDataTypes::Uuid(BOI_STD_D(IntList)));
 }
 
 
@@ -188,6 +194,15 @@ Object* CoreDataTypesFactory::GetImageData(int type)
 }
 
 
+Object* CoreDataTypesFactory::GetIntListData(int type)
+{
+    Q_UNUSED(type);
+
+    ListData<int>* pData = new ListData<int>(BOI_STD_D(IntList));
+    return pData;
+}
+
+
 void CoreDataTypesFactory::DeleteStringData(Object* pInstance)
 {
     delete (Data*)pInstance;
@@ -249,6 +264,12 @@ void CoreDataTypesFactory::DeleteBoundingBoxData(Object* pInstance)
 
 
 void CoreDataTypesFactory::DeleteImageData(Object* pInstance)
+{
+    delete (Data*)pInstance;
+}
+
+
+void CoreDataTypesFactory::DeleteIntListData(Object* pInstance)
 {
     delete (Data*)pInstance;
 }

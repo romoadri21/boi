@@ -47,6 +47,7 @@ class BOI_LIB_EXPORT StandardDataTypes
             DataType_Rect,
             DataType_BoundingBox,
             DataType_Image,
+            DataType_IntList,
 
             NumTypes
         };

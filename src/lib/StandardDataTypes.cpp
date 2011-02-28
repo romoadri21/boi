@@ -29,6 +29,7 @@ const char* StandardDataTypes::s_uuids[] =
     "{c0a06862-8bd2-4ddd-8a6e-7a618226d4c2}", // DataType_Rect
     "{cf02f714-cedf-41bb-a48b-917c2028fad6}", // DataType_BoundingBox
     "{e75c7728-47ed-49db-b016-66ff940a3ecf}", // DataType_Image
+    "{d0d68912-3245-4468-abc4-43e839e44ee3}", // DataType_IntList
 };
 
 
