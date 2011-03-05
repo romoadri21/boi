@@ -80,6 +80,8 @@ class ISI
 
         CRefList NewCRefList();
 
+        bool IsLayout(CRef& cref);
+
     private:
         friend class CRef;
         void DestroyComponent(ComponentData* pComponentData);

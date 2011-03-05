@@ -264,24 +264,7 @@ bool ASI::IsParent(Component* pParent, Component* pChild)
 
 bool ASI::IsLayout(CRef& cref)
 {
-    bool isLayout = false;
-
-    Component* pComponent = cref.GetInstance();
-    if (pComponent != NULL)
-    {
-        const QStringList profile = pComponent->GetProfile();
-
-        if (profile.contains("{f742f223-bb7b-48f0-92a8-81702e14de16}") &&
-            profile.contains("{b11a0db4-cb96-4bf6-9631-fd96f20ea6ab}") &&
-            profile.contains("{6a7ab00f-1ab4-4324-9eb4-e614bfca4a16}"))
-        {
-            isLayout = true;
-        }
-
-        cref.ReleaseInstance();
-    }
-
-    return isLayout;
+    return m_pComponentManager->IsLayout(cref);
 }
 
 

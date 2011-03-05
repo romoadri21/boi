@@ -8,6 +8,7 @@
 #define __BOI_COMPONENTMANAGER_H
 
 
+#include <QHash>
 #include <QMutex>
 #include <QString>
 #include "FactoryRegistrar.h"
@@ -45,6 +46,8 @@ class ComponentManager
 
         void DestroyAll(bool stopNew=false);
 
+        bool IsLayout(CRef& cref);
+
     protected:
         /*
          * These methods should *only* be called from
@@ -75,6 +78,8 @@ class ComponentManager
 
         QMutex m_mutex;
         ComponentData* m_pHead;
+
+        QHash<int, int> m_layoutTypes;
 };
 
 

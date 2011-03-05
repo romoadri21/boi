@@ -146,6 +146,12 @@ CRefList ISI::NewCRefList()
 }
 
 
+bool ISI::IsLayout(CRef& cref)
+{
+    return m_pComponentManager->IsLayout(cref);
+}
+
+
 void ISI::DestroyComponent(ComponentData* pComponentData)
 {
     m_pComponentManager->DestroyComponent(pComponentData);

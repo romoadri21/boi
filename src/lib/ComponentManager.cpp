@@ -263,5 +263,52 @@ void ComponentManager::RemoveFromList(ComponentData* pComponentData)
 }
 
 
+bool ComponentManager::IsLayout(CRef& cref)
+{
+    /*
+     * Note: this method is not thread safe.
+     */
+
+    bool isLayout = false;
+    int type = cref.Type();
+
+    if (type != BOI_STD_C(Invalid))
+    {
+        int value = m_layoutTypes.value(type, 0);
+
+        if (value == 0)
+        {
+            Component* pComponent = cref.GetInstance();
+            if (pComponent != NULL)
+            {
+                int funcSet  = pComponent->GetFuncSet("{f742f223-bb7b-48f0-92a8-81702e14de16}");
+                int emitter  = pComponent->GetEmitter("{b11a0db4-cb96-4bf6-9631-fd96f20ea6ab}");
+                int receiver = pComponent->GetReceiver("{6a7ab00f-1ab4-4324-9eb4-e614bfca4a16}");
+
+                if ((funcSet  != -1) &&
+                    (emitter  != -1) &&
+                    (receiver != -1))
+                {
+                    isLayout = true;
+                    m_layoutTypes.insert(type, 1);
+                }
+                else
+                {
+                    m_layoutTypes.insert(type, 2);
+                }
+
+                cref.ReleaseInstance();
+            }
+        }
+        else
+        {
+            isLayout = (value == 1);
+        }
+    }
+
+    return isLayout;
+}
+
+
 } // namespace BOI
 
