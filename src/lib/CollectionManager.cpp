@@ -7,12 +7,12 @@
 #include <QDir>
 #include <QFile>
 #include <QUuid>
+#include <QList>
 #include <QLineF>
 #include <QFileInfo>
 #include <QDataStream>
 #include <QHashIterator>
 #include "ISI.h"
-#include "DRef.h"
 #include "Component.h"
 #include "GraphicsItem.h"
 #include "ViewLayerId.h"
@@ -200,6 +200,7 @@ CRefList CollectionManager::OpenCollection(const QString& uuid,
             RestorePositions(pImportDataHead, point);
             RestoreVisibility(pImportDataHead);
             RestoreParenting(pImportDataHead, prevIds);
+            RestorePrivateData(pImportDataHead, prevIds);
             RestoreConnections(pImportDataHead, prevIds);
 
             CRefList crefs = m_pISI->NewCRefList();
@@ -235,25 +236,31 @@ void CollectionManager::ImportComponent(ImportData* pImportData, QDataStream& in
        >> pImportData->id
        >> pImportData->layer
        >> pImportData->visible
+       >> pImportData->inLayout
        >> pImportData->parentId
        >> pImportData->opacity
        >> pImportData->layerPos
        >> pImportData->layerBoundingRect
        >> pImportData->transformOrigin
-       >> pImportData->rotation
-       >> pImportData->dataSize;
+       >> pImportData->rotation;
 
-    QHash<int, DRef> data;
-    data.reserve(pImportData->dataSize);
 
-    for (qint32 i=0; i < pImportData->dataSize; i++)
+    qint32 privateDataCount;
+    in  >> privateDataCount;
+
+    if (privateDataCount > 0)
     {
-        qint32 key;
-        in >> key;
+        pImportData->privateData.reserve(privateDataCount);
 
-        DRef dref = m_pISI->ImportData(in);
+        for (qint32 i=0; i < privateDataCount; i++)
+        {
+            qint32 key;
+            in >> key;
 
-        data.insert(key, dref);
+            DRef dref = m_pISI->ImportData(in);
+
+            pImportData->privateData.insert(key, dref);
+        }
     }
 
 
@@ -271,7 +278,6 @@ void CollectionManager::ImportComponent(ImportData* pImportData, QDataStream& in
             pComponent->SetOpacity(pImportData->opacity);
             pComponent->SetRotation(pImportData->rotation);
             pComponent->SetTransformOrigin(pImportData->transformOrigin);
-            pComponent->Import(data);
 
             /*
              * Note: the instance should be released
@@ -293,6 +299,7 @@ void CollectionManager::ExportComponent(Component* pComponent, QDataStream& out)
     out << (qint32)pComponent->m_pData->id;
     out << (qint32)pComponent->m_pData->layer;
     out << (bool)  pComponent->m_pData->visible;
+    out << (bool)  pComponent->m_pData->inLayout;
 
     GraphicsItem* pItem = &pComponent->m_pData->graphicsItem;
     GraphicsItem* pParent = (GraphicsItem*)pItem->parentItem();
@@ -317,12 +324,12 @@ void CollectionManager::ExportComponent(Component* pComponent, QDataStream& out)
     out << itemLine.angleTo(sceneLine);
 
 
-    QHash<int, DRef> data;
-    pComponent->Export(data);
+    QHash<int, DRef> privateData;
+    pComponent->Export(privateData);
 
-    out << (qint32)data.size();
+    out << (qint32)privateData.count();
 
-    QHashIterator<int, DRef> it(data);
+    QHashIterator<int, DRef> it(privateData);
     while (it.hasNext())
     {
         it.next();
@@ -510,9 +517,59 @@ void CollectionManager::RestoreParenting(ImportData* pImportData,
             if (pParentData != NULL)
             {
                 pImportData->pComponent->SetParent(pParentData->cref);
+
+                if (pImportData->inLayout &&
+                    m_pISI->IsLayout(pParentData->cref))
+                {
+                    pImportData->pComponent->m_pData->inLayout = true;
+                }
             }
         }
 
+        pImportData = pImportData->pNext;
+    }
+}
+
+
+void CollectionManager::RestorePrivateData(ImportData* pImportData,
+                                           const QHash<int, ImportData*>& prevIds)
+{
+    while (pImportData != NULL)
+    {
+        if (m_pISI->IsLayout(pImportData->cref))
+        {
+            /*
+             * All layouts should store the previous ids
+             * in slot 1 of their private exported data.
+             */
+
+            QHash<int, DRef>* pPrivateData = &pImportData->privateData;
+
+            if (pPrivateData->contains(1))
+            {
+                DRef dref = pPrivateData->value(1);
+
+                if (dref.Type() == BOI_STD_D(IntList))
+                {
+                    pPrivateData->remove(1);
+
+                    QList<int>* pList = dref.GetWriteInstance<QList<int> >();
+
+                    for (int i=0; i < pList->count(); i++)
+                    {
+                        ImportData* pData = prevIds.value(pList->at(i), NULL);
+
+                        int newId = (pData != NULL) ? pData->cref.Id() : -1;
+
+                        pList->replace(i, newId);
+                    }
+
+                    pPrivateData->insert(1, dref);
+                }
+            }
+        }
+
+        pImportData->pComponent->Import(pImportData->privateData);
         pImportData = pImportData->pNext;
     }
 }

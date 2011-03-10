@@ -13,6 +13,7 @@
 #include <QPointF>
 #include <QString>
 #include "CRef.h"
+#include "DRef.h"
 #include "CRefList.h"
 
 
@@ -75,7 +76,6 @@ class CollectionManager
 
             qint32 id;
             qint32 layer;
-            qint32 dataSize;
             qint32 parentId;
 
             QPointF layerPos;
@@ -85,10 +85,13 @@ class CollectionManager
 
             ConnectionRecord* pConnections;
 
+            QHash<int, DRef> privateData;
+
             qreal rotation;
             qreal opacity;
 
             bool visible;
+            bool inLayout;
 
             CRef cref;
             Component* pComponent;
@@ -110,6 +113,9 @@ class CollectionManager
 
         void RestoreParenting(ImportData* pImportDataHead,
                               const QHash<int, ImportData*>& prevIds);
+
+        void RestorePrivateData(ImportData* pImportDataHead,
+                                const QHash<int, ImportData*>& prevIds);
 
         void RestoreConnections(ImportData* pImportDataHead,
                                 const QHash<int, ImportData*>& prevIds);
