@@ -52,6 +52,9 @@ class VerticalLayoutComponent
         virtual void Draw(QPainter* pPainter,
                           const QStyleOptionGraphicsItem* pOption);
 
+        virtual void Import(const QHash<int, DRef>& in);
+        virtual void Export(QHash<int, DRef>& out);
+
     private:
         enum
         {

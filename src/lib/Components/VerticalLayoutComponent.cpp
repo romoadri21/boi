@@ -4,6 +4,7 @@
  * http://www.boi-project.org/license
  */
 
+#include <QList>
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include "CSI.h"
@@ -337,6 +338,71 @@ void VerticalLayoutComponent::Draw(QPainter* pPainter,
     }
 
     UnlockDraw();
+}
+
+
+void VerticalLayoutComponent::Import(const QHash<int, DRef>& in)
+{
+    if (in.contains(1))
+    {
+        DRef dref = in.value(1);
+        const QList<int>* pList = dref.GetReadInstance<QList<int> >();
+
+        int numIds = pList->count();
+
+        LayoutItem* pNewLayoutItem = NULL;
+        LayoutItem* pPrevLayoutItem = NULL;
+
+        m_itemsLock.Lock();
+
+        for (int i=0; i < numIds; i++)
+        {
+            int id = pList->at(i);
+
+            if (id != -1)
+            {
+                pNewLayoutItem = new LayoutItem;
+                pNewLayoutItem->id = id;
+                pNewLayoutItem->pNext = NULL;
+
+                if (m_pHead == NULL)
+                {
+                    m_pHead = pNewLayoutItem;
+                    pNewLayoutItem->pPrev = NULL;
+                }
+                else
+                {
+                    pNewLayoutItem->pPrev = pPrevLayoutItem;
+                    pPrevLayoutItem->pNext = pNewLayoutItem;
+                }
+
+                pPrevLayoutItem = pNewLayoutItem;
+            }
+        }
+
+        m_itemsLock.Unlock();
+    }
+}
+
+
+void VerticalLayoutComponent::Export(QHash<int, DRef>& out)
+{
+    DRef dref = SI()->NewData(BOI_STD_D(IntList));
+    QList<int>* pList = dref.GetWriteInstance<QList<int> >();
+
+    m_itemsLock.Lock();
+
+    LayoutItem* pLayoutItem = m_pHead;
+
+    while (pLayoutItem != NULL)
+    {
+        pList->append(pLayoutItem->id);
+        pLayoutItem = pLayoutItem->pNext;
+    }
+
+    m_itemsLock.Unlock();
+
+    out.insert(1, dref);
 }
 
 
