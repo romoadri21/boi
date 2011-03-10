@@ -12,16 +12,19 @@ qrc_.+\.cpp$
 ^build/app/Makefile\.Release$
 ^build/app/vc.+\.pdb$
 ^build/app/debug/.+
+^build/app/release/.+
 
 ^build/lib/Makefile$
 ^build/lib/Makefile\.Debug$
 ^build/lib/Makefile\.Release$
 ^build/lib/vc.+\.pdb$
 ^build/lib/debug/.+
+^build/lib/release/.+
 
 ^plugins/BasicShapes/build/Makefile$
 ^plugins/BasicShapes/build/Makefile\.Debug$
 ^plugins/BasicShapes/build/Makefile\.Release$
 ^plugins/BasicShapes/build/vc.+\.pdb$
 ^plugins/BasicShapes/build/debug/.+
+^plugins/BasicShapes/build/release/.+
 
